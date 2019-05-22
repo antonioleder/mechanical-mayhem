@@ -13,7 +13,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>
     <ProjectGuid>{553D497C-DD10-4B3D-9F5A-CC4267744407}</ProjectGuid>
-    <RootNamespace>YesterdaysMayonnaise</RootNamespace>
+    <RootNamespace>MechanicalMayhem</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -43,14 +43,14 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <TargetName>Yesterday's Mayonnaise</TargetName>
+    <TargetName>Mechanical Mayhem</TargetName>
     <IncludePath>HighLevelAPI\include;fmod\inc;LowLevelAPI\include;glfw\include;$(IncludePath)</IncludePath>
     <LibraryPath>HighLevelAPI\lib;fmod\lib;LowLevelAPI\lib;glfw\lib\x64;$(LibraryPath)</LibraryPath>
     <OutDir>$(ProjectDir)\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <TargetName>Yesterday's Mayonnaise</TargetName>
+    <TargetName>Mechanical Mayhem</TargetName>
     <IncludePath>HighLevelAPI\include;fmod\inc;LowLevelAPI\include;glfw\include;$(IncludePath)</IncludePath>
     <LibraryPath>HighLevelAPI\lib;fmod\lib;LowLevelAPI\lib;glfw\lib\x64;$(LibraryPath)</LibraryPath>
     <OutDir>$(ProjectDir)\$(Platform)\$(Configuration)\</OutDir>
