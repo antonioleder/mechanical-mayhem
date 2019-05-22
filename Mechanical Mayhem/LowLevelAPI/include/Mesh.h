@@ -43,6 +43,7 @@ enum MeshDrawMode
 	MDM_Points = 0,
 	MDM_Lines,
 	MDM_Lines_Strip,
+	MDM_Lines_Loop,
 	MDM_Triangles,
 
 	// Keep this one last

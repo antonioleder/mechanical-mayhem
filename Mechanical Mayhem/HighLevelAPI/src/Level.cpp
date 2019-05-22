@@ -36,7 +36,7 @@ Level::Level(const std::string& name) : BetaObject(name)
 Space* Level::GetSpace() const
 {
 	// The object's parent should be a space.
-	return static_cast<Space*>(BetaObject::GetParent());
+	return static_cast<Space*>(BetaObject::GetOwner());
 }
 
 //------------------------------------------------------------------------------

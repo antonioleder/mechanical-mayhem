@@ -69,14 +69,14 @@ void SpriteTilemap::Draw()
 			// Draw the tile.
 			Vector2D offset = Vector2D(x * scale.x, y * -scale.y);
 
-			const BoundingRectangle screenWorldDimensions = Graphics::GetInstance().GetScreenWorldDimensions();
+			const BoundingRectangle screenWorldDimensions = Graphics::GetInstance().GetDefaultCamera().GetScreenWorldDimensions();
 
 			// If the tile would be off the screen, don't draw anything.
-			/*if (screenWorldDimensions.bottom > translation.y + offset.y + scale.y * 2.0f
+			if (screenWorldDimensions.bottom > translation.y + offset.y + scale.y * 2.0f
 				|| screenWorldDimensions.top < translation.y + offset.y - scale.y * 2.0f
 				|| screenWorldDimensions.left > translation.x + offset.x + scale.x * 2.0f
 				|| screenWorldDimensions.right < translation.x + offset.x - scale.x * 2.0f)
-				continue;*/
+				continue;
 
 			Sprite::Draw(offset);
 		}

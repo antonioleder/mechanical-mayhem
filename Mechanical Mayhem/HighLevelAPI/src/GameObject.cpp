@@ -41,12 +41,12 @@ GameObject::GameObject(const std::string& name) : BetaObject(name), numComponent
 // Clone a game object from another game object.
 // Params:
 //	 other = A reference to the object being cloned.
-GameObject::GameObject(const GameObject& other) : BetaObject(other.GetName(), other.GetParent()), numComponents(other.numComponents), isDestroyed(false)
+GameObject::GameObject(const GameObject& other) : BetaObject(other.GetName(), other.GetOwner()), numComponents(other.numComponents), isDestroyed(false)
 {
 	for (size_t i = 0; i < numComponents; i++)
 	{
 		components[i] = other.components[i]->Clone();
-		components[i]->SetParent(this);
+		components[i]->SetOwner(this);
 	}
 }
 
@@ -112,7 +112,7 @@ void GameObject::AddComponent(Component* component)
 		return;
 
 	components[numComponents++] = component;
-	component->SetParent(this);
+	component->SetOwner(this);
 }
 
 // Retrieves the component with the given name if it exists.
@@ -146,7 +146,7 @@ bool GameObject::IsDestroyed() const
 // Get the space that contains this object.
 Space* GameObject::GetSpace() const
 {
-	return static_cast<Space*>(GetParent());
+	return static_cast<Space*>(GetOwner());
 }
 
 //------------------------------------------------------------------------------

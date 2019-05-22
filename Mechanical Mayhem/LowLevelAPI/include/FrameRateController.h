@@ -32,7 +32,7 @@ public:
 	// frame rate controller.
 	// Params:
 	//   maxRate = Maximum frames per second.
-	void Init(unsigned framerateCap = 200);
+	void Initialize(unsigned framerateCap = 200);
 
 	// End the current frame, updating the delta time and frame count. Frame 
 	// rate controller will wait until enough time has passed if an individual

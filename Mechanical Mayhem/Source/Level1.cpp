@@ -486,7 +486,7 @@ namespace Levels
 
 			// Text follows camera
 			static_cast<Transform*>(winText->GetComponent("Transform"))
-				->SetTranslation(Graphics::GetInstance().GetCurrentCamera().GetTranslation());
+				->SetTranslation(Graphics::GetInstance().GetDefaultCamera().GetTranslation());
 
 			// Restart on <SPACE>
 			if (input.CheckTriggered(' '))

@@ -55,7 +55,7 @@ GameObjectManager::~GameObjectManager()
 //	 dt = Change in time (in seconds) since the last game loop.
 void GameObjectManager::Update(float dt)
 {
-	Space* space = static_cast<Space*>(GetParent());
+	Space* space = static_cast<Space*>(GetOwner());
 	if (!space->IsPaused())
 	{
 		VariableUpdate(dt);
@@ -103,7 +103,7 @@ void GameObjectManager::AddObject(GameObject& gameObject)
 	}
 
 	gameObjectActiveList[numObjects++] = &gameObject;
-	gameObject.SetParent(GetParent());
+	gameObject.SetOwner(GetOwner());
 	gameObject.Initialize();
 }
 

@@ -93,9 +93,9 @@ namespace Levels
 		AddMapButton("Credits", Vector2D(175.0f, -250.0f), Levels::Map::Credits);
 		AddMapButton("Level Select", Vector2D(0.0f, -140.0f), Levels::Map::LevelSelect);
 
-		Camera& camera = Graphics::GetInstance().GetCurrentCamera();
+		Camera& camera = Graphics::GetInstance().GetDefaultCamera();
 		camera.SetTranslation(Vector2D());
-		camera.SetDistance(60.0f);
+		camera.SetSize(1000.0f);
 	}
 
 	// Update Level 1.

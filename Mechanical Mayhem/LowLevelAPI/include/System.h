@@ -38,21 +38,13 @@ public:
 	void Initialize(unsigned screenWidth = 800, unsigned screenHeight = 600, unsigned framerateCap = 200, 
 		bool showWindow = true, bool debugConsole = true);
 
-	// Update the System (Windows, Event Handlers).
-	// Params:
-	//	 dt = Change in time (in seconds) since the last game loop.
-	void Update(float dt);
-
 	// End the frame and draw
 	void Draw();
 
 	// Shutdown the System (Windows, Event Handlers).
 	void Shutdown();
 
-	// Returns the handle for the window used by the program.
-	GLFWwindow* GetWindowHandle() const;
-
-	// Sets the title of the window being used by Beta Framework.
+	// Set the title of the window being used by Beta Framework.
 	// Params: 
 	//   text = The string that the window title will be set to.
 	void SetWindowTitle(const std::string& text);
@@ -60,13 +52,21 @@ public:
 	// Does the window for this program still exist?
 	bool DoesWindowExist() const;
 
+	// Test whether the application is in fullscreen mode.
+	bool IsFullScreen() const;
+	// Set whether the window is fullscreen.
+	void SetFullScreen(bool fullscreen);
+
+	// Set the resolution of the window.
+	// Params:
+	//   width = The new width of the window.
+	//   height = The new height of the window.
+	void SetResolution(unsigned width, unsigned height);
+
 	// Retrieve the instance of the System singleton.
 	static System& GetInstance();
 
-	// Default callback function is friend
-	friend void KeyCallback(GLFWwindow* window, int key, int scancode, int action, int mods);
-
-	// GLFW callbacks are also friends
+	// GLFW callbacks
 	friend void WinCloseCallback(GLFWwindow* window);
 
 private:
@@ -124,11 +124,12 @@ private:
 	// Private Variables:
 	//------------------------------------------------------------------------------
 
-	// Other static data
-	bool	winExists;
-
 	// Window information
-	SystemInfo systemInfo;
+	bool		winExists;
+	SystemInfo	systemInfo;
 	GLFWwindow* glfwWindow;
+	bool fullscreen;
+	int windowPositionX;
+	int windowPositionY;
 };
 /*----------------------------------------------------------------------------*/

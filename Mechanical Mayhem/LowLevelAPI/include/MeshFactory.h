@@ -16,7 +16,6 @@
 //------------------------------------------------------------------------------
 
 #include "Vector2D.h"
-#include "Vector3D.h"
 #include "Color.h"
 #include "Mesh.h" // MDM_Triangles
 
@@ -105,7 +104,7 @@ private:
 	// Private Variables:
 	//------------------------------------------------------------------------------
 
-	std::vector<Vector3D> positions;
+	std::vector<Vector2D> positions;
 	std::vector<Color> colors;
 	std::vector<Vector2D> textureCoords;
 };

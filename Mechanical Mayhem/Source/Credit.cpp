@@ -85,9 +85,9 @@ namespace Levels
 
 		AddMapButton("Main Menu", Vector2D(0.0f, -250.0f), Levels::Map::MainMenu);
 
-		Camera& camera = Graphics::GetInstance().GetCurrentCamera();
+		Camera& camera = Graphics::GetInstance().GetDefaultCamera();
 		camera.SetTranslation(Vector2D());
-		camera.SetDistance(60.0f);
+		camera.SetFOV(60.0f);
 	}
 
 	// Update Credit.

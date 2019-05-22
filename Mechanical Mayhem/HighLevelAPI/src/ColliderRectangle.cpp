@@ -53,7 +53,7 @@ void ColliderRectangle::Draw()
 {
 	// Draw the rectangle using DebugDraw.
 	DebugDraw& debugDraw = DebugDraw::GetInstance();
-	debugDraw.AddRectangle(transform->GetTranslation(), extents, Graphics::GetInstance().GetCurrentCamera(), Colors::Green);
+	debugDraw.AddRectangle(transform->GetTranslation(), extents, Graphics::GetInstance().GetDefaultCamera(), Colors::Green);
 }
 
 // Get the rectangle collider's extents (half-width, half-height).

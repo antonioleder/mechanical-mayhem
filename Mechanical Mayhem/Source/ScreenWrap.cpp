@@ -69,7 +69,7 @@ namespace Behaviors
 		Vector2D translation = transform->GetTranslation();
 		Vector2D scale = transform->GetScale();
 		Vector2D velocity = physics->GetVelocity();
-		BoundingRectangle screenDimensions = Graphics::GetInstance().GetScreenWorldDimensions();
+		BoundingRectangle screenDimensions = Graphics::GetInstance().GetDefaultCamera().GetScreenWorldDimensions();
 
 		// Check if the object is moving off the right edge of the screen, and wrap around if so.
 		if (velocity.x > 0.0f && translation.x > screenDimensions.right + scale.x)

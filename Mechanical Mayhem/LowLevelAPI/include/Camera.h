@@ -15,10 +15,25 @@
 // Include Files:
 //------------------------------------------------------------------------------
 
-#include "Vector2D.h"
-#include "Matrix3D.h"
+#include "Shapes2D.h" // BoundingRectangle, Vector2D
 
 //------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// Forward Declarations:
+//------------------------------------------------------------------------------
+
+struct Matrix3D;
+
+//------------------------------------------------------------------------------
+// Public Constants:
+//------------------------------------------------------------------------------
+
+enum ProjectionMode
+{
+	PM_Orthographic,
+	PM_Perspective,
+};
 
 //------------------------------------------------------------------------------
 // Public Structures:
@@ -27,41 +42,58 @@
 class Camera
 {
 public:
+	//------------------------------------------------------------------------------
+	// Public Functions:
+	//------------------------------------------------------------------------------
+
 	Camera();
+	~Camera();
 
-	const Matrix3D& GetViewMatrix();
-	const Matrix3D& GetInverseViewMatrix();
+	// Set this camera as the active camera
+	void Use() const;
 
+	// Translation - use this to pan
 	const Vector2D& GetTranslation() const;
 	void SetTranslation(const Vector2D& translation);
 
-	float GetDistance() const;
-	void SetDistance(float value);
-
+	// FOV - use this to zoom in Perspective mode
 	float GetFOV() const;
-	float GetNearClip() const;
-	float GetFarClip() const;
+	void SetFOV(float angle);
 
-	float GetRotation() const;
-	void SetRotation(float rotation);
+	// Size - use this to zoom in Orthographic mode
+	float GetSize() const;
+	void SetSize(float size);
 
-	static float distanceOffset;
+	// Projection mode used by this camera.
+	ProjectionMode GetProjectionMode() const;
+	void SetProjectionMode(ProjectionMode mode);
+
+	// Sets camera properties to default values
+	// (Translation of [0, 0], FOV of 90 degrees, size of 600)
+	void Reset();
+
+	// Gets the size of the viewport in world coordinates
+	const BoundingRectangle GetScreenWorldDimensions() const;
+
+	// Gets the world position of the specified screen position
+	Vector2D ScreenToWorldPosition(const Vector2D& screenPosition) const;
 
 private:
-	// Helper functions
-	void CalculateViewMatrix();
+	//------------------------------------------------------------------------------
+	// Private Functions:
+	//------------------------------------------------------------------------------
 
-	// Member data
-	Vector2D translation;
-	bool isDirty;
-	Matrix3D viewMatrix;
-	Matrix3D inverseViewMatrix;
+	// Deleted to prevent issues with pimpl.
+	Camera(const Camera&) = delete;
+	Camera& operator=(const Camera&) = delete;
 
-	float distance;
-	float FOV;
-	float nearClip;
-	float farClip;
-	float rotation;
+	//------------------------------------------------------------------------------
+	// Private Variables:
+	//------------------------------------------------------------------------------
+
+	// Private implementation
+	class Implementation;
+	Implementation* pimpl;
 };
 
 //------------------------------------------------------------------------------

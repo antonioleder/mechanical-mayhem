@@ -71,8 +71,7 @@ namespace Behaviors
 		transform = static_cast<Transform*>(GetOwner()->GetComponent("Transform"));
 		physics = static_cast<Physics*>(GetOwner()->GetComponent("Physics"));
 
-		GameObject* owner = GetOwner();
-		Space* space = owner->GetSpace();
+		Space* space = GetOwner()->GetSpace();
 		GameObjectManager& objectManager = space->GetObjectManager();
 
 		// Store the required archetypes for ease of access.

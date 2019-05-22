@@ -15,13 +15,9 @@
 // Include Files:
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
+#include "Vector2D.h"
 
 //------------------------------------------------------------------------------
-// Forward Declarations:
-//------------------------------------------------------------------------------
-
-class Vector2D;
 
 //------------------------------------------------------------------------------
 // Public Structures:
@@ -30,8 +26,13 @@ class Vector2D;
 class Input
 {
 public:
+	//------------------------------------------------------------------------------
+	// Public Functions:
+	//------------------------------------------------------------------------------
+
 	// Initialize keyboard and cursor data to clean state
 	void Initialize();
+
 	// Update keyboard and cursor data
 	void Update();
 
@@ -49,6 +50,13 @@ public:
 
 	// Get the current location of the mouse in screen coordinates
 	Vector2D GetCursorPosition() const;
+	// Sets the current location of the cursor this frame.
+	void SetCursorPosition(const Vector2D& position);
+
+	// Get the amount that the mouse has scrolled this frame
+	float GetMouseScrollAmount() const;
+	// Set the scroll amount that occurred this frame.
+	void SetMouseScrollAmount(float amount);
 
 	// Set the number of frames to store past the current frame.
 	// Params:
@@ -59,6 +67,10 @@ public:
 	static Input& GetInstance();
 
 private:
+	//------------------------------------------------------------------------------
+	// Private Functions:
+	//------------------------------------------------------------------------------
+
 	// Constructor/destructor private to prevent accidental instantiation/destruction.
 	Input();
 	~Input();
@@ -71,12 +83,20 @@ private:
 	void UpdateKeyboard();
 	void UpdateMouse();
 
+	//------------------------------------------------------------------------------
+	// Private Variables:
+	//------------------------------------------------------------------------------
+
 	// Mouse information
+	Vector2D mousePosition;
 	long cursorPosX;
 	long cursorPosY;
 
 	long cursorDeltaX;
 	long cursorDeltaY;
+
+	float scrollAmountCurrent;
+	float scrollAmountPrevious;
 
 	// Keys data from current and previous frames.
 	static const unsigned inputKeyNum;

@@ -135,7 +135,7 @@ void SpriteText::Draw()
 		// Get the UV of the current character and set the current texture.
 		Vector2D uv;
 		spriteSource->GetUV(*iter - 32, uv);
-		Graphics::GetInstance().SetTexture(spriteSource->GetTexture(), uv);
+		spriteSource->GetTexture()->Use(uv);
 
 		// Set the translation & scale for the mesh.
 		Graphics::GetInstance().SetTransform(transform->GetTranslation() + pos + offset.x * right + offset.y * down, scale, rotation);

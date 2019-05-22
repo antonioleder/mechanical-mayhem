@@ -144,14 +144,14 @@ namespace Behaviors
 			targetTranslationSum += targetTranslations[i];
 		}
 
-		Camera& camera = Graphics::GetInstance().GetCurrentCamera();
+		Camera& camera = Graphics::GetInstance().GetDefaultCamera();
 
 		float mix = max(0.25f, min(1.75f, (highestDistance - 150.0f) / 2000.0f));
 		float distance = Interpolate(60.75f, 57.75f, mix);
 		
 		// Smoothly interpolate the camera to its new position and distance.
 		camera.SetTranslation(Interpolate(camera.GetTranslation(), targetTranslationSum / static_cast<float>(targetTranslations.size()), targetMix));
-		camera.SetDistance(Interpolate(camera.GetDistance(), distance, distanceMix));
+		camera.SetFOV(Interpolate(camera.GetFOV(), distance, distanceMix));
 	}
 
 	// Snaps the camera to the target.
@@ -192,13 +192,13 @@ namespace Behaviors
 			targetTranslationSum += targetTranslations[i];
 		}
 
-		Camera& camera = Graphics::GetInstance().GetCurrentCamera();
+		Camera& camera = Graphics::GetInstance().GetDefaultCamera();
 
-		float mix = max(0.0f, min(1.0f, (highestDistance - 150.0f) / 2000.0f));
-		float distance = Interpolate(59.5f, 56.5f, mix);
+		float mix = max(0.25f, min(1.75f, (highestDistance - 150.0f) / 2000.0f));
+		float distance = Interpolate(60.75f, 57.75f, mix);
 
 		camera.SetTranslation(targetTranslationSum / static_cast<float>(players.size()));
-		camera.SetDistance(distance);
+		camera.SetFOV(distance);
 	}
 
 	// Adds a player to the player list.

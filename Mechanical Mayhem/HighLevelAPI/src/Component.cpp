@@ -38,7 +38,7 @@ Component::Component(const std::string& name) : BetaObject(name)
 // Retrieve component's owner object (if any).
 GameObject* Component::GetOwner() const
 {
-	return static_cast<GameObject*>(GetParent());
+	return static_cast<GameObject*>(BetaObject::GetOwner());
 }
 
 //------------------------------------------------------------------------------

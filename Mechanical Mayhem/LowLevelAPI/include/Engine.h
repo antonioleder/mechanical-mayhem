@@ -59,10 +59,10 @@ public:
 		size_t numModules = modules.size();
 		for (size_t i = 0; i < numModules; ++i)
 		{
-			// If the type name contains the name we're searching for, return it
-			if (typeid(ModuleType) == typeid(*modules[i]) ||
-				dynamic_cast<ModuleType*>(modules[i]) != nullptr)
-				return dynamic_cast<ModuleType*>(modules[i]);
+			// If this is the type we're looking for, return it
+			ModuleType* module = dynamic_cast<ModuleType*>(modules[i]);
+			if (module != nullptr)
+				return module;
 		}
 
 		return nullptr;
@@ -76,6 +76,9 @@ public:
 	//   directory = The relative path to the master assets directory. Textures, 
 	//      objects, shaders, and sound files should be placed in subdirectories within this directory.
 	void SetFilePath(const std::string& directory = "Assets/");
+
+	// Set whether pressing the escape key will close the program.
+	void SetCloseOnEscape(bool closeOnEscape);
 
 	// Returns the single instance of the Engine class
 	static Engine& GetInstance();
@@ -116,6 +119,9 @@ private:
 
 	// Assets directory
 	std::string assetsPath;
+
+	// Should the program stop when escape is pressed?
+	bool closeOnEscape;
 };
 
 /*----------------------------------------------------------------------------*/

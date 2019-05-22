@@ -115,7 +115,7 @@ void Space::SetLevel(Level* level)
 	// If the next level exists, set its parent to this space (necessary for Level::GetParent to work properly).
 	if (nextLevel != nullptr)
 	{
-		nextLevel->SetParent(this);
+		nextLevel->SetOwner(this);
 	}
 }
 

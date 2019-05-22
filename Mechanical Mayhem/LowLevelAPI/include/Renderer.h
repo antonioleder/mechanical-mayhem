@@ -18,6 +18,13 @@
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+// Forward Declarations:
+//------------------------------------------------------------------------------
+
+class PostEffect;
+class ShaderProgram;
+
+//------------------------------------------------------------------------------
 // Public Structures:
 //------------------------------------------------------------------------------
 
@@ -25,35 +32,67 @@ class Renderer
 {
 public:
 	//------------------------------------------------------------------------------
-	// Public Structures:
+	// Public Functions:
 	//------------------------------------------------------------------------------
 
 	// Ctors/Dtors
-	Renderer(unsigned width, unsigned height, const std::string& shaderFileName);
-	virtual ~Renderer();
+	Renderer();
+	~Renderer();
 
 	// Methods
-	virtual void Init();
-	virtual void FrameStart() = 0;
-	virtual void FrameEnd(bool syncOperations = false) = 0;
+	void Init();
+	void FrameStart();
+	void FrameEnd();
 
-	unsigned GetShaderIndex() const;
-	void SetShaderIndex(unsigned index);
+	// Get the default shader (usually for the purposes of setting uniforms)
+	const ShaderProgram& GetDefaultShader() const;
 
-	unsigned GetWidth() const;
-	unsigned GetHeight() const;
+	// Sets the dimensions that the renderer will use to construct its framebuffer.
+	void SetDimensions(unsigned width, unsigned height);
 
-	virtual void SetDimensions(unsigned width, unsigned height);
+	// Adds a post-processing effect. Effects are applied sequentially,
+	// starting with the first that was added.
+	// Params:
+	//   effect =  The effect to add to the current list of effects.
+	void PushEffect(PostEffect& effect);
+
+	// Removes the most recently added effect.
+	void PopEffect();
+
+	// Removes a specific effect.
+	void RemoveEffect(const PostEffect& effect);
+
+	// Removes all effects that are currently active.
+	void ClearEffects();
 
 private:
+	//------------------------------------------------------------------------------
+	// Private Functions:
+	//------------------------------------------------------------------------------
+
+	void ApplyEffects();
+
 	//------------------------------------------------------------------------------
 	// Private Variables:
 	//------------------------------------------------------------------------------
 
-	unsigned shaderIndex; // Index of shader in ShaderManager.
+	// Shader indices
+	ShaderProgram* defaultShader;
+	ShaderProgram* bufferToScreenShader;
 
-	unsigned width; // Render width
-	unsigned height; // Render height
+	// Viewport dimensions
+	unsigned width;
+	unsigned height;
+
+	// Framebuffer Data
+	unsigned frameBuffer;
+	unsigned quadVertexBuffer;
+	unsigned quadVertexArray;
+	unsigned diffuseTexture0;
+	unsigned diffuseTexture1;
+
+	// Post-processing effects
+	std::vector<PostEffect*> effects;
 };
 
 //------------------------------------------------------------------------------

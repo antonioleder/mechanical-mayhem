@@ -12,12 +12,30 @@
 #pragma once
 
 //------------------------------------------------------------------------------
+// Include Libs:
+//------------------------------------------------------------------------------
+
+#pragma comment(lib, "gdiplus.lib")
+
+//------------------------------------------------------------------------------
 // Include Files:
 //------------------------------------------------------------------------------
 
 #include "Color.h"
+#include "Vector2D.h"
 
 //------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// Public Constants:
+//------------------------------------------------------------------------------
+
+enum TextureFilterMode
+{
+	TM_Nearest,
+	TM_Bilinear,
+	TM_Trilinear
+};
 
 //------------------------------------------------------------------------------
 // Public Structures:
@@ -32,10 +50,17 @@ public:
 
 	// Creates a 1x1 white texture
 	Texture();
+
 	// Loads a texture from an array
 	Texture(const std::vector<Color>& colors, unsigned width, unsigned height);
+
 	// Destroys texture data via OpenGL
 	~Texture();
+
+	// Set this as the active texture
+	// Params:
+	//   uvOffset = The texture coordinate offset to use when rendering.
+	void Use(const Vector2D& uvOffset = Vector2D()) const;
 
 	// Returns the filename of the texture.
 	const std::string& GetName() const;
@@ -43,30 +68,34 @@ public:
 	unsigned GetBufferID() const;
 
 	// Loads a texture from a file
-	static Texture* CreateTextureFromFile(const std::string& filename);
+	static Texture* CreateTextureFromFile(const std::string& filename, 
+		TextureFilterMode mode = TM_Nearest);
 
-	// Gets the current relative path for textures
-	static const std::string& GetFilePath();
+	// The current relative path for loading textures
+	static std::string texturePath;
 
 private:
 	//------------------------------------------------------------------------------
-	// Private Functions:
+	// Private Functions
 	//------------------------------------------------------------------------------
-
-	// Helper constructor for TextureFromFile
-	Texture(const std::string& filename, Gdiplus::Bitmap& bitmap, Gdiplus::Rect& rect);
+	
+	// Deleted to prevent issues with pimpl.
+	Texture(const Texture& rhs) = delete;
+	Texture& operator=(const Texture& rhs) = delete;
+	
+	// Creates a texture with the given buffer ID and filename
+	Texture(unsigned buffer, const std::string& name);
 
 	// Loads a texture from an array
-	void CreateTextureFromArray(const std::vector<Color>& colors, unsigned width, unsigned height);
+	void CreateTextureFromArray(const std::vector<Color>& colors, unsigned width, 
+		unsigned height, TextureFilterMode mode = TM_Nearest);
 
 	//------------------------------------------------------------------------------
-	// Private Variables:
+	// Private Variables
 	//------------------------------------------------------------------------------
 
 	unsigned bufferID;
 	std::string filename;
-
-	static std::string texturePath;
 };
 
 //------------------------------------------------------------------------------

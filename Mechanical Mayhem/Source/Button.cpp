@@ -76,7 +76,7 @@ namespace Behaviors
 		UNREFERENCED_PARAMETER(dt);
 
 		Input& input = Input::GetInstance();
-		Vector2D mousePos =	Graphics::GetInstance().ScreenToWorldPosition(input.GetCursorPosition());
+		Vector2D mousePos =	Graphics::GetInstance().GetDefaultCamera().ScreenToWorldPosition(input.GetCursorPosition());
 
 		if (PointRectangleIntersection(mousePos, boundingRact))
 		{

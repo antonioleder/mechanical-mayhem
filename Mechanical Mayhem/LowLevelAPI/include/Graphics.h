@@ -12,12 +12,17 @@
 #pragma once
 
 //------------------------------------------------------------------------------
+// Include Libraries:
+//------------------------------------------------------------------------------
+
+#pragma comment(lib, "opengl32.lib")
+
+//------------------------------------------------------------------------------
 // Include Files:
 //------------------------------------------------------------------------------
 
 #include "Matrix2D.h"
 #include "Color.h"
-#include "Matrix3D.h"
 #include "Camera.h"
 #include "Texture.h"
 #include "Shapes2D.h"
@@ -30,6 +35,8 @@
 
 class Matrix2D;
 class Renderer;
+class PostEffect;
+class ShaderProgram;
 
 //------------------------------------------------------------------------------
 // Public Consts:
@@ -47,21 +54,11 @@ enum BlendMode
 	BM_Num
 };
 
-enum TextureFilterMode
-{
-	TM_NearestNeighbor = 0,
-	TM_Bilinear,
-	TM_Trilinear
-};
+//------------------------------------------------------------------------------
+// Public Functions:
+//------------------------------------------------------------------------------
 
-enum RenderMode
-{
-	RM_None = -1,
-	RM_Forward,
-
-	// Keep this one last
-	RM_Num,
-};
+void CheckForOpenGLErrors();
 
 //------------------------------------------------------------------------------
 // Public Structures:
@@ -74,67 +71,82 @@ public:
 	// Public Functions:
 	//------------------------------------------------------------------------------
 
-	void Init(unsigned width, unsigned height);
+	//////////////////////
+	// ENGINE FUNCTIONS //
+	//////////////////////
+
+	void Initialize(unsigned width, unsigned height);
 	void FrameStart();
-	void Draw(unsigned arrayObjectID, unsigned drawMode, unsigned numVertices);
 	void FrameEnd();
 	void Shutdown();
 
-	void SetRenderMode(RenderMode mode);
+	/////////////////////
+	// COMMON SETTINGS //
+	/////////////////////
 
+	// Otherwise uncolored pixels will have this color
 	const Color& GetBackgroundColor() const;
 	void SetBackgroundColor(const Color& color = Colors::Black);
+
+	// Color to blend with whole screen
 	const Color& GetScreenTintColor() const;
 	void SetScreenTintColor(const Color& color = Colors::White);
+
+	// Color to blend with the current sprite's color
 	void SetSpriteBlendColor(const Color& color = Colors::White);
 
+	// Returns a 1x1 white texture.
+	const Texture& GetDefaultTexture() const;
+
+	// Transform
+	void SetTransform(const Matrix2D& matrix, float depth = 0.0f);
+	void SetTransform(const Vector2D& translation, const Vector2D& scale = Vector2D(1.0f, 1.0f), float rotation = 0.0f, float depth = 0.0f);
+
+	// Camera
+	Camera& GetDefaultCamera() const;
+
+	// Returns the default shader (usually for the purpose of setting uniforms)
+	const ShaderProgram& GetDefaultShader() const;
+
+	///////////////////////
+	// ADVANCED SETTINGS //
+	///////////////////////
+
+	// Sets how sprites are blended
 	void SetBlendMode(BlendMode mode, bool forceSet = false);
-	void SetTexture(Texture* texture, const Vector2D& uv = Vector2D());
-	void SetTransform(const Matrix2D& matrix);
-	void SetTransform(const Vector2D& translation, const Vector2D& scale = Vector2D(1.0f, 1.0f), float rotation = 0.0f);
 
-	Camera& GetDefaultCamera();
-	Camera& GetCurrentCamera();
-	void SetCurrentCamera(Camera& camera); 
+	// Adds a post-processing effect. Effects are applied sequentially,
+	// starting with the first that was added.
+	// Params:
+	//   effect =  The effect to add to the current list of effects.
+	void PushEffect(PostEffect& effect);
+	// Removes the most recently added effect.
+	void PopEffect();
+	// Removes a specific effect.
+	void RemoveEffect(const PostEffect& effect);
+	// Removes all effects that are currently active.
+	void ClearEffects();
 
-	const BoundingRectangle GetScreenWorldDimensions() const;
-
-	Vector2D ScreenToWorldPosition(const Vector2D& screenPosition);
-
-	// SETTINGS
 	// Test whether vertical sync is currently on
 	bool GetUseVsync() const;
 	// Turn vertical sync on or off - will cause performance issues on some machines
 	void SetUseVSync(bool useVsync);
 
-	// Test whether the application is in fullscreen mode.
-	bool IsFullScreen() const;
-	// Set whether the window is fullscreen.
-	void SetFullScreen(bool fullscreen);
-
-	// Sets the resolution of the window.
+	// Get the dimensions of the viewport
+	Vector2D GetViewport() const;
+	// Set the dimensions of the viewport.
 	// Params:
-	//   width = The new width of the window.
-	//   height = The new height of the window.
-	void SetResolution(unsigned width, unsigned height);
+	//   width = The new width of the viewport.
+	//   height = The new height of the viewport.
+	void SetViewport(int width, int height);
+
+	// Has graphics been initialized?
+	bool IsInitialized() const;
 
 	// Gets the single instance of the Graphics class.
 	static Graphics& GetInstance();
 
 private:
-	//------------------------------------------------------------------------------
-	// Private Structures:
-	//------------------------------------------------------------------------------
-
-	enum OriginMode
-	{
-		OM_Normal = 0,
-		OM_Top_Left,
-
-		// Keep this one last
-		OM_NUM,
-	};
-
 	//------------------------------------------------------------------------------
 	// Private Functions:
 	//------------------------------------------------------------------------------
@@ -147,53 +159,12 @@ private:
 	Graphics(const Graphics& other) = delete;
 	Graphics& operator=(const Graphics& other) = delete;
 
-	// Other private functions
-	void SetViewport();
-	void SetOriginMode(OriginMode mode, bool forceSet = false);
-	void CreateContext();
-	void InitRenderer();
-
 	//------------------------------------------------------------------------------
 	// Private Variables:
 	//------------------------------------------------------------------------------
 
-	// Colors and blending
-	Color backgroundColor;
-	Color tintColor;
-	Color blendColor;
-	BlendMode blendMode;
-
-	// Textures
-	Texture* defaultTexture;
-	Texture* currentTexture;
-	Vector2D textureCoords;
-	float alpha;
-	ULONG_PTR gdiplusToken; // GDI+ for loading textures
-
-	// Viewport
-	int viewportWidth;
-	int viewportHeight;
-	int windowPositionX;
-	int windowPositionY;
-
-	// Transformations
-	OriginMode originMode;
-	Matrix3D worldMatrix;
-	Matrix3D viewMatrix;
-	Matrix3D projectionMatrix;
-
-	// Cameras
-	Camera defaultCamera;
-	Camera* currentCamera;
-
-	// Renderer
-	Renderer* renderers[RM_Num] = { nullptr };
-	RenderMode renderModeCurrent;
-	RenderMode renderModeNext;
-
-	// Settings
-	bool useVsync;
-	bool fullscreen;
+	class Implementation;
+	Implementation* pimpl;
 };
 
 //------------------------------------------------------------------------------

@@ -89,11 +89,11 @@ void Sprite::Draw(const Vector2D& offset)
 	{
 		Vector2D uv;
 		spriteSource->GetUV(frameIndex, uv);
-		Graphics::GetInstance().SetTexture(spriteSource->GetTexture(), uv);
+		spriteSource->GetTexture()->Use(uv);
 	}
 	else
 	{
-		Graphics::GetInstance().SetTexture(nullptr);
+		Graphics::GetInstance().GetDefaultTexture().Use();
 	}
 
 	CS230::Matrix2D offsetTransform = CS230::Matrix2D::TranslationMatrix(offset.x, offset.y);

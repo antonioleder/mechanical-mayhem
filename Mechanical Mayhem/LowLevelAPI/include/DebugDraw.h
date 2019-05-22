@@ -48,35 +48,40 @@ public:
 	void Draw();
 
 	// Adds a line to the list of lines to be drawn. Note that actual drawing does not occur 
-	// until EndLineStrip is called.
+	// unless EndLineList is called.
 	// Params:
 	//   start = The start point of the line segment.
 	//   end   = The end point of the line segment.
 	//   color = The color of the line. Defaults to white.
-	void AddLineToStrip(const Vector2D& start, const Vector2D& end, const Color& color = Colors::White);
+	void AddLineToList(const Vector2D& start, const Vector2D& end, const Color& color = Colors::White);
 	
-	// Ends the line strip formed using previous calls to AddLineToStrip.
+	// Ends the line strip formed using previous calls to AddLineToList.
 	// Params:
 	//   camera = The camera used to determine where debug objects will be drawn.
-	void EndLineStrip(Camera& camera);
+	//   zDepth = Depth of the object (when using a perspective camera).
+	void EndLineList(Camera& camera, float zDepth = 0.0f);
 
 	// Adds a line to the list of lines to be drawn. Note that actual drawing does not occur 
-	// until EndLineStrip is called.
+	// until EndLineList is called.
 	// Params:
 	//   center = The center point of the circle.
 	//   radius = The radius of the circle.
 	//   camera = The camera used to determine where debug objects will be drawn.
 	//   color  = The color of the circle. Defaults to white.
-	void AddCircle(const Vector2D& center, float radius, Camera& camera, const Color& color = Colors::White);
+	//   zDepth = Depth of the object (when using a perspective camera).
+	void AddCircle(const Vector2D& center, float radius, Camera& camera, 
+		const Color& color = Colors::White, float zDepth = 0.0f);
 	
 	// Adds a line to the list of lines to be drawn. Note that actual drawing does not occur 
-	// until EndLineStrip is called.
+	// until EndLineList is called.
 	// Params:
 	//   center  = The center point of the rectangle.
 	//   extents = The extents (half-width, half-height) of the rectangle.
 	//   camera  = The camera used to determine where debug objects will be drawn.
 	//   color   = The color of the circle. Defaults to white.
-	void AddRectangle(const Vector2D& center, const Vector2D& extents, Camera& camera, const Color& color = Colors::White);
+	//   zDepth = Depth of the object (when using a perspective camera).
+	void AddRectangle(const Vector2D& center, const Vector2D& extents, Camera& camera, 
+		const Color& color = Colors::White, float zDepth = 0.0f);
 
 	// Enables or disables debug drawing. 
 	// Note that debug drawing is only possible in debug mode.
@@ -106,24 +111,30 @@ private:
 
 	struct DebugCircle
 	{
-		DebugCircle(const Vector2D& center, float radius, const Color& color, Camera& camera);
+		DebugCircle(const Vector2D& center, float radius, const Color& color, 
+			Camera& camera, float zDepth);
 
-		Circle shape; // Shape info
+		Circle shape;	// Shape info
 
-		Color color; // Color for drawing
+		Color color;	// Color for drawing
 
-		Camera& camera; // Camera to use for drawing
+		Camera& camera;	// Camera to use for drawing
+
+		float zDepth;	// Depth of object (when using perspective camera)
 	};
 
 	struct DebugRectangle
 	{
-		DebugRectangle(const Vector2D& center, const Vector2D& extents, const Color& color, Camera& camera);
+		DebugRectangle(const Vector2D& center, const Vector2D& extents, const Color& color, 
+			Camera& camera, float zDepth);
 
 		BoundingRectangle shape; // Shape info
 
-		Color color; // Color for drawing
+		Color color;	// Color for drawing
 
 		Camera& camera; // Camera to use for drawing
+
+		float zDepth;	// Depth of object (when using perspective camera)
 	};
 
 	struct DebugLineSegment
@@ -133,16 +144,17 @@ private:
 		Vector2D start; // First point of line segment
 		Vector2D end;   // Second point of line segment
 
-		Color color; // Color of the segment
+		Color color;	// Color of the segment
 	};
 
-	struct DebugLineStrip
+	struct DebugLineList
 	{
-		DebugLineStrip(const std::vector<DebugLineSegment>& segments, Camera& camera);
-		~DebugLineStrip();
+		DebugLineList(const std::vector<DebugLineSegment>& segments, Camera& camera, float zDepth);
 
 		Mesh* mesh;     // The mesh used when drawing this line strip
 		Camera& camera; // Camera to use for drawing
+
+		float zDepth;	// Depth of object (when using perspective camera)
 	};
 
 	//------------------------------------------------------------------------------
@@ -152,10 +164,10 @@ private:
 	// Arrays of debug draw objects
 	std::vector<DebugRectangle> rectangles;
 	std::vector<DebugCircle> circles;
-	std::vector<DebugLineStrip*> lineStrips;
+	std::vector<DebugLineList> lineLists;
 
 	// Used when constructing line strips.
-	std::vector<DebugLineSegment> lines; 
+	std::vector<DebugLineSegment> tempLines; 
 
 	// Meshes to use for rectangles and circles
 	Mesh* circleMesh;

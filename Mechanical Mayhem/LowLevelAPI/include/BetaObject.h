@@ -12,11 +12,18 @@
 #pragma once
 
 //------------------------------------------------------------------------------
+// Include Libs:
+//------------------------------------------------------------------------------
+
+#pragma comment(lib, "rpcrt4.lib")
+
+//------------------------------------------------------------------------------
 // Include Files:
 //------------------------------------------------------------------------------
 
 #include <unordered_map> // unordered_map
 #include <type_traits>   // alignment_of
+#include <rpc.h>
 
 //------------------------------------------------------------------------------
 
@@ -39,8 +46,8 @@ public:
 	// Constructor
 	// Params:
 	//   name = The name of this object.
-	//   parent = The parent object to this beta object (defaults to no parent).
-	BetaObject(const std::string& name, BetaObject* parent = nullptr);
+	//   owner = The owner object to this beta object (defaults to no owner).
+	BetaObject(const std::string& name, BetaObject* owner = nullptr);
 
 	// Copy constructor
 	BetaObject(const BetaObject& other);
@@ -97,10 +104,10 @@ public:
 	const GUID GetID() const;
 
 	// Retrieve the object that contains this object.
-	BetaObject* GetParent() const;
+	BetaObject* GetOwner() const;
 
 	// Set the object that contains this object.
-	void SetParent(BetaObject* object);
+	void SetOwner(BetaObject* object);
 
 	// Returns a pointer to an object with the given GUID, if it exists.
 	// Returns nullptr if the object does not exist (was destroyed).
@@ -125,7 +132,7 @@ private:
 	GUID id;
 
 	// Object that contains this object.
-	BetaObject* parent;
+	BetaObject* owner;
 
 	// All systems, levels, and game objects that have been created
 	static std::unordered_map<GUID, BetaObject*> masterObjectList;

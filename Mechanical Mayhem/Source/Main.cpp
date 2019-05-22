@@ -19,8 +19,9 @@
 #include <Engine.h>
 
 // Engine modules
-#include "Space.h"
-#include "SoundManager.h"
+#include <Space.h>
+#include <SoundManager.h>
+#include <FullscreenManager.h>
 
 // Initial game state
 #include "MainMenu.h"
@@ -43,19 +44,22 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prevInstance, _In
 	UNREFERENCED_PARAMETER(command_line);
 	UNREFERENCED_PARAMETER(show);
 	UNREFERENCED_PARAMETER(instance);
-
+	 
 	// Create a new space called "GameSpace"
 	Space* space = new Space("GameSpace");
 
 	// Set initial level to the second level.
 	space->SetLevel(new Levels::MainMenu());
 
+	Engine& engine = Engine::GetInstance();
+
 	// Add additional modules to engine
-	Engine::GetInstance().AddModule(space);
-	Engine::GetInstance().AddModule(new SoundManager());
+	engine.AddModule(space);
+	engine.AddModule(new SoundManager());
+	//engine.AddModule(new FullscreenManager());
 
 	// Game engine goes!
-	Engine::GetInstance().Start(800, 600, 200);
+	engine.Start(800, 600, 200);
 
 	return 0;
 }

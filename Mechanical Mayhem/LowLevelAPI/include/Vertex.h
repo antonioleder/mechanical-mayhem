@@ -16,7 +16,6 @@
 //------------------------------------------------------------------------------
 
 #include "Vector2D.h"
-#include "Vector3D.h"
 #include "Color.h"
 
 //------------------------------------------------------------------------------
@@ -34,13 +33,13 @@ struct Vertex
 	Vertex();
 	Vertex(const Vector2D& position, const Color& color); // Colored vertex 2D
 	Vertex(const Vector2D& position, const Vector2D& textureCoords); // Textured vertex 2D
-	Vertex(const Vector3D& position, const Color& color, const Vector2D& textureCoords); // Complete vertex 3D
+	Vertex(const Vector2D& position, const Color& color, const Vector2D& textureCoords); // Complete vertex 2D
 
 	//------------------------------------------------------------------------------
 	// Public Variables:
 	//------------------------------------------------------------------------------
 
-	Vector3D position;
+	Vector2D position;
 	Color color;
 	Vector2D textureCoords;
 };

@@ -56,7 +56,7 @@ void ColliderPoint::Draw()
 {
 	// Draw the point using DebugDraw.
 	DebugDraw& debugDraw = DebugDraw::GetInstance();
-	debugDraw.AddCircle(transform->GetTranslation(), 10.0f, Graphics::GetInstance().GetCurrentCamera(), Colors::Green);
+	debugDraw.AddCircle(transform->GetTranslation(), 10.0f, Graphics::GetInstance().GetDefaultCamera(), Colors::Green);
 }
 
 // Check for collision between a point and another arbitrary collider.

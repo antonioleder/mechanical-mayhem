@@ -57,7 +57,7 @@ void ColliderCircle::Draw()
 {
 	// Draw the circle using DebugDraw.
 	DebugDraw& debugDraw = DebugDraw::GetInstance();
-	debugDraw.AddCircle(transform->GetTranslation(), radius, Graphics::GetInstance().GetCurrentCamera(), Colors::Green);
+	debugDraw.AddCircle(transform->GetTranslation(), radius, Graphics::GetInstance().GetDefaultCamera(), Colors::Green);
 }
 
 // Get the circle collider's radius.
