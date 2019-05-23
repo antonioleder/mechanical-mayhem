@@ -17,6 +17,7 @@
 
 #include <BetaObject.h>
 #include "GameObject.h"
+#include <vector>
 
 //------------------------------------------------------------------------------
 
@@ -26,6 +27,8 @@
 
 class Space;
 class Vector2D;
+class Quadtree;
+struct BoundingRectangle;
 
 //------------------------------------------------------------------------------
 // Public Structures:
@@ -67,6 +70,11 @@ public:
 	//	 gameObject = Reference to the game object to be added to the list.
 	void AddArchetype(GameObject& gameObject);
 
+	// Dispatch an event to one or more objects in this space.
+	// Params:
+	//   event = The event to be dispatched.
+	void DispatchEvent(Event* event);
+
 	// Returns a pointer to the first active game object matching the specified name.
 	// Params:
 	//	 objectName = The name of the object to be returned, if found.
@@ -75,6 +83,26 @@ public:
 	//	   then return the pointer to the named game object,
 	//	   else return nullptr.
 	GameObject* GetObjectByName(const std::string& objectName) const;
+
+	// Fills out a vector of game object pointers with all game objects matching the specified name. Does NOT clear the vector beforehand.
+	// Params:
+	//	 objectName = The name of the object to be returned, if found.
+	//   objectList = A reference to a vector of game object pointers which will be filled with the found game objects.
+	// Returns:
+	//   The number of game objects found.
+	size_t GetAllObjectsByName(const std::string& objectName, std::vector<GameObject*>& objectList) const;
+
+	// Retrieve all objects from the tree that could collide with a given object.
+	// Params:
+	//   object  = The object for which we want to retrieve nearby objects.
+	//   results = The list that stores the nearby objects.
+	void RetrieveNearbyObjects(GameObject* object, std::vector<GameObject*>& results);
+
+	// Retrieve all objects from the tree that could collide with a given bounding rectangle.
+	// Params:
+	//   object  = The bounding rectangle for which we want to retrieve nearby objects.
+	//   results = The list that stores the nearby objects.
+	void RetrieveNearbyObjects(const BoundingRectangle& object, std::vector<GameObject*>& results);
 
 	// Returns a pointer to the first game object archetype matching the specified name.
 	// Params:
@@ -101,6 +129,11 @@ private:
 	// Update object physics using fixed timestep.
 	void FixedUpdate(float dt) override;
 
+	// Update event timers, dispatch events that are ready.
+	// Params:
+	//   dt = The change in time since the previous update.
+	void ProcessEvents(float dt);
+
 	// Destroy any objects marked for destruction.
 	void DestroyObjects();
 
@@ -109,24 +142,34 @@ private:
 
 	// Check for collisions between each pair of objects
 	void CheckCollisions();
-	
+
+	// Recalculates all objects' positions in the quadtree.
+	void PopulateQuadtree();
+
+	// Check for collisions nearby all objects using a quadtree.
+	void CheckCollisionsQuadtree();
+
 	//------------------------------------------------------------------------------
 	// Private Variables:
 	//------------------------------------------------------------------------------
-	
+
 	// Objects
-	static const size_t maxObjects = 4096;
-	GameObject* gameObjectActiveList[maxObjects];
-	size_t numObjects;
-	
+	std::vector<GameObject*> gameObjectActiveList;
+
 	// Archetypes
-	static const size_t maxArchetypes = 64;
-	GameObject* gameObjectArchetypes[maxArchetypes];
-	size_t numArchetypes;
-	
+	std::vector<GameObject*> gameObjectArchetypes;
+
+	// Delayed events
+	std::vector<Event*> events;
+
 	// Time
 	const float fixedUpdateDt;
+	const float maxFixedUpdateTime;
 	float timeAccumulator;
+
+	// Quadtrees for collisions
+	bool useQuadtree;
+	Quadtree* quadtree;
 };
 
 //------------------------------------------------------------------------------

@@ -44,6 +44,16 @@ public:
 	//   A pointer to a collider.
 	Component* Clone() const;
 
+	// Loads object data from a file.
+	// Params:
+	//   parser = The parser for the file.
+	virtual void Deserialize(Parser& parser) override;
+
+	// Saves object data to a file.
+	// Params:
+	//   parser = The parser for the file.
+	virtual void Serialize(Parser& parser) const override;
+
 	// Debug drawing for colliders.
 	void Draw() override;
 

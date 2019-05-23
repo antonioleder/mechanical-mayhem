@@ -146,12 +146,17 @@ namespace Behaviors
 
 		Camera& camera = Graphics::GetInstance().GetDefaultCamera();
 
-		float mix = max(0.25f, min(1.75f, (highestDistance - 150.0f) / 2000.0f));
-		float distance = Interpolate(60.75f, 57.75f, mix);
+		//float mix = max(0.25f, min(1.75f, (highestDistance - 150.0f) / 2000.0f));
+		//float distance = Interpolate(60.75f, 57.75f, mix);
 		
 		// Smoothly interpolate the camera to its new position and distance.
 		camera.SetTranslation(Interpolate(camera.GetTranslation(), targetTranslationSum / static_cast<float>(targetTranslations.size()), targetMix));
-		camera.SetFOV(Interpolate(camera.GetFOV(), distance, distanceMix));
+		//camera.SetFOV(Interpolate(camera.GetFOV(), distance, distanceMix));
+		camera.SetSize(Interpolate(camera.GetSize(), max(11.0f, highestDistance + 8.0f), distanceMix));
+		//std::cout << "@ghidra" << std::endl;
+		//std::cout << highestDistance << std::endl;
+		//std::cout << camera.GetSize() << std::endl;
+		//camera.SetSize(10.0f);
 	}
 
 	// Snaps the camera to the target.
@@ -194,11 +199,12 @@ namespace Behaviors
 
 		Camera& camera = Graphics::GetInstance().GetDefaultCamera();
 
-		float mix = max(0.25f, min(1.75f, (highestDistance - 150.0f) / 2000.0f));
-		float distance = Interpolate(60.75f, 57.75f, mix);
+		//float mix = max(0.25f, min(1.75f, (highestDistance - 150.0f) / 2000.0f));
+		//float distance = Interpolate(60.75f, 57.75f, mix);
 
 		camera.SetTranslation(targetTranslationSum / static_cast<float>(players.size()));
-		camera.SetFOV(distance);
+		//camera.SetFOV(distance);
+		camera.SetSize(max(11.0f, highestDistance + 8.0f));
 	}
 
 	// Adds a player to the player list.

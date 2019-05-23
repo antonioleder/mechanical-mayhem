@@ -17,6 +17,9 @@
 
 #include "Component.h"
 
+#include <unordered_set>
+#include "Event.h"
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -37,6 +40,8 @@ typedef enum ColliderType
 	ColliderTypeCircle,
 	ColliderTypeRectangle,
 	ColliderTypeTilemap,
+	ColliderTypeLines,
+	ColliderTypeConvex,
 } ColliderType;
 
 //------------------------------------------------------------------------------
@@ -53,18 +58,19 @@ struct MapCollision
 	bool right;
 };
 
-// Function pointer for collision event handlers.
-// Params:
-//   callingObject = The object whose handler is being called.
-//   otherObject = The other object that the object collided with.
-typedef void(*CollisionEventHandler)(GameObject& callingObject, GameObject& otherObject);
+struct MapCollisionEvent : public Event
+{
+	// Constructor
+	// Params:
+	//  name = Name of the event; allows for sub-types.
+	//  collision = The map collision info.
+	//  delay = How long to wait before sending this event.
+	//  sender = GUID of the sending object.
+	//  receiver = GUID of the receiving object (if none, all objects).
+	MapCollisionEvent(const std::string& name, MapCollision collision, float delay = 0.0f, GUID sender = GUID(), GUID receiver = GUID());
 
-// Function pointer for tilemap collision event handlers.
-// Params:
-//   object = The object that collided with the map.
-//   sides = Collision state for each side of the object.
-typedef void(*MapCollisionEventHandler)(GameObject& object,
-	const MapCollision& sides);
+	MapCollision collision;
+};
 
 // Collider class - Detects collisions between objects
 class Collider : public Component
@@ -82,8 +88,28 @@ public:
 	// Set component pointers.
 	void Initialize() override;
 
+	// Loads object data from a file.
+	// Params:
+	//   parser = The parser for the file.
+	virtual void Deserialize(Parser& parser) override;
+
+	// Saves object data to a file.
+	// Params:
+	//   parser = The parser for the file.
+	virtual void Serialize(Parser& parser) const override;
+
+	// Updates components using a fixed timestep (usually just for physics).
+	// Params:
+	//	 dt = A fixed change in time, usually 1/60th of a second.
+	void FixedUpdate(float dt) override;
+
 	// Draw collision shape
 	virtual void Draw() = 0;
+
+	// Check if two objects are able to collide (no conflicting collision groups/masks).
+	// Params:
+	//	 other = Reference to the second collider component.
+	bool CanCollideWith(const Collider& other);
 
 	// Check if two objects are colliding and send collision events.
 	// Params:
@@ -98,41 +124,56 @@ public:
 	// Get the type of this component.
 	ColliderType GetType() const;
 
-	// Sets the collision handler function for the collider.
-	// Params:
-	//   handler = A pointer to the collision handler function.
-	void SetCollisionHandler(CollisionEventHandler handler);
+	// Gets whether this collider was processed.
+	bool WasProcessed() const;
 
-	// Sets the map collision handler function for the collider.
-	// Params:
-	//   handler = A pointer to the collision handler function.
-	void SetMapCollisionHandler(MapCollisionEventHandler mapHandler);
-	
-	// Get the map collision handler function pointer.
-	MapCollisionEventHandler GetMapCollisionHandler() const;
+	// Marks this collider as processed.
+	void SetProcessed();
 
-protected:
+	// Gets the collision group.
+	uint64_t GetGroup() const;
+
+	// Sets the collision group.
+	void SetGroup(uint64_t group);
+
+	// Gets the collision mask. (bitmask of which groups to NOT collide with)
+	uint64_t GetMask() const;
+
+	// Sets the collision mask. (bitmask of which groups to NOT collide with)
+	void SetMask(uint64_t mask);
+
 	//------------------------------------------------------------------------------
-	// Protected Variables:
+	// Public Variables:
 	//------------------------------------------------------------------------------
 
 	// Component pointers
 	Transform* transform;
 	Physics* physics;
 
+	static const uint64_t DEFAULT_MASK;
+
 private:
 	//------------------------------------------------------------------------------
 	// Private Variables:
 	//------------------------------------------------------------------------------
 
+	// The collision group of this collider.
+	uint64_t group;
+
+	// The collision mask of this collider.
+	uint64_t mask;
+
 	// The type of collider used by this component.
 	ColliderType type;
 
-	// Function pointer for collision handler
-	CollisionEventHandler handler;
+	// Whether this collider has had its collisions processed yet.
+	bool processed;
 	
-	// Function pointer for tilemap collision handling
-	MapCollisionEventHandler mapHandler;
+	// The colliders we were colliding with the previous fixed update.
+	std::unordered_set<GUID> collidersPrevious;
+
+	// The colliders we are colliding with the current fixed update.
+	std::unordered_set<GUID> collidersCurrent;
 };
 
 //------------------------------------------------------------------------------

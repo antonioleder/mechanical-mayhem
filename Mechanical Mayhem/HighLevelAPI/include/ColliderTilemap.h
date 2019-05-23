@@ -18,6 +18,8 @@
 #include "Collider.h"
 #include "Vector2D.h"
 
+#include <unordered_map>
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -58,6 +60,11 @@ public:
 	// Returns:
 	//   A pointer to a collider.
 	Component* Clone() const override;
+
+	// Updates components using a fixed timestep (usually just for physics).
+	// Params:
+	//	 dt = A fixed change in time, usually 1/60th of a second.
+	void FixedUpdate(float dt) override;
 
 	// Debug drawing for colliders.
 	void Draw() override;
@@ -133,6 +140,12 @@ private:
 
 	// Whether the tilemap should resolve collisions
 	bool active;
+
+	// The colliders we were colliding with the previous fixed update.
+	std::unordered_map<GUID, MapCollision> mapCollidersPrevious;
+
+	// The colliders we are colliding with the current fixed update.
+	mutable std::unordered_map<GUID, MapCollision> mapCollidersCurrent;
 };
 
 //------------------------------------------------------------------------------

@@ -1,9 +1,9 @@
 //------------------------------------------------------------------------------
 //
 // File Name:	Collider.cpp
-// Author(s):	David Cohen (david.cohen)
+// Author(s):	Jeremy Kings (j.kings)
 // Project:		BetaFramework
-// Course:		WANIC VGP2
+// Course:		WANIC VGP2 2018-2019
 //
 // Copyright © 2018 DigiPen (USA) Corporation.
 //
@@ -14,21 +14,26 @@
 //------------------------------------------------------------------------------
 
 #include "stdafx.h"
-
 #include "Collider.h"
 
 // Systems
-#include "GameObject.h"
+#include "Space.h"
+#include "GameObjectManager.h"
+#include "Event.h"
+#include "Parser.h"
 
 // Components
-#include "Transform.h"
-#include "Physics.h"
+#include "GameObject.h" // GetComponent
+#include "Transform.h" // Transform
+#include "Physics.h"   // Physics
 
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
 // Public Structures:
 //------------------------------------------------------------------------------
+
+const uint64_t Collider::DEFAULT_MASK = 0x0000000000000000;
 
 // MapCollision constructor.
 // Params:
@@ -40,7 +45,18 @@ MapCollision::MapCollision(bool bottom, bool top, bool left, bool right) : botto
 {
 }
 
-// Collider class - Detects collisions between objects
+// Constructor
+// Params:
+//  type = Type of the event.
+//  name = Name of the event; allows for sub-types.
+//  collision = The map collision info.
+//  delay = How long to wait before sending this event.
+//  sender = GUID of the sending object.
+//  receiver = GUID of the receiving object (if none, all objects).
+MapCollisionEvent::MapCollisionEvent(const std::string& name, MapCollision collision, float delay, GUID sender, GUID receiver)
+	: Event(ET_MapCollision, name, delay, sender, receiver), collision(collision)
+{
+}
 
 //------------------------------------------------------------------------------
 // Public Functions:
@@ -48,33 +64,115 @@ MapCollision::MapCollision(bool bottom, bool top, bool left, bool right) : botto
 
 // Allocate a new collider component.
 // Params:
-//   owner = Reference to the object that owns this component.
-Collider::Collider(ColliderType type) : Component("Collider"), transform(nullptr), physics(nullptr),
-	type(type), handler(nullptr), mapHandler(nullptr)
+//   type = The type of collider (circle, line, etc.).
+Collider::Collider(ColliderType type)
+	: Component("Collider"), transform(nullptr), physics(nullptr), type(type), processed(false),
+	group(0), mask(DEFAULT_MASK)
 {
 }
 
 // Set component pointers.
 void Collider::Initialize()
 {
-	// Store the required components for ease of access.
-	transform = static_cast<Transform*>(GetOwner()->GetComponent("Transform"));
-	physics = static_cast<Physics*>(GetOwner()->GetComponent("Physics"));
+	transform = GetOwner()->GetComponent<Transform>();
+	physics = GetOwner()->GetComponent<Physics>();
+}
+
+// Loads object data from a file.
+// Params:
+//   parser = The parser for the file.
+void Collider::Deserialize(Parser& parser)
+{
+	parser.ReadVariable("group", group);
+	parser.ReadVariable("mask", mask);
+}
+
+// Saves object data to a file.
+// Params:
+//   parser = The parser for the file.
+void Collider::Serialize(Parser& parser) const
+{
+	parser.WriteVariable("group", group);
+	parser.WriteVariable("mask", mask);
+}
+
+// Updates components using a fixed timestep (usually just for physics).
+// Params:
+//	 dt = A fixed change in time, usually 1/60th of a second.
+void Collider::FixedUpdate(float dt)
+{
+	UNREFERENCED_PARAMETER(dt);
+
+	// Reset processed so the collider is ready to do collision checks.
+	processed = false;
+
+	GameObjectManager& objectManager = GetOwner()->GetSpace()->GetObjectManager();
+
+	// Handle collision ended events.
+	for (auto it = collidersPrevious.begin(); it != collidersPrevious.end(); ++it)
+	{
+		// If the collider is still colliding, skip this collider.
+		if (collidersCurrent.find(*it) != collidersCurrent.end())
+			continue;
+		
+		// Dispatch collision events to both objects.
+		objectManager.DispatchEvent(new Event(ET_Collision, "CollisionEnded", 0.0f, GetOwner()->GetID(), *it));
+		objectManager.DispatchEvent(new Event(ET_Collision, "CollisionEnded", 0.0f, *it, GetOwner()->GetID()));
+	}
+
+	// Move the current array into the previous array and clear the current array.
+	std::swap(collidersCurrent, collidersPrevious);
+
+	collidersCurrent.clear();
+}
+
+void Collider::Draw()
+{
+}
+
+// Check if two objects are able to collide (no conflicting collision groups/masks).
+// Params:
+//	 other = Reference to the second collider component.
+bool Collider::CanCollideWith(const Collider& other)
+{
+	// Check collision groups
+	return !((1ull << group) & other.mask) || !((1ull << other.group) & mask);
 }
 
 // Check if two objects are colliding and send collision events.
 // Params:
-//	 other = Reference to the second collider component.
+//	 other = Pointer to the second collider component.
 void Collider::CheckCollision(const Collider& other)
 {
-	// Check if the two colliders are colliding.
-	if (IsCollidingWith(other))
+	if (&other == this)
+		return;
+
+	if (!CanCollideWith(other))
+		return;
+
+	// Perform the actual collision math for collisions between objects
+	bool colliding = IsCollidingWith(other);
+
+	// If they collide, call respective handlers
+	if (colliding)
 	{
-		// Run collision event handlers if they exist.
-		if (handler != nullptr)
-			handler(*GetOwner(), *other.GetOwner());
-		if (other.handler != nullptr)
-			other.handler(*other.GetOwner(), *GetOwner());
+		GameObjectManager& objectManager = GetOwner()->GetSpace()->GetObjectManager();
+
+		// Figure out what type of collision occurred and dispatch collision events to both objects.
+
+		if (collidersPrevious.find(other.GetOwner()->GetID()) != collidersPrevious.end())
+		{
+			objectManager.DispatchEvent(new Event(ET_Collision, "CollisionPersisted", 0.0f, GetOwner()->GetID(), other.GetOwner()->GetID()));
+			objectManager.DispatchEvent(new Event(ET_Collision, "CollisionPersisted", 0.0f, other.GetOwner()->GetID(), GetOwner()->GetID()));
+		}
+		else if (collidersCurrent.find(other.GetOwner()->GetID()) == collidersCurrent.end())
+		{
+			objectManager.DispatchEvent(new Event(ET_Collision, "CollisionStarted", 0.0f, GetOwner()->GetID(), other.GetOwner()->GetID()));
+			objectManager.DispatchEvent(new Event(ET_Collision, "CollisionStarted", 0.0f, other.GetOwner()->GetID(), GetOwner()->GetID()));
+		}
+
+		// Remember that we collided with this collider.
+		collidersCurrent.insert(other.GetOwner()->GetID());
 	}
 }
 
@@ -84,26 +182,40 @@ ColliderType Collider::GetType() const
 	return type;
 }
 
-// Sets the collision handler function for the collider.
-// Params:
-//   handler = A pointer to the collision handler function.
-void Collider::SetCollisionHandler(CollisionEventHandler handler_)
+// Gets whether this collider was processed.
+bool Collider::WasProcessed() const
 {
-	handler = handler_;
+	return processed;
 }
 
-// Sets the map collision handler function for the collider.
-// Params:
-//   handler = A pointer to the collision handler function.
-void Collider::SetMapCollisionHandler(MapCollisionEventHandler mapHandler_)
+// Marks this collider as processed.
+void Collider::SetProcessed()
 {
-	mapHandler = mapHandler_;
+	processed = true;
 }
 
-// Get the map collision handler function pointer.
-MapCollisionEventHandler Collider::GetMapCollisionHandler() const
+// Gets the collision group.
+uint64_t Collider::GetGroup() const
 {
-	return mapHandler;
+	return group;
+}
+
+// Sets the collision group.
+void Collider::SetGroup(uint64_t group_)
+{
+	group = group_;
+}
+
+// Gets the collision mask. (bitmask of which groups to NOT collide with)
+uint64_t Collider::GetMask() const
+{
+	return mask;
+}
+
+// Sets the collision mask. (bitmask of which groups to NOT collide with)
+void Collider::SetMask(uint64_t mask_)
+{
+	mask = mask_;
 }
 
 //------------------------------------------------------------------------------

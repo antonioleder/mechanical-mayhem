@@ -22,6 +22,7 @@
 #include <Graphics.h>
 #include "Intersection2D.h"
 #include "GameObject.h"
+#include "Parser.h"
 
 // Components
 #include "Transform.h"
@@ -50,6 +51,26 @@ ColliderCircle::ColliderCircle(float radius) : Collider(ColliderTypeCircle), rad
 Component* ColliderCircle::Clone() const
 {
 	return new ColliderCircle(*this);
+}
+
+// Loads object data from a file.
+// Params:
+//   parser = The parser for the file.
+void ColliderCircle::Deserialize(Parser& parser)
+{
+	Collider::Deserialize(parser);
+
+	parser.ReadVariable("radius", radius);
+}
+
+// Saves object data to a file.
+// Params:
+//   parser = The parser for the file.
+void ColliderCircle::Serialize(Parser& parser) const
+{
+	Collider::Serialize(parser);
+
+	parser.WriteVariable("radius", radius);
 }
 
 // Debug drawing for colliders.

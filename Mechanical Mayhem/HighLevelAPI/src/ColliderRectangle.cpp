@@ -22,6 +22,7 @@
 #include <Graphics.h>
 #include "Intersection2D.h"
 #include "GameObject.h"
+#include "Parser.h"
 
 // Components
 #include "Transform.h"
@@ -46,6 +47,26 @@ ColliderRectangle::ColliderRectangle(const Vector2D& extents) : Collider(Collide
 Component* ColliderRectangle::Clone() const
 {
 	return new ColliderRectangle(*this);
+}
+
+// Loads object data from a file.
+// Params:
+//   parser = The parser for the file.
+void ColliderRectangle::Deserialize(Parser& parser)
+{
+	Collider::Deserialize(parser);
+
+	parser.ReadVariable("extents", extents);
+}
+
+// Saves object data to a file.
+// Params:
+//   parser = The parser for the file.
+void ColliderRectangle::Serialize(Parser& parser) const
+{
+	Collider::Serialize(parser);
+
+	parser.WriteVariable("extents", extents);
 }
 
 // Debug drawing for colliders.

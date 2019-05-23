@@ -21,6 +21,12 @@
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
+// Forward References:
+//------------------------------------------------------------------------------
+
+struct BoundingRectangle;
+
+//------------------------------------------------------------------------------
 // Public Structures:
 //------------------------------------------------------------------------------
 
@@ -89,6 +95,20 @@ public:
 	// Returns:
 	//	 A reference to the component's scale structure.
 	const Vector2D& GetScale() const;
+
+	// Returns a bounding rectangle based on the 
+	// world translation and scale of the object.
+	BoundingRectangle GetBounds() const;
+
+	// Save object data to file.
+	// Params:
+	//   parser = The parser object used to save the object's data.
+	void Serialize(Parser& parser) const override;
+
+	// Load object data from file
+	// Params:
+	//   parser = The parser object used to load the object's data.
+	void Deserialize(Parser& parser) override;
 
 private:
 	//------------------------------------------------------------------------------

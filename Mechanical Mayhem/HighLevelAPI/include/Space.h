@@ -16,7 +16,8 @@
 //------------------------------------------------------------------------------
 
 #include "GameObjectManager.h"
-#include "BetaObject.h"
+#include "ResourceManager.h"
+#include <BetaObject.h>
 
 //------------------------------------------------------------------------------
 
@@ -56,6 +57,9 @@ public:
 	//   True if the space is paused, false otherwise.
 	bool IsPaused() const;
 
+	// Returns a float indicating the time scale of this space.
+	float GetTimeScale() const;
+
 	// Returns the name of the level currently running in this space.
 	const std::string& GetLevelName() const;
 
@@ -64,16 +68,39 @@ public:
 	//   value = A true/false value that indicates whether the space should be paused.
 	void SetPaused(bool value);
 
+	// Sets the time scale of this space.
+	void SetTimescale(float value);
+
 	// Sets the level that the space is using after unloading the current level.
 	// Params:
 	//   level = The next level that the space will be using.
 	void SetLevel(Level* level);
 
+	// Sets the level that the space is using after unloading the current level.
+	// Template parameters:
+	//   LevelType = The level to be instantiated.
+	template <class LevelType>
+	void SetLevel()
+	{
+		// If Setlevel was called multiple times in the same frame, delete the previous level.
+		if (nextLevel != nullptr)
+			delete nextLevel;
+
+		// Allocate the new level.
+		nextLevel = new LevelType();
+
+		// Set the next level's parent to this space (necessary for Level::GetParent to work properly).
+		nextLevel->SetParent(this);
+	}
+
 	// Restarts the current level (next level = current)
 	void RestartLevel();
-	
+
 	// Returns the object manager, which you can use to retrieve and add objects.
 	GameObjectManager& GetObjectManager();
+
+	// Returns the resource manager, which you can use to load resources.
+	ResourceManager& GetResourceManager();
 
 private:
 	//------------------------------------------------------------------------------
@@ -88,9 +115,11 @@ private:
 	//------------------------------------------------------------------------------
 
 	bool paused;
+	float timeScale;
 	Level* currentLevel;
 	Level* nextLevel;
 	GameObjectManager objectManager;
+	ResourceManager resourceManager;
 };
 
 //------------------------------------------------------------------------------

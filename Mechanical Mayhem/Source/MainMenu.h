@@ -68,19 +68,6 @@ namespace Levels
 		// position = The position of the button.
 		// map = The map the button should switch to.
 		void AddMapButton(const char* name, Vector2D position, Levels::Map map);
-
-		//------------------------------------------------------------------------------
-		// Private Variables:
-		//------------------------------------------------------------------------------
-
-		// Button
-		Mesh* meshButton;
-		Texture* textureButton;
-		SpriteSource* spriteSourceButton;
-
-		Mesh* meshBackground;
-		Texture* textureBackground;
-		SpriteSource* spriteSourceBackground;
 	};
 }
 

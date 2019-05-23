@@ -16,6 +16,11 @@
 #include "stdafx.h"
 
 #include "Transform.h"
+#include <Vector2D.h>
+#include <Matrix2D.h>
+#include <Graphics.h>
+
+#include "Parser.h"
 
 //------------------------------------------------------------------------------
 
@@ -139,6 +144,33 @@ void Transform::SetScale(const Vector2D& scale_)
 const Vector2D& Transform::GetScale() const
 {
 	return scale;
+}
+
+// Returns a bounding rectangle based on the 
+// world translation and scale of the object.
+BoundingRectangle Transform::GetBounds() const
+{
+	return BoundingRectangle(GetTranslation(), GetScale() / 2.0f);
+}
+
+// Save object data to file.
+// Params:
+//   parser = The parser object used to save the object's data.
+void Transform::Serialize(Parser& parser) const
+{
+	parser.WriteVariable("translation", translation);
+	parser.WriteVariable("rotation", rotation);
+	parser.WriteVariable("scale", scale);
+}
+
+// Load object data from file
+// Params:
+//   parser = The parser object used to load the object's data.
+void Transform::Deserialize(Parser& parser)
+{
+	parser.ReadVariable("translation", translation);
+	parser.ReadVariable("rotation", rotation);
+	parser.ReadVariable("scale", scale);
 }
 
 //------------------------------------------------------------------------------

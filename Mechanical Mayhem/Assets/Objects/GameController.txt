@@ -1,0 +1,10 @@
+GameController
+{
+  numComponents : 2
+  Behaviors::CameraFollow
+  {
+  }
+  Behaviors::DimensionController
+  {
+  }
+}

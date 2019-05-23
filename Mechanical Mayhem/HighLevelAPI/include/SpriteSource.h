@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
 // File Name:	SpriteSource.h
-// Author(s):	 Jeremy Kings (j.kings)
+// Author(s):	Jeremy Kings (j.kings)
 // Project:		BetaFramework
 // Course:		WANIC VGP2 2018-2019
 //
@@ -23,14 +23,13 @@
 
 class Texture;
 class Vector2D;
-class Sprite;
 
 //------------------------------------------------------------------------------
 // Public Structures:
 //------------------------------------------------------------------------------
 // You are free to change the contents of this structure as long as you do not
 //   change the public interface declared in the header.
-class SpriteSource
+class SpriteSource //: public Serializable
 {
 public:
 	//------------------------------------------------------------------------------
@@ -60,8 +59,11 @@ public:
 	//   textureCoords = Reference to a Vector2D containing the UV/texture coordinates.
 	void GetUV(unsigned int frameIndex, Vector2D& textureCoords) const;
 
-	// Sprite is friend for deserialization only
-	friend class Sprite;
+	// Returns the number of rows in the sprite source.
+	unsigned GetNumRows() const;
+
+	// Returns the number of columns in the sprite source.
+	unsigned GetNumCols() const;
 
 private:
 	// The dimensions of the sprite sheet.
@@ -70,9 +72,6 @@ private:
 
 	// Pointer to a texture created using the Alpha Engine.
 	Texture* texture;
-
-	// Texture name used for deserialization
-	std::string tempTextureName;
 };
 
 //----------------------------------------------------------------------------

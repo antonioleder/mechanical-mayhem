@@ -22,6 +22,8 @@
 #include <Shapes2D.h>
 #include "GameObject.h"
 #include <Interpolation.h>
+#include "GameObjectManager.h"
+#include "Space.h"
 
 // Components
 #include "ColliderRectangle.h"
@@ -47,6 +49,33 @@ Component* ColliderTilemap::Clone() const
 	return new ColliderTilemap(*this);
 }
 
+// Updates components using a fixed timestep (usually just for physics).
+// Params:
+//	 dt = A fixed change in time, usually 1/60th of a second.
+void ColliderTilemap::FixedUpdate(float dt)
+{
+	Collider::FixedUpdate(dt);
+
+	GameObjectManager& objectManager = GetOwner()->GetSpace()->GetObjectManager();
+
+	// Handle collision ended events.
+	for (auto it = mapCollidersPrevious.begin(); it != mapCollidersPrevious.end(); ++it)
+	{
+		// If the collider is still colliding, skip this collider.
+		if (mapCollidersCurrent.find(it->first) != mapCollidersCurrent.end())
+			continue;
+
+		// Dispatch collision events to both objects.
+		objectManager.DispatchEvent(new MapCollisionEvent("MapCollisionEnded", it->second, 0.0f, GetOwner()->GetID(), it->first));
+		objectManager.DispatchEvent(new MapCollisionEvent("MapCollisionEnded", it->second, 0.0f, it->first, GetOwner()->GetID()));
+	}
+
+	// Move the current array into the previous array and clear the current array.
+	std::swap(mapCollidersCurrent, mapCollidersPrevious);
+
+	mapCollidersCurrent.clear();
+}
+
 // Debug drawing for colliders.
 void ColliderTilemap::Draw()
 {
@@ -65,6 +94,8 @@ bool ColliderTilemap::IsCollidingWith(const Collider& other) const
 	// Only collision with rectangle colliders is handled.
 	if (other.GetType() != ColliderType::ColliderTypeRectangle)
 		return false;
+
+	GameObjectManager& objectManager = GetOwner()->GetSpace()->GetObjectManager();
 
 	// The physics of the other object.
 	Physics* otherPhysics = static_cast<Physics*>(other.GetOwner()->GetComponent("Physics"));
@@ -96,10 +127,20 @@ bool ColliderTilemap::IsCollidingWith(const Collider& other) const
 	{
 		if (mapCollision.bottom || mapCollision.top || mapCollision.left || mapCollision.right)
 		{
-			// Call the map collision event handler if it exists.
-			MapCollisionEventHandler collisionEventHandler = other.GetMapCollisionHandler();
-			if (collisionEventHandler != nullptr)
-				collisionEventHandler(*other.GetOwner(), mapCollision);
+			// Dispatch the map collision event.
+			if (mapCollidersPrevious.find(other.GetOwner()->GetID()) != mapCollidersPrevious.end())
+			{
+				objectManager.DispatchEvent(new MapCollisionEvent("MapCollisionPersisted", mapCollision, 0.0f, GetOwner()->GetID(), other.GetOwner()->GetID()));
+				objectManager.DispatchEvent(new MapCollisionEvent("MapCollisionPersisted", mapCollision, 0.0f, other.GetOwner()->GetID(), GetOwner()->GetID()));
+			}
+			else if (mapCollidersCurrent.find(other.GetOwner()->GetID()) == mapCollidersCurrent.end())
+			{
+				objectManager.DispatchEvent(new MapCollisionEvent("MapCollisionStarted", mapCollision, 0.0f, GetOwner()->GetID(), other.GetOwner()->GetID()));
+				objectManager.DispatchEvent(new MapCollisionEvent("MapCollisionStarted", mapCollision, 0.0f, other.GetOwner()->GetID(), GetOwner()->GetID()));
+			}
+
+			// Remember that we collided with this collider.
+			mapCollidersCurrent.insert(std::make_pair(other.GetOwner()->GetID(), mapCollision));
 
 			return true;
 		}
@@ -126,10 +167,20 @@ bool ColliderTilemap::IsCollidingWith(const Collider& other) const
 	// Resolve collisions.
 	ResolveCollisions(otherBounding, otherTransform, otherPhysics, mapCollision);
 
-	// Call the map collision event handler if it exists.
-	MapCollisionEventHandler collisionEventHandler = other.GetMapCollisionHandler();
-	if (collisionEventHandler != nullptr)
-		collisionEventHandler(*other.GetOwner(), mapCollision);
+	// Dispatch the map collision event.
+	if (mapCollidersPrevious.find(other.GetOwner()->GetID()) != mapCollidersPrevious.end())
+	{
+		objectManager.DispatchEvent(new MapCollisionEvent("MapCollisionPersisted", mapCollision, 0.0f, GetOwner()->GetID(), other.GetOwner()->GetID()));
+		objectManager.DispatchEvent(new MapCollisionEvent("MapCollisionPersisted", mapCollision, 0.0f, other.GetOwner()->GetID(), GetOwner()->GetID()));
+	}
+	else if (mapCollidersCurrent.find(other.GetOwner()->GetID()) == mapCollidersCurrent.end())
+	{
+		objectManager.DispatchEvent(new MapCollisionEvent("MapCollisionStarted", mapCollision, 0.0f, GetOwner()->GetID(), other.GetOwner()->GetID()));
+		objectManager.DispatchEvent(new MapCollisionEvent("MapCollisionStarted", mapCollision, 0.0f, other.GetOwner()->GetID(), GetOwner()->GetID()));
+	}
+
+	// Remember that we collided with this collider.
+	mapCollidersCurrent.insert(std::make_pair(other.GetOwner()->GetID(), mapCollision));
 
 	return true;
 }

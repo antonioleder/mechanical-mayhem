@@ -31,7 +31,7 @@
 
 // Constructor(s)
 Space::Space(const std::string& name) : BetaObject(name),
-	paused(false), currentLevel(nullptr), nextLevel(nullptr), objectManager(this)
+paused(false), timeScale(1.0f), currentLevel(nullptr), nextLevel(nullptr), objectManager(this)
 {
 }
 
@@ -46,7 +46,7 @@ Space::~Space()
 //   dt = The change in time since the last call to this function.
 void Space::Update(float dt)
 {
-	objectManager.Update(dt);
+	objectManager.Update(dt * timeScale);
 
 	// If there is a next level, handle level changing logic.
 	if (nextLevel != nullptr)
@@ -57,23 +57,29 @@ void Space::Update(float dt)
 	// If the current level exists and is not paused, update it.
 	if (currentLevel != nullptr && !paused)
 	{
-		currentLevel->Update(dt);
+		currentLevel->Update(dt * timeScale);
 	}
 }
 
 // Shuts down the object manager
 void Space::Shutdown()
 {
+	// Shutdown the current level if there is one.
+	if (currentLevel != nullptr)
+		currentLevel->Shutdown();
+
 	// Shutdown and unload the object manager.
 	objectManager.Shutdown();
 	objectManager.Unload();
 
-	// Shutdown and unload the current level if there is one.
+	// Unload the current level if there is one.
 	if (currentLevel != nullptr)
 	{
-		currentLevel->Shutdown();
 		currentLevel->Unload();
+		resourceManager.OnLevelUnload();
 	}
+
+	resourceManager.Unload();
 
 	// Free the current level's memory.
 	delete currentLevel;
@@ -88,6 +94,12 @@ void Space::Shutdown()
 bool Space::IsPaused() const
 {
 	return paused;
+}
+
+// Returns a float indicating the time scale of this space.
+float Space::GetTimeScale() const
+{
+	return timeScale;
 }
 
 // Returns the name of the level currently running in this space.
@@ -105,11 +117,21 @@ void Space::SetPaused(bool value)
 	paused = value;
 }
 
+// Sets the time scale of this space.
+void Space::SetTimescale(float value)
+{
+	timeScale = value;
+}
+
 // Sets the level that the space is using after unloading the current level.
 // Params:
 //   level = The next level that the space will be using.
 void Space::SetLevel(Level* level)
 {
+	// If Setlevel was called multiple times in the same frame, delete the previous level.
+	if (nextLevel != nullptr)
+		delete nextLevel;
+
 	nextLevel = level;
 
 	// If the next level exists, set its parent to this space (necessary for Level::GetParent to work properly).
@@ -131,6 +153,12 @@ GameObjectManager& Space::GetObjectManager()
 	return objectManager;
 }
 
+// Returns the resource manager, which you can use to load resources.
+ResourceManager& Space::GetResourceManager()
+{
+	return resourceManager;
+}
+
 //------------------------------------------------------------------------------
 // Private Functions:
 //------------------------------------------------------------------------------
@@ -138,14 +166,12 @@ GameObjectManager& Space::GetObjectManager()
 // Updates current/next level pointers and calls shutdown/unload/load/init
 void Space::ChangeLevel()
 {
-	// Shutdown the object manager.
-	objectManager.Shutdown();
-
 	// If the current level exists, shut it down.
 	if (currentLevel != nullptr)
-	{
 		currentLevel->Shutdown();
-	}
+
+	// Shutdown the object manager.
+	objectManager.Shutdown();
 
 	// Check if we are changing levels.
 	if (nextLevel != currentLevel)
@@ -157,6 +183,7 @@ void Space::ChangeLevel()
 		if (currentLevel != nullptr)
 		{
 			currentLevel->Unload();
+			resourceManager.OnLevelUnload();
 		}
 
 		// Free the current level's memory.
@@ -167,6 +194,7 @@ void Space::ChangeLevel()
 
 		// Load the next level.
 		currentLevel->Load();
+		resourceManager.OnLevelLoad();
 	}
 
 	// Initialize the next level.

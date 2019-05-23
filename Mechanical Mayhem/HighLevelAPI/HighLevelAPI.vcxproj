@@ -63,6 +63,9 @@
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
+      <PrecompiledHeader>Use</PrecompiledHeader>
     </ClCompile>
     <Lib>
       <AdditionalDependencies>BetaLow_x64_D.lib;glfw3.lib;fmodL64_vc.lib;fmodstudioL64_vc.lib</AdditionalDependencies>
@@ -78,6 +81,8 @@
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>include</AdditionalIncludeDirectories>
       <PrecompiledHeader>Use</PrecompiledHeader>
+      <DisableSpecificWarnings>
+      </DisableSpecificWarnings>
     </ClCompile>
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
@@ -95,19 +100,27 @@
     <ClInclude Include="include\ColliderRectangle.h" />
     <ClInclude Include="include\ColliderTilemap.h" />
     <ClInclude Include="include\Component.h" />
+    <ClInclude Include="include\Event.h" />
+    <ClInclude Include="include\EventHandler.h" />
     <ClInclude Include="include\GameObject.h" />
+    <ClInclude Include="include\GameObjectFactory.h" />
     <ClInclude Include="include\GameObjectManager.h" />
     <ClInclude Include="include\Intersection2D.h" />
     <ClInclude Include="include\Level.h" />
     <ClInclude Include="include\Matrix2DStudent.h" />
     <ClInclude Include="include\MeshHelper.h" />
+    <ClInclude Include="include\Parser.h" />
     <ClInclude Include="include\Physics.h" />
+    <ClInclude Include="include\Quadtree.h" />
+    <ClInclude Include="include\ResourceManager.h" />
+    <ClInclude Include="include\Serializable.h" />
     <ClInclude Include="include\SoundManager.h" />
     <ClInclude Include="include\Space.h" />
     <ClInclude Include="include\Sprite.h" />
     <ClInclude Include="include\SpriteSource.h" />
+    <ClInclude Include="include\SpriteTextMono.h" />
     <ClInclude Include="include\SpriteTilemap.h" />
-    <ClInclude Include="include\StartFullscreen.h" />
+    <ClInclude Include="include\FullscreenManager.h" />
     <ClInclude Include="include\stdafx.h" />
     <ClInclude Include="include\Tilemap.h" />
     <ClInclude Include="include\Transform.h" />
@@ -134,9 +147,12 @@
     <ClCompile Include="src\Component.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Event.cpp" />
+    <ClCompile Include="src\EventHandler.cpp" />
     <ClCompile Include="src\GameObject.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\GameObjectFactory.cpp" />
     <ClCompile Include="src\GameObjectManager.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
@@ -152,9 +168,13 @@
     <ClCompile Include="src\MeshHelper.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Parser.cpp" />
     <ClCompile Include="src\Physics.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Quadtree.cpp" />
+    <ClCompile Include="src\ResourceManager.cpp" />
+    <ClCompile Include="src\Serializable.cpp" />
     <ClCompile Include="src\SoundManager.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
@@ -167,10 +187,11 @@
     <ClCompile Include="src\SpriteSource.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\SpriteTextMono.cpp" />
     <ClCompile Include="src\SpriteTilemap.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\StartFullscreen.cpp" />
+    <ClCompile Include="src\FullscreenManager.cpp" />
     <ClCompile Include="src\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>

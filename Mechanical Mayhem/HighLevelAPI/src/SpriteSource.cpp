@@ -38,7 +38,7 @@
 //	 numCols = The number of columns in the sprite sheet.
 //	 numRows = The number of rows in the sprite sheet.
 //	 texture = A pointer to a texture that has been loaded by the Alpha Engine.
-SpriteSource::SpriteSource(int numCols, int numRows, Texture* texture) : numCols(numCols), numRows(numRows), texture(texture), tempTextureName(texture->GetName())
+SpriteSource::SpriteSource(int numCols, int numRows, Texture* texture) : numCols(numCols), numRows(numRows), texture(texture)
 {
 }
 
@@ -75,6 +75,18 @@ void SpriteSource::GetUV(unsigned int frameIndex, Vector2D& textureCoords) const
 	// Set the output texture coordinates to the proper location.
 	textureCoords.x = col * uSize;
 	textureCoords.y = row * vSize;
+}
+
+// Returns the number of rows in the sprite source.
+unsigned SpriteSource::GetNumRows() const
+{
+	return numRows;
+}
+
+// Returns the number of columns in the sprite source.
+unsigned SpriteSource::GetNumCols() const
+{
+	return numCols;
 }
 
 //----------------------------------------------------------------------------

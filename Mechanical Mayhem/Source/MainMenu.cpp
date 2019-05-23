@@ -17,8 +17,13 @@
 #include "MainMenu.h"
 
 // Systems
+#include <Engine.h>
+#include <FullscreenManager.h>
+#include <GameObjectManager.h>
+#include <GameObjectFactory.h>
+#include <ResourceManager.h>
 #include "Archetypes.h"
-#include "Space.h"
+#include <Space.h>
 #include <Input.h>
 #include <Graphics.h>
 #include <Camera.h>
@@ -28,7 +33,7 @@
 #include <SpriteSource.h>
 
 // Components
-#include "SpriteText.h"
+#include <SpriteTextMono.h>
 #include <Transform.h>
 #include "Button.h"
 
@@ -53,19 +58,19 @@ namespace Levels
 	{
 		std::cout << "MainMenu::Load" << std::endl;
 
-		// Create the mesh and sprite source for the main menu.
-		meshBackground = CreateQuadMesh(Vector2D(1.0f, 1.0f), Vector2D(0.5f, 0.5f));
-		textureBackground = Texture::CreateTextureFromFile("MainMenu.png");
-		spriteSourceBackground = new SpriteSource(1, 1, textureBackground);
+		GameObjectFactory& objectFactory = GameObjectFactory::GetInstance();
+		GameObjectManager& objectManager = GetSpace()->GetObjectManager();
+		ResourceManager& resourceManager = GetSpace()->GetResourceManager();
 
-		// Create a new quad mesh for the sprite.
-		meshButton = CreateQuadMesh(Vector2D(1.0f, 1.0f), Vector2D(0.5f, 0.5f));
+		resourceManager.GetMesh("Quad", Vector2D(1.0f, 1.0f), Vector2D(0.5f, 0.5f));
+		resourceManager.GetSpriteSource("MainMenu.png");
+		resourceManager.GetSpriteSource("Button.png");
+		resourceManager.GetMesh("FontAtlas", 12, 8);
+		resourceManager.GetSpriteSource("Code New Roman.png", 12, 8);
 
-		// Load the player texture.
-		textureButton = Texture::CreateTextureFromFile("Button.png");
-
-		// Setup the player sprite source.
-		spriteSourceButton = new SpriteSource(1, 1, textureButton);
+		objectManager.AddArchetype(*objectFactory.CreateObject("FullScreenImage", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("MainMenu.png")));
+		objectManager.AddArchetype(*objectFactory.CreateObject("Button", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("Button.png")));
+		objectManager.AddArchetype(*objectFactory.CreateObject("Text", resourceManager.GetMesh("FontAtlas"), resourceManager.GetSpriteSource("Code New Roman.png")));
 	}
 
 	// Initialize the memory associated with MainMenu.
@@ -75,13 +80,13 @@ namespace Levels
 
 		GameObjectManager& objectManager = GetSpace()->GetObjectManager();
 
-		objectManager.AddArchetype(*Archetypes::CreateFullScreenImageArchetype(meshBackground, spriteSourceBackground));
+		//objectManager.AddArchetype(*Archetypes::CreateFullScreenImageArchetype(meshBackground, spriteSourceBackground));
 		objectManager.AddObject(*new GameObject(*objectManager.GetArchetypeByName("FullScreenImage")));
 
-		objectManager.AddArchetype(*Archetypes::CreateButtonArchetype(meshButton, spriteSourceButton));
+		//objectManager.AddArchetype(*Archetypes::CreateButtonArchetype(meshButton, spriteSourceButton));
 
 		// Create and add descriptive text
-		objectManager.AddArchetype(*Archetypes::CreateText());
+		//objectManager.AddArchetype(*Archetypes::CreateText());
 
 		/*GameObject* text = new GameObject(*objectManager.GetArchetypeByName("Text"));
 		static_cast<SpriteText*>(text->GetComponent("SpriteText"))->SetText("Press space to go level select");
@@ -89,13 +94,16 @@ namespace Levels
 		//static_cast<Transform*>(text->GetComponent("Transform"))->SetScale(Vector2D(32.0f, 32.0f));
 		objectManager.AddObject(*text);*/
 
-		AddMapButton("Controls", Vector2D(-175.0f, -250.0f), Levels::Map::ControlScreen);
-		AddMapButton("Credits", Vector2D(175.0f, -250.0f), Levels::Map::Credits);
-		AddMapButton("Level Select", Vector2D(0.0f, -140.0f), Levels::Map::LevelSelect);
+		AddMapButton("Controls", Vector2D(-1.75f, -2.5f), Levels::Map::ControlScreen);
+		AddMapButton("Credits", Vector2D(1.74f, -2.5f), Levels::Map::Credits);
+		AddMapButton("Level Select", Vector2D(0.0f, -1.4f), Levels::Map::LevelSelect);
 
 		Camera& camera = Graphics::GetInstance().GetDefaultCamera();
 		camera.SetTranslation(Vector2D());
-		camera.SetSize(1000.0f);
+		camera.SetSize(10.0f);
+		//camera.SetSize(Engine::GetInstance().GetModule<FullscreenManager>()->GetScreenDimensions().x);
+		//std::cout << Engine::GetInstance().GetModule<FullscreenManager>()->GetScreenDimensions() << std::endl;
+		//Graphics::GetInstance().SetTransform(Vector2D());
 	}
 
 	// Update Level 1.
@@ -110,14 +118,6 @@ namespace Levels
 	void MainMenu::Unload()
 	{
 		std::cout << "MainMenu::Unload" << std::endl;
-
-		delete spriteSourceButton;
-		delete textureButton;
-		delete meshButton;
-
-		delete spriteSourceBackground;
-		delete textureBackground;
-		delete meshBackground;
 	}
 
 	//------------------------------------------------------------------------------
@@ -132,7 +132,7 @@ namespace Levels
 	{
 		GameObjectManager& objectManager = GetSpace()->GetObjectManager();
 
-		objectManager.AddArchetype(*Archetypes::CreateButtonArchetype(meshButton, spriteSourceButton));
+		objectManager.AddArchetype(*new GameObject(*objectManager.GetArchetypeByName("Button")));
 
 		GameObject* levelButton = new GameObject(*objectManager.GetArchetypeByName("Button"));
 		static_cast<Transform*>(levelButton->GetComponent("Transform"))->SetTranslation(position);
@@ -140,9 +140,9 @@ namespace Levels
 		objectManager.AddObject(*levelButton);
 
 		GameObject*text = new GameObject(*objectManager.GetArchetypeByName("Text"));
-		static_cast<SpriteText*>(text->GetComponent("SpriteText"))->SetText(name_);
-		static_cast<SpriteText*>(text->GetComponent("SpriteText"))->SetColor(Color(0.0f, 0.0f, 0.0f));
-		static_cast<Transform*>(text->GetComponent("Transform"))->SetTranslation(position);
+		text->GetComponent<SpriteTextMono>()->SetText(name_);
+		text->GetComponent<SpriteTextMono>()->SetColor(Color(0.0f, 0.0f, 0.0f));
+		text->GetComponent<Transform>()->SetTranslation(position);
 		objectManager.AddObject(*text);
 	}
 }

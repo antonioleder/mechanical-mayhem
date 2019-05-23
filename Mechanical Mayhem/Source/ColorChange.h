@@ -44,7 +44,7 @@ namespace Behaviors
 		//   normalColor = The color that the object reverts to when not colliding.
 		//   collidedColor = The color that the object changes to when colliding.
 		//   collidedColorTime = The amount of time the object will retain the collided color.
-		ColorChange(const Color& normalColor, const Color& collidedColor, float collidedColorTime = 0.1f);
+		ColorChange(const Color& normalColor = Colors::White, const Color& collidedColor = Colors::White, float collidedColorTime = 0.1f);
 
 		// Return a new copy of the component.
 		Component* Clone() const;

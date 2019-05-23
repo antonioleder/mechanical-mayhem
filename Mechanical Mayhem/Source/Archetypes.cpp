@@ -19,6 +19,7 @@
 
 // Systems
 #include "GameObject.h"
+#include <GameObjectFactory.h>
 #include "Space.h"
 #include "SpriteSource.h"
 #include <Mesh.h>
@@ -39,7 +40,7 @@
 #include "SpriteTilemap.h"
 #include "ColliderTilemap.h"
 #include "MonkeyAnimation.h"
-#include "SpriteText.h"
+#include <SpriteTextMono.h>
 #include "CameraFollow.h"
 #include "Hazard.h"
 #include "DimensionController.h"
@@ -93,6 +94,8 @@ namespace Archetypes
 		// Create a new MonkeyAnimation.
 		player->AddComponent(new Behaviors::MonkeyAnimation(0, 8, 9, 1, 15, 1));
 
+		GameObjectFactory::GetInstance().SaveObjectToFile(player);
+
 		return player;
 	}
 
@@ -124,6 +127,8 @@ namespace Archetypes
 		colliderTilemap->SetTilemap(map);
 		tilemap->AddComponent(colliderTilemap);
 
+		GameObjectFactory::GetInstance().SaveObjectToFile(tilemap);
+
 		return tilemap;
 	}
 
@@ -141,10 +146,12 @@ namespace Archetypes
 		text->AddComponent(transform);
 
 		// Create a new sprite text.
-		SpriteText* spriteText = new SpriteText();
-		spriteText->SetHorizontalAlignment(SpriteText::Alignment::CENTER);
-		spriteText->SetVerticalAlignment(SpriteText::Alignment::CENTER);
+		SpriteTextMono* spriteText = new SpriteTextMono();
+		spriteText->SetHorizontalAlignment(SpriteTextMono::Alignment::CENTER);
+		spriteText->SetVerticalAlignment(SpriteTextMono::Alignment::CENTER);
 		text->AddComponent(spriteText);
+
+		GameObjectFactory::GetInstance().SaveObjectToFile(text);
 
 		return text;
 	}
@@ -180,6 +187,8 @@ namespace Archetypes
 		Collectible->AddComponent(sprite);
 		Collectible->AddComponent(colliderrect);
 
+		GameObjectFactory::GetInstance().SaveObjectToFile(Collectible);
+
 		return Collectible;
 	}
 
@@ -196,6 +205,8 @@ namespace Archetypes
 
 		// Create a new DimensionController.
 		gameController->AddComponent(new Behaviors::DimensionController());
+
+		GameObjectFactory::GetInstance().SaveObjectToFile(gameController);
 
 		return gameController;
 	}
@@ -225,6 +236,8 @@ namespace Archetypes
 
 		// Create collider
 		ColliderRectangle* collider = new ColliderRectangle(transform->GetScale() / 2.0f - Vector2D(0.5f, 0.5f));
+		collider->SetGroup(1);
+		collider->SetMask(1 << 1);
 
 		// Create hazard component
 		Behaviors::Hazard* hazard = new Behaviors::Hazard(false, true);
@@ -234,6 +247,8 @@ namespace Archetypes
 		Hazard->AddComponent(sprite);
 		Hazard->AddComponent(collider);
 		Hazard->AddComponent(hazard);
+
+		GameObjectFactory::GetInstance().SaveObjectToFile(Hazard);
 
 		return Hazard;
 	}
@@ -265,6 +280,8 @@ namespace Archetypes
 		JumpBoost->AddComponent(sprite);
 		JumpBoost->AddComponent(collider);
 
+		GameObjectFactory::GetInstance().SaveObjectToFile(JumpBoost);
+
 		return JumpBoost;
 	}
 
@@ -294,6 +311,8 @@ namespace Archetypes
 		SpeedBoost->AddComponent(transform);
 		SpeedBoost->AddComponent(sprite);
 		SpeedBoost->AddComponent(collider);
+
+		GameObjectFactory::GetInstance().SaveObjectToFile(SpeedBoost);
 
 		return SpeedBoost;
 	}
@@ -329,6 +348,8 @@ namespace Archetypes
 		Button->AddComponent(collider);
 		Button->AddComponent(button);
 
+		GameObjectFactory::GetInstance().SaveObjectToFile(Button);
+
 		return Button;
 	}
 
@@ -350,6 +371,8 @@ namespace Archetypes
 		sprite->SetMesh(mesh);
 		sprite->SetSpriteSource(spriteSource);
 		gameObject->AddComponent(sprite);
+
+		GameObjectFactory::GetInstance().SaveObjectToFile(gameObject);
 
 		return gameObject;
 	}

@@ -26,6 +26,8 @@
 #include <Graphics.h>
 #include "GameObject.h"
 #include "Matrix2DStudent.h"
+#include "Parser.h"
+#include "Space.h"
 
 // Components
 #include "Transform.h"
@@ -58,19 +60,45 @@ Component* Sprite::Clone() const
 // Initialize components.
 void Sprite::Initialize()
 {
-	transform = static_cast<Transform*>(GetOwner()->GetComponent("Transform"));
+	transform = static_cast<Transform*>(GetOwner()->GetComponent<Transform>());
+}
+
+// Loads object data from a file.
+// Params:
+//   parser = The parser for the file.
+void Sprite::Deserialize(Parser& parser)
+{
+	parser.ReadVariable("frameIndex", frameIndex);
+	parser.ReadVariable("color", color);
+}
+
+// Saves object data to a file.
+// Params:
+//   parser = The parser for the file.
+void Sprite::Serialize(Parser& parser) const
+{
+	parser.WriteVariable("frameIndex", frameIndex);
+	parser.WriteVariable("color", color);
 }
 
 // Draw a sprite (Sprite can be textured or untextured).
 void Sprite::Draw()
 {
-	Draw(Vector2D());
+	Draw(transform->GetMatrix());
 }
 
 // Draw a sprite at an offset from the object's translation.
 // Params:
 //   offset = The offset that will be added to the translation when drawing.
 void Sprite::Draw(const Vector2D& offset)
+{
+	Draw(CS230::Matrix2D::TranslationMatrix(offset.x, offset.y) * transform->GetMatrix());
+}
+
+// Draw a sprite at an offset from the object's translation.
+// Params:
+//   matrix = The transformation matrix that will be applied when drawing.
+void Sprite::Draw(const CS230::Matrix2D& matrix)
 {
 	// Exit if there is no transform.
 	if (transform == nullptr)
@@ -96,11 +124,8 @@ void Sprite::Draw(const Vector2D& offset)
 		Graphics::GetInstance().GetDefaultTexture().Use();
 	}
 
-	CS230::Matrix2D offsetTransform = CS230::Matrix2D::TranslationMatrix(offset.x, offset.y);
-	CS230::Matrix2D fullTransform = offsetTransform * transform->GetMatrix();
-
 	// Set the translation & scale for the mesh.
-	Graphics::GetInstance().SetTransform(reinterpret_cast<const Matrix2D&>(fullTransform));
+	Graphics::GetInstance().SetTransform(reinterpret_cast<const Matrix2D&>(matrix));
 
 	Graphics::GetInstance().SetSpriteBlendColor(color);
 

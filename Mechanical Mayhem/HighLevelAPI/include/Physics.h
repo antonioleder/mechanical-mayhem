@@ -47,6 +47,16 @@ public:
 	// Initialize components.
 	void Initialize() override;
 
+	// Loads object data from a file.
+	// Params:
+	//   parser = The parser for the file.
+	virtual void Deserialize(Parser& parser) override;
+
+	// Saves object data to a file.
+	// Params:
+	//   parser = The parser for the file.
+	virtual void Serialize(Parser& parser) const override;
+
 	// Reset acceleration.
 	// Params:
 	//	 dt = Change in time (in seconds) since the last game loop.
@@ -92,9 +102,14 @@ public:
 	//	 A reference to the component's acceleration structure.
 	const Vector2D& GetAcceleration() const;
 
+	// Set the old translation (position) of a physics component.
+	// Params: 
+	//   oldTranslation = New value for the old translation.
+	void SetOldTranslation(const Vector2D& oldTranslation);
+
 	// Get the old translation (position) of a physics component.
 	// Returns: 
-	//   A reference to the component's oldTranslation structure,
+	//   A reference to the component's oldTranslation structure.
 	const Vector2D& GetOldTranslation() const;
 
 private:
@@ -121,7 +136,7 @@ private:
 	Vector2D	oldTranslation;
 
 	// Transform component
-	Transform*	transform;
+	Transform* transform;
 };
 
 //------------------------------------------------------------------------------

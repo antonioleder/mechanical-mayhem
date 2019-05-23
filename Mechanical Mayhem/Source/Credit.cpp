@@ -26,9 +26,10 @@
 #include <Mesh.h>
 #include <Graphics.h>
 #include <Camera.h>
+#include <GameObjectFactory.h>
 
 // Components
-#include "SpriteText.h"
+#include <SpriteTextMono.h>
 #include <Transform.h>
 #include "Button.h"
 
@@ -53,19 +54,19 @@ namespace Levels
 	{
 		std::cout << "Credit::Load" << std::endl;
 
-		// Create the mesh and sprite source for the main menu.
-		meshBackground = CreateQuadMesh(Vector2D(1.0f, 1.0f), Vector2D(0.5f, 0.5f));
-		textureBackground = Texture::CreateTextureFromFile("Credits.png");
-		spriteSourceBackground = new SpriteSource(1, 1, textureBackground);
+		GameObjectFactory& objectFactory = GameObjectFactory::GetInstance();
+		GameObjectManager& objectManager = GetSpace()->GetObjectManager();
+		ResourceManager& resourceManager = GetSpace()->GetResourceManager();
 
-		// Create a new quad mesh for the sprite.
-		meshButton = CreateQuadMesh(Vector2D(1.0f, 1.0f), Vector2D(0.5f, 0.5f));
+		resourceManager.GetMesh("Quad", Vector2D(1.0f, 1.0f), Vector2D(0.5f, 0.5f));
+		resourceManager.GetSpriteSource("Credits.png");
+		resourceManager.GetSpriteSource("Button.png");
+		resourceManager.GetMesh("FontAtlas", 12, 8);
+		resourceManager.GetSpriteSource("Code New Roman.png", 12, 8);
 
-		// Load the player texture.
-		textureButton = Texture::CreateTextureFromFile("Button.png");
-
-		// Setup the player sprite source.
-		spriteSourceButton = new SpriteSource(1, 1, textureButton);
+		objectManager.AddArchetype(*objectFactory.CreateObject("FullScreenImage", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("Credits.png")));
+		objectManager.AddArchetype(*objectFactory.CreateObject("Button", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("Button.png")));
+		objectManager.AddArchetype(*objectFactory.CreateObject("Text", resourceManager.GetMesh("FontAtlas"), resourceManager.GetSpriteSource("Code New Roman.png")));
 	}
 
 	// Initialize the memory associated with Credit.
@@ -75,15 +76,9 @@ namespace Levels
 
 		GameObjectManager& objectManager = GetSpace()->GetObjectManager();
 
-		objectManager.AddArchetype(*Archetypes::CreateFullScreenImageArchetype(meshBackground, spriteSourceBackground));
 		objectManager.AddObject(*new GameObject(*objectManager.GetArchetypeByName("FullScreenImage")));
 
-		// Add text archetype.
-		objectManager.AddArchetype(*Archetypes::CreateText());
-
-		objectManager.AddArchetype(*Archetypes::CreateButtonArchetype(meshButton, spriteSourceButton));
-
-		AddMapButton("Main Menu", Vector2D(0.0f, -250.0f), Levels::Map::MainMenu);
+		AddMapButton("Main Menu", Vector2D(0.0f, -2.5f), Levels::Map::MainMenu);
 
 		Camera& camera = Graphics::GetInstance().GetDefaultCamera();
 		camera.SetTranslation(Vector2D());
@@ -102,14 +97,6 @@ namespace Levels
 	void Credit::Unload()
 	{
 		std::cout << "Credit::Unload" << std::endl;
-
-		delete spriteSourceButton;
-		delete textureButton;
-		delete meshButton;
-
-		delete spriteSourceBackground;
-		delete textureBackground;
-		delete meshBackground;
 	}
 
 	//------------------------------------------------------------------------------
@@ -124,17 +111,15 @@ namespace Levels
 	{
 		GameObjectManager& objectManager = GetSpace()->GetObjectManager();
 
-		objectManager.AddArchetype(*Archetypes::CreateButtonArchetype(meshButton, spriteSourceButton));
-
 		GameObject* levelButton = new GameObject(*objectManager.GetArchetypeByName("Button"));
 		static_cast<Transform*>(levelButton->GetComponent("Transform"))->SetTranslation(position);
 		static_cast<Behaviors::Button*>(levelButton->GetComponent("Button"))->SetMap(map);
 		objectManager.AddObject(*levelButton);
 
-		GameObject*text = new GameObject(*objectManager.GetArchetypeByName("Text"));
-		static_cast<SpriteText*>(text->GetComponent("SpriteText"))->SetText(name_);
-		static_cast<SpriteText*>(text->GetComponent("SpriteText"))->SetColor(Color(0.0f, 0.0f, 0.0f));
-		static_cast<Transform*>(text->GetComponent("Transform"))->SetTranslation(position);
+		GameObject* text = new GameObject(*objectManager.GetArchetypeByName("Text"));
+		text->GetComponent<SpriteTextMono>()->SetText(name_);
+		text->GetComponent<SpriteTextMono>()->SetColor(Color(0.0f, 0.0f, 0.0f));
+		text->GetComponent<Transform>()->SetTranslation(position);
 		objectManager.AddObject(*text);
 	}
 }

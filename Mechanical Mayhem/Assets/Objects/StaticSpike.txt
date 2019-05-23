@@ -1,0 +1,24 @@
+StaticSpike
+{
+  numComponents : 4
+  Transform
+  {
+    translation : { 0, 0 }
+    rotation : 0.785398
+    scale : { 1, 1 }
+  }
+  Sprite
+  {
+    frameIndex : 0
+    color : { 1 , 1 , 1 , 1 }
+  }
+  ColliderRectangle
+  {
+    group : 1
+    mask : 2
+    extents : { 0.495, 0.495 }
+  }
+  Behaviors::Hazard
+  {
+  }
+}

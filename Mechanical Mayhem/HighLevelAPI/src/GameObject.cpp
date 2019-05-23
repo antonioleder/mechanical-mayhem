@@ -20,6 +20,8 @@
 // Systems
 #include "Component.h"
 #include "Space.h"
+#include "Parser.h"
+#include "GameObjectFactory.h"
 
 //------------------------------------------------------------------------------
 
@@ -34,38 +36,110 @@
 // Create a new game object.
 // Params:
 //	 name = The name of the game object being created.
-GameObject::GameObject(const std::string& name) : BetaObject(name), numComponents(0), isDestroyed(false)
+GameObject::GameObject(const std::string& name) : BetaObject(name), isDestroyed(false)
 {
 }
 
 // Clone a game object from another game object.
 // Params:
 //	 other = A reference to the object being cloned.
-GameObject::GameObject(const GameObject& other) : BetaObject(other.GetName(), other.GetOwner()), numComponents(other.numComponents), isDestroyed(false)
+GameObject::GameObject(const GameObject& other) : BetaObject(other.GetName(), other.GetOwner()), isDestroyed(false)
 {
-	for (size_t i = 0; i < numComponents; i++)
+	// Reserve how many components we need so there's only 1 allocation.
+	components.reserve(other.components.size());
+
+	// Loop through all of the other game object's components and clone them.
+	for (auto it = other.components.begin(); it != other.components.end(); it++)
 	{
-		components[i] = other.components[i]->Clone();
-		components[i]->SetOwner(this);
+		Component* component = (*it)->Clone();
+		component->SetOwner(this);
+		components.push_back(component);
 	}
 }
 
 // Free the memory associated with a game object.
 GameObject::~GameObject()
 {
-	for (size_t i = 0; i < numComponents; i++)
+	// Destroy all components.
+	for (auto it = components.begin(); it != components.end(); it++)
 	{
-		delete components[i];
+		delete* it;
 	}
 }
 
 // Initialize this object's components and set it to active.
 void GameObject::Initialize()
 {
-	for (size_t i = 0; i < numComponents; i++)
+	// Initialize all components.
+	for (auto it = components.begin(); it != components.end(); it++)
 	{
-		components[i]->Initialize();
+		(*it)->Initialize();
 	}
+}
+
+// Loads object data from a file.
+// Params:
+//   parser = The parser for the file.
+void GameObject::Deserialize(Parser& parser)
+{
+	parser.ReadSkip(GetName());
+	parser.ReadSkip('{');
+
+	// Read the number of components in the file.
+	unsigned numComponents;
+	parser.ReadVariable("numComponents", numComponents);
+
+	// Reserve how many components we need so there's only 1 allocation.
+	components.reserve(numComponents);
+
+	for (unsigned i = 0; i < numComponents; i++)
+	{
+		// Read the next component's name.
+		std::string componentName;
+		parser.ReadValue(componentName);
+
+		// Attempt to create the specified component.
+		Component* component = GameObjectFactory::GetInstance().CreateComponent(componentName);
+		if (component == nullptr)
+		{
+			throw ParseException(GetName(), "Could not find component: " + componentName);
+		}
+
+		AddComponent(component);
+
+		// Deserialize the component from the file.
+		parser.ReadSkip('{');
+		component->Deserialize(parser);
+		parser.ReadSkip('}');
+	}
+
+	parser.ReadSkip('}');
+}
+
+// Saves object data to a file.
+// Params:
+//   parser = The parser for the file.
+void GameObject::Serialize(Parser & parser) const
+{
+	parser.WriteValue(GetName());
+	parser.BeginScope();
+
+	// Write the number of components to the file.
+	unsigned numComponents = static_cast<unsigned>(components.size());
+	parser.WriteVariable("numComponents", numComponents);
+
+	for (unsigned i = 0; i < numComponents; i++)
+	{
+		// Write the next component's name.
+		parser.WriteValue(std::string(typeid(*components[i]).name()).substr(6));
+
+		// Serialize the component to the file.
+		parser.BeginScope();
+		components[i]->Serialize(parser);
+		parser.EndScope();
+	}
+
+	parser.EndScope();
 }
 
 // Update any components attached to the game object.
@@ -76,9 +150,10 @@ void GameObject::Update(float dt)
 	if (isDestroyed)
 		return;
 
-	for (size_t i = 0; i < numComponents; i++)
+	// Call the Update function on every component.
+	for (auto it = components.begin(); it != components.end(); it++)
 	{
-		components[i]->Update(dt);
+		(*it)->Update(dt);
 	}
 }
 
@@ -90,40 +165,52 @@ void GameObject::FixedUpdate(float dt)
 	if (isDestroyed)
 		return;
 
-	for (size_t i = 0; i < numComponents; i++)
+	// Call the FixedUpdate function on every component.
+	for (auto it = components.begin(); it != components.end(); it++)
 	{
-		components[i]->FixedUpdate(dt);
+		(*it)->FixedUpdate(dt);
 	}
 }
 
 // Draw any visible components attached to the game object.
 void GameObject::Draw()
 {
-	for (size_t i = 0; i < numComponents; i++)
+	// Call the Draw function on every component.
+	for (auto it = components.begin(); it != components.end(); it++)
 	{
-		components[i]->Draw();
+		(*it)->Draw();
 	}
 }
 
-// Adds a component to the object.
-void GameObject::AddComponent(Component* component)
+// Forwards events to components.
+// Params:
+//   event = The event that has been received.
+void GameObject::HandleEvent(const Event& event)
 {
-	if (numComponents >= 10)
-		return;
+	size_t numComponents = components.size();
+	for (size_t i = 0; i < numComponents; ++i)
+		components[i]->HandleEvent(event);
+}
 
-	components[numComponents++] = component;
+// Adds a component to the object.
+void GameObject::AddComponent(Component * component)
+{
+	components.push_back(component);
 	component->SetOwner(this);
 }
 
 // Retrieves the component with the given name if it exists.
 // Params:
 //   name = The name of the component to find.
-Component* GameObject::GetComponent(const std::string& name_)
+// Returns:
+//  A pointer to the component if it exists, nullptr otherwise.
+Component* GameObject::GetComponent(const std::string & name_)
 {
-	for (size_t i = 0; i < numComponents; i++)
+	// Loop through every component and check if its name matches.
+	for (auto it = components.begin(); it != components.end(); it++)
 	{
-		if (components[i]->GetName() == name_)
-			return components[i];
+		if ((*it)->GetName() == name_)
+			return *it;
 	}
 
 	return nullptr;

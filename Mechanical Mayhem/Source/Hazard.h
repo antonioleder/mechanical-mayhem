@@ -40,7 +40,7 @@ namespace Behaviors
 		// Constructor
 		// Params:
 		//   rotation = rotation of Hazard
-		Hazard(bool alwaysCollidable, bool collidable, float rotation = 0.0f);
+		Hazard(bool alwaysCollidable = false, bool collidable = true, float rotation = 0.0f);
 
 		// Return a new copy of the component.
 		Component* Clone() const;
@@ -53,6 +53,11 @@ namespace Behaviors
 		//   dt = The (fixed) change in time since the last step.
 		void Update(float dt) override;
 
+		// Receive an event and handle it (if applicable).
+		// Params:
+		//   event = The event that has been received.
+		void HandleEvent(const Event& event) override;
+
 		// Returns if the hazard is collidable.
 		bool IsCollidable();
 
@@ -60,12 +65,6 @@ namespace Behaviors
 		// Params:
 		//   collidable = Whether the hazard is collidable.
 		void SetCollidable(bool collidable);
-
-		// Collision handler for Hazard objects.
-		// Params:
-		//   object = The first object.
-		//   other  = The other object the first object is colliding with.
-		friend void HazardCollisionHandler(GameObject& object, GameObject& other);
 
 	private:
 		//------------------------------------------------------------------------------

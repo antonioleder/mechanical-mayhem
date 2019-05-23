@@ -19,6 +19,7 @@
 // Systems
 #include "Archetypes.h"
 #include "Space.h"
+#include <GameObjectFactory.h>
 #include <Input.h>
 #include "MeshHelper.h"
 #include <Texture.h>
@@ -28,7 +29,7 @@
 #include <Camera.h>
 
 // Components
-#include "SpriteText.h"
+#include <SpriteTextMono.h>
 #include <Transform.h>
 #include "Button.h"
 
@@ -52,14 +53,17 @@ namespace Levels
 	{
 		std::cout << "LevelSelect::Load" << std::endl;
 
-		// Create a new quad mesh for the sprite.
-		meshButton = CreateQuadMesh(Vector2D(1.0f, 1.0f), Vector2D(0.5f, 0.5f));
+		GameObjectFactory& objectFactory = GameObjectFactory::GetInstance();
+		GameObjectManager& objectManager = GetSpace()->GetObjectManager();
+		ResourceManager& resourceManager = GetSpace()->GetResourceManager();
 
-		// Load the player texture.
-		textureButton = Texture::CreateTextureFromFile("Button.png");
+		resourceManager.GetMesh("Quad", Vector2D(1.0f, 1.0f), Vector2D(0.5f, 0.5f));
+		resourceManager.GetSpriteSource("Button.png");
+		resourceManager.GetMesh("FontAtlas", 12, 8);
+		resourceManager.GetSpriteSource("Code New Roman.png", 12, 8);
 
-		// Setup the player sprite source.
-		spriteSourceButton = new SpriteSource(1, 1, textureButton);
+		objectManager.AddArchetype(*objectFactory.CreateObject("Button", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("Button.png")));
+		objectManager.AddArchetype(*objectFactory.CreateObject("Text", resourceManager.GetMesh("FontAtlas"), resourceManager.GetSpriteSource("Code New Roman.png")));
 	}
 
 	// Initialize the memory associated with LevelSelect.
@@ -69,22 +73,20 @@ namespace Levels
 
 		GameObjectManager& objectManager = GetSpace()->GetObjectManager();
 
-		objectManager.AddArchetype(*Archetypes::CreateButtonArchetype(meshButton, spriteSourceButton));
-
 		// Create and add descriptive text
-		objectManager.AddArchetype(*Archetypes::CreateText());
 		GameObject* text = new GameObject(*objectManager.GetArchetypeByName("Text"));
-		static_cast<SpriteText*>(text->GetComponent("SpriteText"))->SetText("Select Your Level");
-		static_cast<Transform*>(text->GetComponent("Transform"))->SetTranslation(Vector2D(0.0f, 250.0f));
+		text->GetComponent<SpriteTextMono>()->SetText("Select Your Level");
+		text->GetComponent<Transform>()->SetTranslation(Vector2D(0.0f, 2.5f));
 		objectManager.AddObject(*text);
 
-		AddMapButton("Tutorial", Vector2D(-175.0f, 150.0f), Levels::Map::Tutorial);
-		AddMapButton("Arena 3", Vector2D(175.0f, 150.0f), Levels::Map::Arena3);
-		AddMapButton("MediumBoy", Vector2D(-175.0f, 50.0f), Levels::Map::MediumBoy);
-		AddMapButton("Channels", Vector2D(175.0f, 50.0f), Levels::Map::Channels);
-		AddMapButton("Separation", Vector2D(-175.0f, -50.0f), Levels::Map::Separation);
-		AddMapButton("Descent", Vector2D(175.0f, -50.0f), Levels::Map::Descent);
-		AddMapButton("Main Menu", Vector2D(0.0f, -250.0f), Levels::Map::MainMenu);
+		AddMapButton("Tutorial", Vector2D(-1.75f, 1.5f), Levels::Map::Tutorial);
+		AddMapButton("Arena 3", Vector2D(1.75f, 1.5f), Levels::Map::Arena3);
+		AddMapButton("MediumBoy", Vector2D(-1.75f, 0.5f), Levels::Map::MediumBoy);
+		AddMapButton("Channels", Vector2D(1.75, 0.5f), Levels::Map::Channels);
+		AddMapButton("Separation", Vector2D(-1.75f, -0.5f), Levels::Map::Separation);
+		AddMapButton("Descent", Vector2D(1.75f, -0.5f), Levels::Map::Descent);
+		AddMapButton("Blah", Vector2D(0.0f, -1.5f), Levels::Map::Blah);
+		AddMapButton("Main Menu", Vector2D(0.0f, -2.5f), Levels::Map::MainMenu);
 
 		Camera& camera = Graphics::GetInstance().GetDefaultCamera();
 		camera.SetTranslation(Vector2D());
@@ -103,10 +105,6 @@ namespace Levels
 	void LevelSelect::Unload()
 	{
 		std::cout << "LevelSelect::Unload" << std::endl;
-
-		delete spriteSourceButton;
-		delete textureButton;
-		delete meshButton;
 	}
 
 	//------------------------------------------------------------------------------
@@ -127,9 +125,9 @@ namespace Levels
 		objectManager.AddObject(*levelButton);
 
 		GameObject*text = new GameObject(*objectManager.GetArchetypeByName("Text"));
-		static_cast<SpriteText*>(text->GetComponent("SpriteText"))->SetText(name_);
-		static_cast<SpriteText*>(text->GetComponent("SpriteText"))->SetColor(Color(0.0f, 0.0f, 0.0f));
-		static_cast<Transform*>(text->GetComponent("Transform"))->SetTranslation(position);
+		text->GetComponent<SpriteTextMono>()->SetText(name_);
+		text->GetComponent<SpriteTextMono>()->SetColor(Color(0.0f, 0.0f, 0.0f));
+		text->GetComponent<Transform>()->SetTranslation(position);
 		objectManager.AddObject(*text);
 	}
 }

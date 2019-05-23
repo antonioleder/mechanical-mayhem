@@ -52,8 +52,8 @@ namespace Behaviors
 		//   jumpLength = The number of frames of the jump animation.
 		//   idleStart  = The starting frame for the idle animation.
 		//   idleLength = The number of frames of the idle animation.
-		MonkeyAnimation(unsigned walkStart, unsigned walkLength, 
-			unsigned jumpStart, unsigned jumpLength, unsigned idleStart, unsigned idleLength);
+		MonkeyAnimation(unsigned walkStart = 0, unsigned walkLength = 0, 
+			unsigned jumpStart = 0, unsigned jumpLength = 0, unsigned idleStart = 0, unsigned idleLength = 0);
 
 		// Clone a component and return a pointer to the cloned component.
 		// Returns:

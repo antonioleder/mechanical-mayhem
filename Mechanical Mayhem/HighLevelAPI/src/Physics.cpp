@@ -19,6 +19,7 @@
 
 // Systems
 #include "GameObject.h"
+#include "Parser.h"
 
 // Components
 #include "Transform.h"
@@ -37,8 +38,8 @@
 // Params:
 //   transform - The transform of the object.
 Physics::Physics() : Component("Physics"),
-	velocity(Vector2D()), angularVelocity(0.0f), inverseMass(1.0f), forcesSum(Vector2D()),
-	acceleration(Vector2D()), oldTranslation(Vector2D()), transform(nullptr)
+velocity(Vector2D()), angularVelocity(0.0f), inverseMass(1.0f), forcesSum(Vector2D()),
+acceleration(Vector2D()), oldTranslation(Vector2D()), transform(nullptr)
 {
 }
 
@@ -51,7 +52,32 @@ Component* Physics::Clone() const
 // Initialize components.
 void Physics::Initialize()
 {
-	transform = static_cast<Transform*>(GetOwner()->GetComponent("Transform"));
+	transform = static_cast<Transform*>(GetOwner()->GetComponent<Transform>());
+}
+
+// Loads object data from a file.
+// Params:
+//   parser = The parser for the file.
+void Physics::Deserialize(Parser& parser)
+{
+	parser.ReadVariable("acceleration", acceleration);
+	parser.ReadVariable("velocity", velocity);
+	parser.ReadVariable("angularVelocity", angularVelocity);
+	float mass;
+	parser.ReadVariable("mass", mass);
+	inverseMass = 1.0f / mass;
+}
+
+// Saves object data to a file.
+// Params:
+//   parser = The parser for the file.
+void Physics::Serialize(Parser& parser) const
+{
+	parser.WriteVariable("acceleration", acceleration);
+	parser.WriteVariable("velocity", velocity);
+	parser.WriteVariable("angularVelocity", angularVelocity);
+	float mass = 1.0f / inverseMass;
+	parser.WriteVariable("mass", mass);
 }
 
 // Reset acceleration.
@@ -60,7 +86,7 @@ void Physics::Initialize()
 void Physics::Update(float dt)
 {
 	UNREFERENCED_PARAMETER(dt);
-	
+
 	// Calculate the acceleration and clear the current forces.
 	acceleration = forcesSum * inverseMass;
 	forcesSum = Vector2D();
@@ -80,7 +106,7 @@ void Physics::FixedUpdate(float dt)
 	// Add the current velocity to the translation & rotation.
 	Vector2D newTranslation = oldTranslation + velocity * dt;
 	float newRotation = transform->GetRotation() + angularVelocity * dt;
-	
+
 	// Update the translation & rotation.
 	transform->SetTranslation(newTranslation);
 	transform->SetRotation(newRotation);
@@ -141,6 +167,14 @@ void Physics::AddForce(const Vector2D& force)
 const Vector2D& Physics::GetAcceleration() const
 {
 	return acceleration;
+}
+
+// Set the old translation (position) of a physics component.
+// Params: 
+//   oldTranslation = New value for the old translation.
+void Physics::SetOldTranslation(const Vector2D& oldTranslation_)
+{
+	oldTranslation = oldTranslation_;
 }
 
 // Get the old translation (position) of a physics component.

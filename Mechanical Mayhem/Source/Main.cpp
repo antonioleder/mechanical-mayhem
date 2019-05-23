@@ -26,6 +26,22 @@
 // Initial game state
 #include "MainMenu.h"
 
+// Systems
+#include <GameObjectFactory.h>
+
+// Components
+#include "Button.h"
+#include "CameraFollow.h"
+#include "ChipCollectible.h"
+#include "ColorChange.h"
+#include "DimensionController.h"
+#include "Hazard.h"
+#include "MonkeyAnimation.h"
+#include "PlayerMovement.h"
+#include "PlayerShip.h"
+#include "ScreenWrap.h"
+#include "TimedDeath.h"
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -54,9 +70,27 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prevInstance, _In
 	Engine& engine = Engine::GetInstance();
 
 	// Add additional modules to engine
+	engine.AddModule(new FullscreenManager(true));
 	engine.AddModule(space);
 	engine.AddModule(new SoundManager());
-	//engine.AddModule(new FullscreenManager());
+
+	// Register components
+	GameObjectFactory& objectFactory = GameObjectFactory::GetInstance();
+
+	{
+		using namespace Behaviors;
+		objectFactory.RegisterComponent<Button>();
+		objectFactory.RegisterComponent<CameraFollow>();
+		objectFactory.RegisterComponent<ChipCollectible>();
+		objectFactory.RegisterComponent<ColorChange>();
+		objectFactory.RegisterComponent<DimensionController>();
+		objectFactory.RegisterComponent<Hazard>();
+		objectFactory.RegisterComponent<MonkeyAnimation>();
+		objectFactory.RegisterComponent<PlayerMovement>();
+		objectFactory.RegisterComponent<PlayerShip>();
+		objectFactory.RegisterComponent<ScreenWrap>();
+		objectFactory.RegisterComponent<TimedDeath>();
+	}
 
 	// Game engine goes!
 	engine.Start(800, 600, 200);

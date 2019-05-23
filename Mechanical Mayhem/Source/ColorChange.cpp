@@ -64,10 +64,6 @@ namespace Behaviors
 	{
 		// Store the required components for ease of access.
 		sprite = static_cast<Sprite*>(GetOwner()->GetComponent("Sprite"));
-
-		// Set the object's collision handler to ours.
-		Collider* collider = static_cast<Collider*>(GetOwner()->GetComponent("Collider"));
-		collider->SetCollisionHandler(&Behaviors::ColorChangeCollisionHandler);
 	}
 
 	// Update function for this component.

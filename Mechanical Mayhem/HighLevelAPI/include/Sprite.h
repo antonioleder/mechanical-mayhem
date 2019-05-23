@@ -16,7 +16,7 @@
 //------------------------------------------------------------------------------
 
 #include "Component.h"
-#include "Color.h"
+#include <Color.h>
 
 //------------------------------------------------------------------------------
 
@@ -28,6 +28,11 @@ class Mesh;
 class SpriteSource;
 class Transform;
 class Vector2D;
+
+namespace CS230
+{
+	class Matrix2D;
+}
 
 //------------------------------------------------------------------------------
 // Public Structures:
@@ -51,6 +56,16 @@ public:
 	// Initialize components.
 	void Initialize();
 
+	// Loads object data from a file.
+	// Params:
+	//   parser = The parser for the file.
+	virtual void Deserialize(Parser& parser) override;
+
+	// Saves object data to a file.
+	// Params:
+	//   parser = The parser for the file.
+	virtual void Serialize(Parser& parser) const override;
+
 	// Draw a sprite (Sprite can be textured or untextured).
 	void Draw() override;
 
@@ -59,11 +74,16 @@ public:
 	//   offset = The offset that will be added to the translation when drawing.
 	void Draw(const Vector2D& offset);
 
+	// Draw a sprite at an offset from the object's translation.
+	// Params:
+	//   matrix = The transformation matrix that will be applied when drawing.
+	void Draw(const CS230::Matrix2D& matrix);
+
 	// Set a sprite's transparency (between 0.0f and 1.0f).
 	// Params:
 	//   alpha = New value for the sprite's 'alpha' value.
 	void SetAlpha(float alpha);
-	
+
 	// Get the current value for a sprite's transparency.
 	float GetAlpha() const;
 
@@ -83,7 +103,7 @@ public:
 	//   mesh = Pointer to a mesh created using the Alpha Engine.
 	void SetMesh(Mesh* mesh);
 
-	// Set a new SpriteSource for the specified sprite.
+	// Set a new sprite source for the specified sprite.
 	// Params:
 	//	 spriteSource = A new sprite source for the sprite.
 	void SetSpriteSource(SpriteSource* spriteSource);
@@ -103,11 +123,6 @@ protected:
 
 	// Components
 	Transform* transform;
-
-private:
-	//------------------------------------------------------------------------------
-	// Private Variables:
-	//------------------------------------------------------------------------------
 
 	// The frame currently being displayed (for sprite sheets).
 	unsigned int frameIndex;

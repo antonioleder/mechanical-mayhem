@@ -52,10 +52,6 @@ namespace Behaviors
 	void ChipCollectible::Initialize()
 	{
 		sprite = static_cast<Sprite*>(GetOwner()->GetComponent("Sprite"));
-		
-		// Set the collision handler
-		Collider* ChipCollider = static_cast<Collider*>(GetOwner()->GetComponent("Collider"));
-		ChipCollider->SetCollisionHandler(&ChipCollectibleCollisionHandler);
 	}
 
 	// Update

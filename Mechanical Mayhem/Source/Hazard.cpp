@@ -33,12 +33,6 @@
 namespace Behaviors
 {
 	//------------------------------------------------------------------------------
-	// Forward Declarations:
-	//------------------------------------------------------------------------------
-
-	void HazardCollisionHandler(GameObject& object, GameObject& other);
-
-	//------------------------------------------------------------------------------
 	// Public Functions:
 	//------------------------------------------------------------------------------
 
@@ -59,9 +53,6 @@ namespace Behaviors
 	// Initialize data for this object.
 	void Hazard::Initialize()
 	{
-		// Set the object's collision handler to ours.
-		Collider* collider = static_cast<Collider*>(GetOwner()->GetComponent("Collider"));
-		collider->SetCollisionHandler(&Behaviors::HazardCollisionHandler);
 	}
 
 	// Update function for this component.
@@ -70,6 +61,19 @@ namespace Behaviors
 	void Hazard::Update(float dt)
 	{
 		UNREFERENCED_PARAMETER(dt);
+	}
+
+	// Receive an event and handle it (if applicable).
+	// Params:
+	//   event = The event that has been received.
+	void Hazard::HandleEvent(const Event& event)
+	{
+		GameObject& other = *static_cast<GameObject*>(event.GetSender());
+		if (other.GetName() == "Player")
+		{
+			if (collidable)
+				other.Destroy();
+		}
 	}
 
 	// Returns if the hazard is collidable
@@ -86,19 +90,5 @@ namespace Behaviors
 		if (alwaysCollidable)
 			return;
 		collidable = collidable_;
-	}
-
-	// Collision handler for Hazard objects.
-	// Params:
-	//   object = The first object.
-	//   other  = The other object the first object is colliding with.
-	void HazardCollisionHandler(GameObject& object, GameObject& other)
-	{
-		if (other.GetName() == "Player")
-		{
-			if (static_cast<Hazard*>(object.GetComponent("Hazard"))->collidable)
-				other.Destroy();
-				//Engine::GetInstance().Stop();
-		}
 	}
 }

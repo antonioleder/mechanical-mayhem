@@ -48,6 +48,7 @@ namespace Levels
 		Channels,
 		Separation,
 		Descent,
+		Blah,
 		MAX_MAP
 	};
 
@@ -122,39 +123,15 @@ namespace Levels
 
 		Map map;
 
-		Mesh* meshGenericQuad;
-
 		// Monkey
-		Mesh* meshMonkey;
-		Texture* textureMonkey;
-		SpriteSource* spriteSourceMonkey;
-
 		unsigned columnsMonkey;
 		unsigned rowsMonkey;
 
 		// Cat
-		Mesh* meshCat;
-		Texture* textureCat;
-		SpriteSource* spriteSourceCat;
-
 		unsigned columnsCat;
 		unsigned rowsCat;
 
-		// Collectible
-		Texture* textureCollectible;
-		SpriteSource* spriteSourceCollectible;
-
-		// Powerups
-		Texture* textureJumpBoost;
-		Texture* textureSpeedBoost;
-		SpriteSource* spriteSourceJumpBoost;
-		SpriteSource* spriteSourceSpeedBoost;
-
 		// Spikes
-		Texture* textureSpikes;
-		SpriteSource* spriteSourceSpikes;
-		Mesh* meshSpikes;
-
 		unsigned columnsSpikes;
 		unsigned rowsSpikes;
 
@@ -162,14 +139,6 @@ namespace Levels
 		Tilemap* dataStaticMap;
 		Tilemap* dataRedMap;
 		Tilemap* dataBlueMap;
-		Texture* textureStaticMap;
-		Texture* textureRedMap;
-		Texture* textureBlueMap;
-		SpriteSource* spriteSourceStaticMap;
-		SpriteSource* spriteSourceRedMap;
-		SpriteSource* spriteSourceBlueMap;
-		Mesh* meshMap;
-
 		unsigned columnsMap;
 		unsigned rowsMap;
 

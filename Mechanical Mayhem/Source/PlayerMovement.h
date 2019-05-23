@@ -51,7 +51,7 @@ namespace Behaviors
 		//------------------------------------------------------------------------------
 
 		// Constructor
-		PlayerMovement(unsigned keyUp, unsigned keyLeft, unsigned keyRight, unsigned keySwitch);
+		PlayerMovement(unsigned keyUp = 0, unsigned keyLeft = 0, unsigned keyRight = 0, unsigned keySwitch = 0);
 
 		// Clone a component and return a pointer to the cloned component.
 		// Returns:
@@ -65,6 +65,11 @@ namespace Behaviors
 		// Params:
 		//   dt = The (fixed) change in time since the last step.
 		void Update(float dt) override;
+
+		// Receive an event and handle it (if applicable).
+		// Params:
+		//   event = The event that has been received.
+		void HandleEvent(const Event& event) override;
 
 		// Sets the keybinds for the monkey.
 		// Params:
@@ -92,19 +97,6 @@ namespace Behaviors
 
 		// Starts PowerUp Timer
 		void StartPUTimer();
-
-		// Map collision handler for Monkey objects.
-		// Params:
-		//   object = The monkey object.
-		//   collision = Which sides the monkey collided on.
-		friend void MonkeyMapCollisionHandler(GameObject& object, 
-			const MapCollision& collision);
-
-		// Collision handler for monkey.
-		// Params:
-		//   object = The monkey.
-		//   other  = The object the monkey is colliding with.
-		friend void MonkeyCollisionHandler(GameObject& object, GameObject& other);
 
 	private:
 		//------------------------------------------------------------------------------

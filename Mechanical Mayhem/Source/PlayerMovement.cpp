@@ -42,80 +42,16 @@ namespace Behaviors
 	// Public Functions:
 	//------------------------------------------------------------------------------
 
-	// Map collision handler for Monkey objects.
-	// Params:
-	//   object = The monkey object.
-	//   collision = Which sides the monkey collided on.
-	void MonkeyMapCollisionHandler(GameObject& object, const MapCollision& collision)
-	{
-		// Get the PlayerMovement component.
-		PlayerMovement* monkeyMovement = static_cast<PlayerMovement*>(object.GetComponent("PlayerMovement"));
-
-		// If the monkey's collider is colliding on the bottom, mark the monkey as on ground.
-		if (collision.bottom)
-		{
-			monkeyMovement->onGround = true;
-		}
-
-		// Save whether the monkey is touching a wall, used for wall jumping.
-
-		if (collision.left)
-		{
-			monkeyMovement->onLeftWall = true;
-		}
-
-		if (collision.right)
-		{
-			monkeyMovement->onRightWall = true;
-		}
-	}
-
-	// Collision handler for monkey.
-	// Params:
-	//   object = The monkey.
-	//   other  = The object the monkey is colliding with.
-	void MonkeyCollisionHandler(GameObject& object, GameObject& other)
-	{
-		// Get the PlayerMovement component.
-		PlayerMovement* playerMovement = static_cast<PlayerMovement*>(object.GetComponent("PlayerMovement"));
-
-		// Destroy collectibles when touching.
-		if (other.GetName() == "Collectible")
-		{
-			ChipCollectible* collectible = static_cast<ChipCollectible*>(other.GetComponent("ChipCollectible"));
-
-			// if chips are active, get more switcheroos and deactive the chips
-			if (collectible->IsActive())
-			{
-				playerMovement->chips += 5;
-				collectible->SetActive(false);
-			}
-		}
-
-		// Jump & speed boost powerups
-		if (other.GetName() == "JumpBoost" || other.GetName() == "SpeedBoost")
-		{
-			if (other.GetName() == "JumpBoost")
-				playerMovement->SetPowerUp(POWER_UP_JUMP);
-			else if (other.GetName() == "SpeedBoost")
-				playerMovement->SetPowerUp(POWER_UP_SPEED);
-
-			playerMovement->StartPUTimer();
-
-			other.Destroy();
-		}
-	}
-
 	// Constructor
 	PlayerMovement::PlayerMovement(unsigned keyUp, unsigned keyLeft, unsigned keyRight, unsigned keySwitch) : Component("PlayerMovement"),
 		keyUp(keyUp), keyLeft(keyLeft), keyRight(keyRight), keySwitch(keySwitch),
-		walkSpeed(450.0f), walkSpeedOld(walkSpeed), jumpSpeed(0.0f, 1050.0f), jumpSpeedOld(jumpSpeed), slidingJumpSpeed(600.0f, 675.0f),
-		gravity(0.0f, -1600.0f), slidingGravity(0.0f, -900.0f), terminalVelocity(900.0f), slidingTerminalVelocity(150.0f), gracePeriod(0.15f),
+		walkSpeed(5.0f), walkSpeedOld(walkSpeed), jumpSpeed(0.0f, 11.0f), jumpSpeedOld(jumpSpeed), slidingJumpSpeed(6.0f, 6.75f),
+		gravity(0.0f, -16.0f), slidingGravity(0.0f, -9.0f), terminalVelocity(9.0f), slidingTerminalVelocity(1.5f), gracePeriod(0.15f),
 		transform(nullptr), physics(nullptr),
 		playerID(0), chips(0),
 		onGround(false), onLeftWall(false), onRightWall(false),
-		hasJumped(false), airTime(0.0f), leftTime(0.0f), rightTime(0.0f), movementLerpGround(0.98f), movementLerpAir(0.93f),
-		powerUp(POWER_UP_NONE), PUTimer(0.0f), PUMaxTime(10.0f), jumpBoost(0.0f, 950.0f), speedBoost(425.0f)
+		hasJumped(false), airTime(0.0f), leftTime(0.0f), rightTime(0.0f), movementLerpGround(1.0f), movementLerpAir(0.98f),
+		powerUp(POWER_UP_NONE), PUTimer(0.0f), PUMaxTime(10.0f), jumpBoost(0.0f, 11.5f), speedBoost(4.25f)
 	{
 	}
 
@@ -133,14 +69,6 @@ namespace Behaviors
 		// Store the required components for ease of access.
 		transform = static_cast<Transform*>(GetOwner()->GetComponent("Transform"));
 		physics = static_cast<Physics*>(GetOwner()->GetComponent("Physics"));
-
-		Collider* collider = static_cast<Collider*>(GetOwner()->GetComponent("Collider"));
-
-		// Set the map collision handler.
-		collider->SetMapCollisionHandler(MonkeyMapCollisionHandler);
-
-		// Set the collision handler.
-		collider->SetCollisionHandler(MonkeyCollisionHandler);
 	}
 
 	// Fixed update function for this component.
@@ -174,6 +102,65 @@ namespace Behaviors
 			unsigned newDimension = (dimensionController.GetActiveDimension() + 1) % dimensionController.GetDimensionCount();
 			dimensionController.SetActiveDimension(newDimension);
 			--chips;
+		}
+	}
+
+	// Receive an event and handle it (if applicable).
+	// Params:
+	//   event = The event that has been received.
+	void PlayerMovement::HandleEvent(const Event& event)
+	{
+		GameObject& other = *static_cast<GameObject*>(event.GetSender());
+		
+		if (event.name == "CollisionStarted")
+		{
+			// Destroy collectibles when touching.
+			if (other.GetName() == "Collectible")
+			{
+				ChipCollectible* collectible = static_cast<ChipCollectible*>(other.GetComponent("ChipCollectible"));
+
+				// if chips are active, get more switcheroos and deactive the chips
+				if (collectible->IsActive())
+				{
+					chips += 5;
+					collectible->SetActive(false);
+				}
+			}
+
+			// Jump & speed boost powerups
+			if (other.GetName() == "JumpBoost" || other.GetName() == "SpeedBoost")
+			{
+				if (other.GetName() == "JumpBoost")
+					SetPowerUp(POWER_UP_JUMP);
+				else if (other.GetName() == "SpeedBoost")
+					SetPowerUp(POWER_UP_SPEED);
+
+				StartPUTimer();
+
+				other.Destroy();
+			}
+		}
+
+		if (event.name == "MapCollisionStarted" || event.name == "MapCollisionPersisted")
+		{
+			const MapCollisionEvent& mapCollisionEvent = static_cast<const MapCollisionEvent&>(event);
+			// If the monkey's collider is colliding on the bottom, mark the monkey as on ground.
+			if (mapCollisionEvent.collision.bottom)
+			{
+				onGround = true;
+			}
+
+			// Save whether the monkey is touching a wall, used for wall jumping.
+
+			if (mapCollisionEvent.collision.left)
+			{
+				onLeftWall = true;
+			}
+
+			if (mapCollisionEvent.collision.right)
+			{
+				onRightWall = true;
+			}
 		}
 	}
 
@@ -262,7 +249,7 @@ namespace Behaviors
 		}
 
 		// Smoothly interpolate the X component of the player's velocity.
-		float movementMix = 1.0f - pow(1.0f - (airTime <= gracePeriod ? movementLerpGround : movementLerpAir), dt);
+		float movementMix = 1.0f - pow(1.0f - (airTime < 1e-6f ? movementLerpGround : movementLerpAir), dt);
 		velocity.x = Interpolate(velocity.x, targetVelocityX, movementMix);
 
 		// Set the velocity.
@@ -323,6 +310,9 @@ namespace Behaviors
 				{
 					velocity.x = -slidingJumpSpeed.x;
 				}
+
+				// Hacky fix so ground movement lerp isn't used immediately after jumping off walls.
+				airTime = 1e-6f;
 			}
 			else
 			{
