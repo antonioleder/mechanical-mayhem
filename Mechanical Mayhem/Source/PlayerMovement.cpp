@@ -75,11 +75,6 @@ namespace Behaviors
 
 		// Add sounds
 		soundManager = Engine::GetInstance().GetModule<SoundManager>();
-		soundManager->AddEffect("jump.wav");
-		soundManager->AddEffect("step.wav");
-		soundManager->AddEffect("wallattach.wav");
-		soundManager->AddEffect("walloff.wav");
-		soundManager->AddEffect("wallslide.wav");
 	}
 
 	// Handles movement.

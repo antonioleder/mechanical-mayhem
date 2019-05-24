@@ -31,6 +31,7 @@
 #include <Graphics.h>
 #include <Random.h>
 #include <GameObjectFactory.h>
+#include <SoundManager.h>
 
 // Components
 #include "Sprite.h"
@@ -76,6 +77,15 @@ namespace Levels
 	// Load the resources associated with Level 1.
 	void Level1::Load()
 	{
+		// Add sounds
+		soundManager = Engine::GetInstance().GetModule<SoundManager>();
+
+		soundManager->AddEffect("jump.wav");
+		soundManager->AddEffect("step.wav");
+		soundManager->AddEffect("wallattach.wav");
+		soundManager->AddEffect("walloff.wav");
+		soundManager->AddEffect("wallslide.wav");
+
 		GameObjectFactory& objectFactory = GameObjectFactory::GetInstance();
 		GameObjectManager& objectManager = GetSpace()->GetObjectManager();
 		ResourceManager& resourceManager = GetSpace()->GetResourceManager();
@@ -95,9 +105,9 @@ namespace Levels
 
 
 		resourceManager.GetMesh("FontAtlas", 12, 8);
-		resourceManager.GetSpriteSource("Code New Roman.png", 12, 8);
+		resourceManager.GetSpriteSource("Code New Roman@4x.png", 12, 8);
 
-		objectManager.AddArchetype(*objectFactory.CreateObject("Text", resourceManager.GetMesh("FontAtlas"), resourceManager.GetSpriteSource("Code New Roman.png")));
+		objectManager.AddArchetype(*objectFactory.CreateObject("Text", resourceManager.GetMesh("FontAtlas"), resourceManager.GetSpriteSource("Code New Roman@4x.png")));
 
 		// Load the tilemaps.
 		std::string mapName;
@@ -514,6 +524,8 @@ namespace Levels
 		delete dataStaticMap;
 		delete dataRedMap;
 		delete dataBlueMap;
+
+		soundManager->Shutdown();
 	}
 
 	//------------------------------------------------------------------------------

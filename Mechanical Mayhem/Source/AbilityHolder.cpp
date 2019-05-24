@@ -102,6 +102,7 @@ namespace Behaviors
 			ability->Shutdown();
 			ability->Unload();
 			delete ability;
+			ability = nullptr;
 		}
 
 		abilityType = abilityType_;

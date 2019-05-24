@@ -29,6 +29,7 @@ class Mesh;
 class SpriteSource;
 class GameObject;
 class Tilemap;
+class SoundManager;
 
 //------------------------------------------------------------------------------
 // Public Structures:
@@ -137,6 +138,8 @@ namespace Levels
 		unsigned rowsMap;
 
 		bool firstFrame;
+
+		SoundManager* soundManager;
 	};
 }
 
