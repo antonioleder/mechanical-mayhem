@@ -149,11 +149,11 @@ float Sprite::GetAlpha() const
 
 // Set the sprite's current frame.
 // (NOTE: You must validate the frame index against the sprite source's frame count.)
-// Params:
-//   frameIndex = New frame index for the sprite (0 .. frame count).
 void Sprite::SetFrame(unsigned int frameIndex_)
 {
 	frameIndex = frameIndex_;
+// Params:
+//   frameIndex = New frame index for the sprite (0 .. frame count).
 }
 
 // Returns the index of the current frame being displayed.

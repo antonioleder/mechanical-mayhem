@@ -18,14 +18,7 @@
 #include "GameObjectManager.h"
 #include "ResourceManager.h"
 #include <BetaObject.h>
-
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-// Forward Declarations:
-//------------------------------------------------------------------------------
-
-class Level;
+#include "Level.h"
 
 //------------------------------------------------------------------------------
 // Public Structures:
@@ -90,7 +83,7 @@ public:
 		nextLevel = new LevelType();
 
 		// Set the next level's parent to this space (necessary for Level::GetParent to work properly).
-		nextLevel->SetParent(this);
+		nextLevel->SetOwner(this);
 	}
 
 	// Restarts the current level (next level = current)

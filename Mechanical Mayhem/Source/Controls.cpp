@@ -61,11 +61,11 @@ namespace Levels
 		resourceManager.GetSpriteSource("Controls.png");
 		resourceManager.GetSpriteSource("Button.png");
 		resourceManager.GetMesh("FontAtlas", 12, 8);
-		resourceManager.GetSpriteSource("Code New Roman.png", 12, 8);
+		resourceManager.GetSpriteSource("Code New Roman@4x.png", 12, 8);
 
 		objectManager.AddArchetype(*objectFactory.CreateObject("FullScreenImage", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("Controls.png")));
 		objectManager.AddArchetype(*objectFactory.CreateObject("Button", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("Button.png")));
-		objectManager.AddArchetype(*objectFactory.CreateObject("Text", resourceManager.GetMesh("FontAtlas"), resourceManager.GetSpriteSource("Code New Roman.png")));
+		objectManager.AddArchetype(*objectFactory.CreateObject("Text", resourceManager.GetMesh("FontAtlas"), resourceManager.GetSpriteSource("Code New Roman@4x.png")));
 	}
 
 	// Initialize the memory associated with Controls.

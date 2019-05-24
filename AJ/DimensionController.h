@@ -1,7 +1,7 @@
 //------------------------------------------------------------------------------
 //
-// File Name:	PlayerMovement.h
-// Author(s):	David Cohen (david.cohen) and A.J. Bussman (anthony.bussman)
+// File Name:	DimensionController.h
+// Author(s):	David Cohen (david.cohen)
 // Project:		Yesterday's Mayonnaise
 // Course:		WANIC VGP2 2018-2019
 //
@@ -18,6 +18,7 @@
 #include "Component.h" // base class
 
 #include "Vector2D.h" // Vector2D
+#include <vector> // std::vector
 
 //------------------------------------------------------------------------------
 
@@ -27,8 +28,6 @@
 
 class Transform;
 class Physics;
-struct MapCollision;
-class SoundManager;
 
 //------------------------------------------------------------------------------
 // Public Structures:
@@ -36,9 +35,7 @@ class SoundManager;
 
 namespace Behaviors
 {
-	class MonkeyAnimation;
-
-	class PlayerMovement : public Component
+	class DimensionController : public Component
 	{
 	public:
 		//------------------------------------------------------------------------------
@@ -46,7 +43,7 @@ namespace Behaviors
 		//------------------------------------------------------------------------------
 
 		// Constructor
-		PlayerMovement(unsigned keyUp = 0, unsigned keyLeft = 0, unsigned keyRight = 0, unsigned keySwitch = 0);
+		DimensionController();
 
 		// Clone a component and return a pointer to the cloned component.
 		// Returns:
@@ -56,96 +53,72 @@ namespace Behaviors
 		// Initialize this component (happens at object creation).
 		void Initialize() override;
 
-		// Handles movement.
+		// Update function for this component.
 		// Params:
 		//   dt = The (fixed) change in time since the last step.
 		void Update(float dt) override;
 
-		// Receive an event and handle it (if applicable).
-		// Params:
-		//   event = The event that has been received.
-		void HandleEvent(const Event& event) override;
-
-		// Sets the keybinds for the monkey.
-		// Params:
-		//   keyUp = The up keybind.
-		//   keyLeft = The left keybind.
-		//   keyRight = The right keybind.
-		//	 keySwitch = The dimension-switch keybind.
-		void SetKeybinds(unsigned keyUp, unsigned keyLeft, unsigned keyRight, unsigned keySwitch);
-
-		// Gets the keybind for up
-		unsigned GetUpKeybind() const;
-
-		// Sets the player's ID.
-		// Params:
-		//   newID = The ID to set to.
-		void SetPlayerID(int newID);
-
-		// Sets the player's ID.
+		// Calculates how long until the dimension can be switched again.
 		// Returns:
-		//   The player's ID.
-		int GetPlayerID() const;
+		//   How much longer until the dimension can be switched.
+		float GetSwitchCooldown() const;
 
-		// Starts PowerUp Timer
-		void StartPUTimer();
+		// Sets the active dimension and deactivates all others.
+		// Params:
+		//   dimension = The dimension to make active.
+		void SetActiveDimension(unsigned dimension);
 
-		// Determines whether the player is grounded
-		bool getOnGround() const;
+		// Returns the active dimension.
+		unsigned GetActiveDimension() const;
+
+		// Returns the number of dimensions.
+		unsigned GetDimensionCount() const;
+
+		// Adds a new dimension.
+		// Params:
+		//   tilemap = The game object with the tilemap for the dimension.
+		// Returns:
+		//   The ID of the new dimension.
+		unsigned AddDimension(GameObject* tilemap);
+
+		// Adds a spike to an existing dimension.
+		// Params:
+		//   dimension = The ID of the dimension to add the spike to.
+		//   spike = The game object for the spike.
+		void AddSpikeToDimension(unsigned dimension, GameObject* spike);
 
 	private:
 		//------------------------------------------------------------------------------
-		// Private Functions:
+		// Private Structures:
 		//------------------------------------------------------------------------------
 
-		// Moves horizontally based on input
-		void MoveHorizontal(float dt) const;
+		// Sets the cooldown time
+		void SetCoolDownTime();
 
-		// Moves vertically based on input
-		void MoveVertical(float dt);
+		struct Dimension
+		{
+			// Constructor
+			// Params:
+			//   tilemap = The game oject with the tilemap for the dimension.
+			Dimension(GameObject* tilemap);
+
+			GameObject* tilemap;
+			std::vector<GameObject*> spikes;
+		};
 
 		//------------------------------------------------------------------------------
 		// Private Variables:
 		//------------------------------------------------------------------------------
 
-		// Keybinds
-		unsigned keyUp;
-		unsigned keyLeft;
-		unsigned keyRight;
-		unsigned keySwitch;
-
-		// Movement properties
-		float walkSpeed;
-		float walkSpeedOld;
-		Vector2D jumpSpeed;
-		Vector2D jumpSpeedOld;
-		Vector2D slidingJumpSpeed;
-		Vector2D gravity;
-		Vector2D slidingGravity;
-		float terminalVelocity;
-		float slidingTerminalVelocity;
-		float gracePeriod;
-
-		// Components
-		Transform* transform;
-		Physics* physics;
-		SoundManager* soundManager;
-
 		// Misc
-		int playerID;
-		int chips;
-
-		bool onGround;
-		bool onLeftWall;
-		bool onRightWall;
-		bool hasJumped;
-		float airTime;
-		float leftTime;
-		float rightTime;
-		float movementLerpGround;
-		float movementLerpAir;
-
-		friend class MonkeyAnimation;
+		float cooldown;
+		float currentCooldown;
+		int cdIndex;
+		int cdCount;
+		int* cdCounts;
+		double gameTimer;
+		unsigned activeDimension;
+		std::vector<Dimension> dimensions;
 	};
 }
 

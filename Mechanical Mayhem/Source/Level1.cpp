@@ -91,6 +91,7 @@ namespace Levels
 		resourceManager.GetSpriteSource("Spikes.png", columnsSpikes, rowsSpikes);
 		resourceManager.GetSpriteSource("Collectible.png");
 		resourceManager.GetSpriteSource("Tilemap.png", columnsMap, rowsMap);
+		resourceManager.GetSpriteSource("RisingGears.png");
 
 
 		resourceManager.GetMesh("FontAtlas", 12, 8);
@@ -142,6 +143,7 @@ namespace Levels
 		objectManager.AddArchetype(*objectFactory.CreateObject("RedSpike", resourceManager.GetMesh("Spikes"), resourceManager.GetSpriteSource("Spikes.png")));
 		objectManager.AddArchetype(*objectFactory.CreateObject("BlueSpike", resourceManager.GetMesh("Spikes"), resourceManager.GetSpriteSource("Spikes.png")));
 		objectManager.AddArchetype(*objectFactory.CreateObject("Tilemap", resourceManager.GetMesh("Map"), resourceManager.GetSpriteSource("Tilemap.png")));
+		objectManager.AddArchetype(*objectFactory.CreateObject("RisingGears", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("RisingGears.png")));
 
 		// Set the background color to black.
 		Graphics::GetInstance().SetBackgroundColor(Colors::Black);
@@ -420,6 +422,11 @@ namespace Levels
 
 				static_cast<Transform*>(player->GetComponent("Transform"))->SetTranslation(Vector2D(7.0f, -38.0f));
 				static_cast<Transform*>(player2->GetComponent("Transform"))->SetTranslation(Vector2D(16.0f, -38.0f));
+
+				// Create rising gears and add to objectManager
+				GameObject* risingGears = new GameObject(*objectManager.GetArchetypeByName("RisingGears"));
+				risingGears->GetComponent<Transform>()->SetTranslation(Vector2D(11.5f, -48.0f));
+				objectManager.AddObject(*risingGears);
 
 				break;
 			}
