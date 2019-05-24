@@ -91,7 +91,7 @@ namespace Behaviors
 		void StartPUTimer();
 
 		// Determines whether the player is grounded
-		bool getOnGround() const;
+		bool IsOnGround() const;
 
 	private:
 		//------------------------------------------------------------------------------

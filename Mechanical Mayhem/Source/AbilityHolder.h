@@ -38,8 +38,14 @@ namespace Behaviors
 		// Constructor
 		AbilityHolder();
 
+		// Copy constructor
+		AbilityHolder(const AbilityHolder& other);
+
 		// Destructor
 		~AbilityHolder();
+
+		// Assignment operator
+		AbilityHolder& operator=(const AbilityHolder& rhs);
 
 		// Clone a component and return a pointer to the cloned component.
 		// Returns:
@@ -54,6 +60,11 @@ namespace Behaviors
 		//   dt = The (fixed) change in time since the last step.
 		void Update(float dt) override;
 
+		// Sets the current ability.
+		// Params:
+		//   abilityType = The current ability.
+		void SetAbility(Abilities::Abilities abilityType);
+
 	private:
 		//------------------------------------------------------------------------------
 		// Private Structures:
@@ -65,7 +76,10 @@ namespace Behaviors
 		// Private Variables:
 		//------------------------------------------------------------------------------
 
+		Abilities::Abilities abilityType;
 		Abilities::Ability* ability;
+		float timer;
+		float duration;
 	};
 }
 

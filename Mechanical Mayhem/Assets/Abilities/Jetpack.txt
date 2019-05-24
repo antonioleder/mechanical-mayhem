@@ -1,0 +1,8 @@
+Jetpack
+{
+  jetpackForce : 10
+  currentFuel : 3
+  maxFuel : 3
+  fuelRefillRate : 1
+  fuelConsumptionRate : 1
+}

@@ -21,6 +21,7 @@
 #include <GameObject.h>
 #include <Space.h>
 #include <GameObjectManager.h>
+#include <Parser.h>
 
 //------------------------------------------------------------------------------
 
@@ -45,6 +46,12 @@ namespace Abilities
 
 	}
 
+	// Clone the current ability.
+	Ability* ProximityMine::Clone() const
+	{
+		return new ProximityMine(*this);
+	}
+
 	// Update function for this ability.
 	// Params:
 	//   dt = The change in time since the last update.
@@ -67,6 +74,22 @@ namespace Abilities
 		GameObject* mine = new GameObject(*objectManager.GetArchetypeByName("Mine"));
 		objectManager.AddObject(*mine);
 		proximityMines.push(mine);
+	}
+
+	// Write object data to file
+	// Params:
+	//   parser = The parser that is writing this object to a file.
+	void ProximityMine::Serialize(Parser& parser) const
+	{
+		parser.WriteVariable("maxProximityMines", maxProximityMines);
+	}
+
+	// Read object data from a file
+	// Params:
+	//   parser = The parser that is reading this object's data from a file.
+	void ProximityMine::Deserialize(Parser& parser)
+	{
+		parser.ReadVariable("maxProximityMines", maxProximityMines);
 	}
 }
 

@@ -31,7 +31,7 @@
 // Public Structures:
 //------------------------------------------------------------------------------
 
-namespace Behaviors
+namespace Abilities
 {
 	//------------------------------------------------------------------------------
 	// Public Functions:
@@ -45,26 +45,26 @@ namespace Behaviors
 	{
 	}
 
-	// Return a new copy of the component.
-	Component* Jetpack::Clone() const
-	{
-		return new Jetpack(*this);
-	}
-
 	// Initialize data for this object.
 	void Jetpack::Initialize()
 	{
 		// Get components
-		playerMovement = GetOwner()->GetComponent<PlayerMovement>();
+		playerMovement = GetOwner()->GetComponent<Behaviors::PlayerMovement>();
 		physics = GetOwner()->GetComponent<Physics>();
 
 		// Fill fuel tank
 		currentFuel = maxFuel;
 	}
 
-	// Update function for this component.
+	// Clone the current ability.
+	Ability* Jetpack::Clone() const
+	{
+		return new Jetpack(*this);
+	}
+
+	// Update function for this ability.
 	// Params:
-	//   dt = The (fixed) change in time since the last step.
+	//   dt = The change in time since the last update.
 	void Jetpack::Update(float dt)
 	{
 		// Check if user is even using the jetpack
@@ -93,14 +93,19 @@ namespace Behaviors
 		}
 	}
 
+	// Callback for when the player attempts to use this ability.
+	void Jetpack::OnUse()
+	{
+	}
+
 	// Sets whether the jetpack is active
-	void Jetpack::setActive(bool active_)
+	void Jetpack::SetActive(bool active_)
 	{
 		active = active_;
 	}
 
 	// Gets whether the jetpack is active
-	bool Jetpack::getActive() const
+	bool Jetpack::IsActive() const
 	{
 		return active;
 	}
@@ -137,7 +142,7 @@ namespace Behaviors
 	void Jetpack::FuelManagement(float dt)
 	{
 		// Check if player is grounded
-		if (playerMovement->getOnGround()/*physics->GetVelocity().y == 0.0f*/)
+		if (playerMovement->IsOnGround())
 		{
 			// Check if fuel tank is not full
 			if (currentFuel < maxFuel)

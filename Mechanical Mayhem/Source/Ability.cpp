@@ -17,6 +17,14 @@
 
 #include "Ability.h"
 
+// Systems
+#include <Engine.h>
+#include <Parser.h>
+
+// Abilities
+#include "Jetpack.h"
+#include "ProximityMine.h"
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -48,20 +56,35 @@ namespace Abilities
 		return owner;
 	}
 
-	// Creates a new Ability based on the enum.
-	Ability* Ability::FromEnum(Abilities ability)
+	// Creates a new Ability based on the type specified.
+	// Params:
+	//   abilityType = Which ability to create.
+	Ability* Ability::FromType(Abilities abilityType)
 	{
-		switch (ability)
+		Ability* ability = nullptr;
+
+		switch (abilityType)
 		{
 		case ABILITY_JETPACK:
-			return nullptr;
+			ability = new Jetpack();
+			break;
 		case ABILITY_FLAMETHROWER:
-			return nullptr;
+			break;
 		case ABILITY_PROXIMITYMINE:
-			return nullptr;
+			ability = new ProximityMine();
+			break;
 		}
 
-		return nullptr;
+		if (ability != nullptr)
+		{
+			Parser parser(Engine::GetInstance().GetFilePath() + "Abilities/" + ability->GetName() + ".txt", std::fstream::in);
+			parser.ReadSkip(ability->GetName());
+			parser.ReadSkip('{');
+			ability->Deserialize(parser);
+			parser.ReadSkip('}');
+		}
+
+		return ability;
 	}
 }
 

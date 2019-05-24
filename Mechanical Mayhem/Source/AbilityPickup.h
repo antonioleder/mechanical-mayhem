@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //
-// File Name:	ProximityMine.h
+// File Name:	AbilityPickup.h
 // Author(s):	David Cohen (david.cohen)
 // Project:		Mechanical Mayhem
 // Course:		WANIC VGP2 2018-2019
@@ -12,28 +12,19 @@
 #pragma once
 
 //------------------------------------------------------------------------------
-// Include Files:
+// Includes:
 //------------------------------------------------------------------------------
 
-#include "Ability.h" // Base class
+#include "Pickup.h"
 
-#include <queue>
-
-//------------------------------------------------------------------------------
-
-//------------------------------------------------------------------------------
-// Forward Declarations:
-//------------------------------------------------------------------------------
-
-class GameObject;
+// Abilities
+#include "Ability.h"
 
 //------------------------------------------------------------------------------
-// Public Structures:
-//------------------------------------------------------------------------------
 
-namespace Abilities
+namespace Behaviors
 {
-	class ProximityMine : public Ability
+	class AbilityPickup : public Pickup
 	{
 	public:
 		//------------------------------------------------------------------------------
@@ -41,21 +32,13 @@ namespace Abilities
 		//------------------------------------------------------------------------------
 
 		// Constructor
-		ProximityMine();
+		AbilityPickup();
 
-		// Initialize this ability.
+		// Clones the component
+		Component* Clone() const override;
+
+		// Initializes the component
 		void Initialize() override;
-
-		// Clone the current ability.
-		Ability* Clone() const override;
-
-		// Update function for this ability.
-		// Params:
-		//   dt = The change in time since the last update.
-		void Update(float dt) override;
-
-		// Callback for when the player attempts to use this ability.
-		void OnUse() override;
 
 		// Write object data to file
 		// Params:
@@ -67,13 +50,14 @@ namespace Abilities
 		//   parser = The parser that is reading this object's data from a file.
 		void Deserialize(Parser& parser) override;
 
-	protected:
+		Abilities::Abilities GetAbilityType() const;
+
 		//------------------------------------------------------------------------------
-		// Protected Variables:
+		// Private Variables:
 		//------------------------------------------------------------------------------
 
-		int maxProximityMines;
-		std::queue<GameObject*> proximityMines;
+	private:
+		Abilities::Abilities abilityType;
 	};
 }
 

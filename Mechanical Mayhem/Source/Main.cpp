@@ -44,6 +44,7 @@
 #include "ScreenWrap.h"
 #include "TimedDeath.h"
 #include "AbilityHolder.h"
+#include "AbilityPickup.h"
 
 //------------------------------------------------------------------------------
 
@@ -73,7 +74,7 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prevInstance, _In
 	Engine& engine = Engine::GetInstance();
 
 	// Add additional modules to engine
-	engine.AddModule(new FullscreenManager(true));
+	engine.AddModule(new FullscreenManager());
 	engine.AddModule(space);
 	engine.AddModule(new SoundManager());
 
@@ -87,7 +88,6 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prevInstance, _In
 		objectFactory.RegisterComponent<ChipCollectible>();
 		objectFactory.RegisterComponent<ColorChange>();
 		objectFactory.RegisterComponent<DimensionController>();
-		objectFactory.RegisterComponent<Jetpack>();
 		objectFactory.RegisterComponent<Hazard>();
 		objectFactory.RegisterComponent<MonkeyAnimation>();
 		objectFactory.RegisterComponent<PlayerMovement>();
@@ -96,6 +96,7 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prevInstance, _In
 		objectFactory.RegisterComponent<ScreenWrap>();
 		objectFactory.RegisterComponent<TimedDeath>();
 		objectFactory.RegisterComponent<AbilityHolder>();
+		objectFactory.RegisterComponent<AbilityPickup>();
 	}
 
 	// Game engine goes!

@@ -16,6 +16,7 @@
 //------------------------------------------------------------------------------
 
 #include <BetaObject.h> // Base class
+#include <Serializable.h>
 
 //------------------------------------------------------------------------------
 
@@ -41,7 +42,7 @@ namespace Abilities
 		ABILITY_MAX
 	};
 
-	class Ability : public BetaObject
+	class Ability : public BetaObject, public Serializable
 	{
 	public:
 		//------------------------------------------------------------------------------
@@ -53,6 +54,9 @@ namespace Abilities
 		//   name = The name of this ability.
 		Ability(const std::string& name);
 
+		// Clone the current ability.
+		virtual Ability* Clone() const = 0;
+
 		// Callback for when the player attempts to use this ability.
 		virtual void OnUse() = 0;
 
@@ -62,8 +66,10 @@ namespace Abilities
 		// Gets the owner of this ability.
 		GameObject* GetOwner() const;
 
-		// Creates a new Ability based on the enum.
-		static Ability* FromEnum(Abilities ability);
+		// Creates a new Ability based on the type specified.
+		// Params:
+		//   abilityType = Which ability to create.
+		static Ability* FromType(Abilities abilityType);
 
 	protected:
 		//------------------------------------------------------------------------------

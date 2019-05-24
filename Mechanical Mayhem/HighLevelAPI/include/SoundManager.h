@@ -2,7 +2,7 @@
 //
 // File Name:	SoundManager.h
 // Author(s):	Jeremy Kings (j.kings)
-// Project:		Project 8
+// Project:		Project 7
 // Course:		WANIC VGP2 2018-2019
 //
 // Copyright © 2018 DigiPen (USA) Corporation.
@@ -55,10 +55,11 @@ public:
 	// Shutdown the sound manager.
 	void Shutdown(void);
 
-	// Creates a non-looping FMOD sound.
+	// Creates an FMOD sound.
 	// Params:
 	//	 filename = Name of the sound file (WAV).
-	void AddEffect(const std::string& filename);
+	//   looping = Whether the sound should loop or not.
+	void AddEffect(const std::string& filename, bool looping = false);
 
 	// Creates an FMOD stream for a music file.
 	// Params:
@@ -109,27 +110,10 @@ private:
 	//------------------------------------------------------------------------------
 
 	// Different behaviors for SFX vs BGM
-
-	// Plays a sound effect.
-	// Params:
-	//   sound = The sound instance.
-	// Returns:
-	//   The channel the sound is using.
 	FMOD::Channel* PlayEffect(FMOD::Sound* sound) const;
-
-	// Plays a music track.
-	// Params:
-	//   sound = The sound instance.
-	// Returns:
-	//   The channel the music is using.
 	FMOD::Channel* PlayMusic(FMOD::Sound* sound);
 
 	// Add FX/BGM helper
-
-	// Loads a sound file and adds it to the sound list.
-	// Params:
-	//   filename = The name of the sound to load.
-	//   mode = The mode to use when loading the sound.
 	void AddSound(const std::string& filename, FMOD_MODE mode);
 
 	//------------------------------------------------------------------------------
@@ -146,18 +130,22 @@ private:
 	size_t numBanks;
 	FMOD::Studio::Bank* bankList[maxNumBanks];  // List of all loaded sound banks.
 
+	// Channels
 	FMOD::Channel* musicChannel;				// The channel most recently used to play music
 	FMOD::ChannelGroup* effectsChannelGroup;	// The channel group used for SFX.
 
+	// Systems
 	FMOD::System *system;						// The internal FMOD low-level system
 	FMOD::Studio::System *studioSystem;			// The internal FMOD studio system.
 
+	// Volume
 	float musicVolume;	 // The current volume of the music channel (0.0 to 1.0).
 	float effectsVolume; // The current volume of the sound effects channel group (0.0 to 1.0).
 
-	std::string audioFilePath;
-	std::string bankFilePath;
-	std::string eventPrefix;
+	// Directories
+	std::string audioFilePath; // Directory of audio assets
+	std::string bankFilePath; // Subdirectory for FMOD bank files
+	std::string eventPrefix; // All events start with "event:/"
 };
 
 //------------------------------------------------------------------------------

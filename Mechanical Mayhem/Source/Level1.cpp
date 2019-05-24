@@ -139,6 +139,7 @@ namespace Levels
 		objectManager.AddArchetype(*objectFactory.CreateObject("Text"));
 		objectManager.AddArchetype(*objectFactory.CreateObject("GameController"));
 		objectManager.AddArchetype(*objectFactory.CreateObject("Collectible", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("Collectible.png")));
+		objectManager.AddArchetype(*objectFactory.CreateObject("JetpackPickup", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("Collectible.png")));
 		objectManager.AddArchetype(*objectFactory.CreateObject("StaticSpike", resourceManager.GetMesh("Spikes"), resourceManager.GetSpriteSource("Spikes.png")));
 		objectManager.AddArchetype(*objectFactory.CreateObject("RedSpike", resourceManager.GetMesh("Spikes"), resourceManager.GetSpriteSource("Spikes.png")));
 		objectManager.AddArchetype(*objectFactory.CreateObject("BlueSpike", resourceManager.GetMesh("Spikes"), resourceManager.GetSpriteSource("Spikes.png")));
@@ -585,7 +586,7 @@ namespace Levels
 
 		for (int i = 0; i < numChips * 2; i += 2)
 		{
-			GameObject* chips = new GameObject(*objectManager.GetArchetypeByName("Collectible"));
+			GameObject* chips = new GameObject(*objectManager.GetArchetypeByName("JetpackPickup"));
 			static_cast<Transform*>(chips->GetComponent("Transform"))->SetTranslation(Vector2D(chipsSpawns[i], -chipsSpawns[i + 1]));
 			objectManager.AddObject(*chips);
 		}

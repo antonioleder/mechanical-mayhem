@@ -106,6 +106,7 @@ xcopy fmod\lib\fmodstudio64.dll "$(OutDir)" /Y</Command>
   <ItemGroup>
     <ClCompile Include="Source\Ability.cpp" />
     <ClCompile Include="Source\AbilityHolder.cpp" />
+    <ClCompile Include="Source\AbilityPickup.cpp" />
     <ClCompile Include="Source\Archetypes.cpp" />
     <ClCompile Include="Source\Button.cpp" />
     <ClCompile Include="Source\CameraFollow.cpp" />
@@ -115,14 +116,17 @@ xcopy fmod\lib\fmodstudio64.dll "$(OutDir)" /Y</Command>
     <ClCompile Include="Source\Credit.cpp" />
     <ClCompile Include="Source\DimensionController.cpp" />
     <ClCompile Include="Source\Hazard.cpp" />
+    <ClCompile Include="Source\Jetpack.cpp" />
     <ClCompile Include="Source\Level1.cpp" />
     <ClCompile Include="Source\LevelSelect.cpp" />
     <ClCompile Include="Source\Main.cpp" />
     <ClCompile Include="Source\MainMenu.cpp" />
     <ClCompile Include="Source\MonkeyAnimation.cpp" />
+    <ClCompile Include="Source\Pickup.cpp" />
     <ClCompile Include="Source\PlayerMovement.cpp" />
     <ClCompile Include="Source\PlayerShip.cpp" />
     <ClCompile Include="Source\ProximityMine.cpp" />
+    <ClCompile Include="Source\RisingGears.cpp" />
     <ClCompile Include="Source\ScreenWrap.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -133,6 +137,7 @@ xcopy fmod\lib\fmodstudio64.dll "$(OutDir)" /Y</Command>
   <ItemGroup>
     <ClInclude Include="Source\Ability.h" />
     <ClInclude Include="Source\AbilityHolder.h" />
+    <ClInclude Include="Source\AbilityPickup.h" />
     <ClInclude Include="Source\Archetypes.h" />
     <ClInclude Include="Source\Button.h" />
     <ClInclude Include="Source\CameraFollow.h" />
@@ -142,13 +147,16 @@ xcopy fmod\lib\fmodstudio64.dll "$(OutDir)" /Y</Command>
     <ClInclude Include="Source\Credit.h" />
     <ClInclude Include="Source\DimensionController.h" />
     <ClInclude Include="Source\Hazard.h" />
+    <ClInclude Include="Source\Jetpack.h" />
     <ClInclude Include="Source\Level1.h" />
     <ClInclude Include="Source\LevelSelect.h" />
     <ClInclude Include="Source\MainMenu.h" />
     <ClInclude Include="Source\MonkeyAnimation.h" />
+    <ClInclude Include="Source\Pickup.h" />
     <ClInclude Include="Source\PlayerMovement.h" />
     <ClInclude Include="Source\PlayerShip.h" />
     <ClInclude Include="Source\ProximityMine.h" />
+    <ClInclude Include="Source\RisingGears.h" />
     <ClInclude Include="Source\ScreenWrap.h" />
     <ClInclude Include="Source\stdafx.h" />
     <ClInclude Include="Source\TimedDeath.h" />

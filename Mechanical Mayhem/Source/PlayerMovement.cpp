@@ -31,6 +31,8 @@
 #include "Collider.h"
 #include "DimensionController.h"
 #include "ChipCollectible.h"
+#include "AbilityHolder.h"
+#include "AbilityPickup.h"
 
 //------------------------------------------------------------------------------
 
@@ -126,6 +128,11 @@ namespace Behaviors
 					collectible->SetActive(false);
 				}
 			}
+
+			if (other.GetName() == "JetpackPickup")
+			{
+				GetOwner()->GetComponent<AbilityHolder>()->SetAbility(other.GetComponent<AbilityPickup>()->GetAbilityType());
+			}
 		}
 
 		if (event.name == "MapCollisionStarted" || event.name == "MapCollisionPersisted")
@@ -187,9 +194,9 @@ namespace Behaviors
 	}
 
 	// Determines whether the player is grounded
-	bool PlayerMovement::getOnGround() const
+	bool PlayerMovement::IsOnGround() const
 	{
-		return onGround;
+		return airTime <= 1e-6f;
 	}
 
 	//------------------------------------------------------------------------------

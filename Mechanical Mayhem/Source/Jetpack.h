@@ -24,11 +24,16 @@
 
 class Physics;
 
+namespace Behaviors
+{
+	class PlayerMovement;
+}
+
 //------------------------------------------------------------------------------
 // Public Structures:
 //------------------------------------------------------------------------------
 
-namespace Behaviors
+namespace Abilities
 {
 	class Jetpack : public Ability
 	{
@@ -40,22 +45,25 @@ namespace Behaviors
 		// Default Constructor
 		Jetpack();
 
-		// Return a new copy of the component.
-		Component* Clone() const;
-
 		// Initialize data for this object.
 		void Initialize();
 
-		// Update function for this component.
+		// Clone the current ability.
+		Ability* Clone() const override;
+
+		// Update function for this ability.
 		// Params:
-		//   dt = The (fixed) change in time since the last step.
-		virtual void Update(float dt) override;
+		//   dt = The change in time since the last update.
+		void Update(float dt) override;
+
+		// Callback for when the player attempts to use this ability.
+		void OnUse() override;
 
 		// Sets whether the jetpack is active
-		void setActive(bool active_);
+		void SetActive(bool active_);
 
 		// Gets whether the jetpack is active
-		bool getActive() const;
+		bool IsActive() const;
 
 		// Write object data to file
 		// Params:
@@ -80,7 +88,7 @@ namespace Behaviors
 		//------------------------------------------------------------------------------
 
 		// Other components
-		PlayerMovement* playerMovement;
+		Behaviors::PlayerMovement* playerMovement;
 		Physics* physics;
 
 		// Jetpack is being used

@@ -20,7 +20,7 @@ RisingGears
   }
   Behaviors::RisingGears
   {
-    moveSpeed : 0.001
+    moveSpeed : 0.005
     startOffset : 3
   }
 }

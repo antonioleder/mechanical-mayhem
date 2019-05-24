@@ -28,7 +28,7 @@ namespace
 	void FMOD_Assert(FMOD_RESULT result)
 	{
 		// Check if the result indicates a failure.
-		if (result != FMOD_OK)
+		if (result != FMOD_OK && result != FMOD_ERR_INVALID_HANDLE && result != FMOD_ERR_CHANNEL_STOLEN)
 		{
 			// Print out the error code and the associated error message.
 			std::cout << "FMOD error! (" << result << ") " << FMOD_ErrorString(result) << std::endl;
@@ -95,12 +95,13 @@ void SoundManager::Shutdown(void)
 	numBanks = 0;
 }
 
-// Creates a non-looping FMOD sound.
+// Creates an FMOD sound.
 // Params:
 //	 filename = Name of the sound file (WAV).
-void SoundManager::AddEffect(const std::string& filename)
+//   looping = Whether the sound should loop or not.
+void SoundManager::AddEffect(const std::string& filename, bool looping)
 {
-	AddSound(filename, FMOD_DEFAULT);
+	AddSound(filename, FMOD_DEFAULT | (looping ? FMOD_LOOP_NORMAL : FMOD_LOOP_OFF));
 }
 
 // Creates an FMOD stream for a music file.
@@ -108,7 +109,7 @@ void SoundManager::AddEffect(const std::string& filename)
 //	 filename = Name of the music file (MP3).
 void SoundManager::AddMusic(const std::string& filename)
 {
-	AddSound(filename, FMOD_DEFAULT | FMOD_LOOP_NORMAL);
+	AddSound(filename, FMOD_DEFAULT | FMOD_CREATESTREAM | FMOD_LOOP_NORMAL);
 }
 
 // Creates an FMOD sound bank
