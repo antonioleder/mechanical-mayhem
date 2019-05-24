@@ -28,6 +28,7 @@
 class Transform;
 class Physics;
 struct MapCollision;
+class SoundManager;
 
 //------------------------------------------------------------------------------
 // Public Structures:
@@ -76,7 +77,11 @@ namespace Behaviors
 		//   keyUp = The up keybind.
 		//   keyLeft = The left keybind.
 		//   keyRight = The right keybind.
+		//	 keySwitch = The dimension-switch keybind.
 		void SetKeybinds(unsigned keyUp, unsigned keyLeft, unsigned keyRight, unsigned keySwitch);
+
+		// Gets the keybind for up
+		unsigned GetUpKeybind() const;
 
 		// Sets the player's ID.
 		// Params:
@@ -97,6 +102,9 @@ namespace Behaviors
 
 		// Starts PowerUp Timer
 		void StartPUTimer();
+
+		// Determines whether the player is grounded
+		bool getOnGround() const;
 
 	private:
 		//------------------------------------------------------------------------------
@@ -134,6 +142,7 @@ namespace Behaviors
 		// Components
 		Transform* transform;
 		Physics* physics;
+		SoundManager* soundManager;
 
 		// Misc
 		int playerID;

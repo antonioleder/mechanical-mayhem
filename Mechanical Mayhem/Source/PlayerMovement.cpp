@@ -18,8 +18,10 @@
 #include "PlayerMovement.h"
 
 // Systems
+#include <Engine.h>
 #include "GameObject.h"
 #include <Input.h>
+#include <SoundManager.h>
 #include "Space.h"
 #include <Interpolation.h>
 
@@ -69,6 +71,14 @@ namespace Behaviors
 		// Store the required components for ease of access.
 		transform = static_cast<Transform*>(GetOwner()->GetComponent("Transform"));
 		physics = static_cast<Physics*>(GetOwner()->GetComponent("Physics"));
+
+		// Add sounds
+		soundManager = Engine::GetInstance().GetModule<SoundManager>();
+		soundManager->AddEffect("jump.wav");
+		soundManager->AddEffect("step.wav");
+		soundManager->AddEffect("wallattach.wav");
+		soundManager->AddEffect("walloff.wav");
+		soundManager->AddEffect("wallslide.wav");
 	}
 
 	// Fixed update function for this component.
@@ -177,6 +187,12 @@ namespace Behaviors
 		keySwitch = keySwitch_;
 	}
 
+	// Gets the keybind for up
+	unsigned PlayerMovement::GetUpKeybind() const
+	{
+		return keyUp;
+	}
+
 	// Sets the player's ID.
 	// Params:
 	//   newID = The ID to set to.
@@ -220,6 +236,12 @@ namespace Behaviors
 	void PlayerMovement::StartPUTimer()
 	{
 		PUTimer = PUMaxTime;
+	}
+
+	// Determines whether the player is grounded
+	bool PlayerMovement::getOnGround() const
+	{
+		return onGround;
 	}
 
 	//------------------------------------------------------------------------------
@@ -320,6 +342,7 @@ namespace Behaviors
 				velocity.y = jumpSpeed.y;
 			}
 
+			soundManager->PlaySound("jump.wav");
 			hasJumped = true;
 		}
 		

@@ -1,6 +1,6 @@
 Player
 {
-  numComponents : 7
+  numComponents : 8
   Transform
   {
     translation : { 0, 0 }
@@ -33,5 +33,13 @@ Player
   }
   Behaviors::MonkeyAnimation
   {
+  }
+  Behaviors::Jetpack
+  {
+    jetpackForce : 10
+	currentFuel : 3
+	maxFuel : 3
+	fuelRefillRate : 0
+	fuelConsumptionRate : 1
   }
 }

@@ -13,6 +13,9 @@
     <Filter Include="Game\Behaviors">
       <UniqueIdentifier>{30b4313e-2f34-40ba-9613-d250bab122eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Behaviors\Abilities">
+      <UniqueIdentifier>{ea311b21-8ae3-4cb4-a8f0-f4a838648373}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\stdafx.cpp">
@@ -70,6 +73,15 @@
     <ClCompile Include="Source\Credit.cpp">
       <Filter>Game\Levels</Filter>
     </ClCompile>
+    <ClCompile Include="Source\RisingGears.cpp">
+      <Filter>Game\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ability.cpp">
+      <Filter>Game\Behaviors\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Jetpack.cpp">
+      <Filter>Game\Behaviors\Abilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\stdafx.h">
@@ -125,6 +137,15 @@
     </ClInclude>
     <ClInclude Include="Source\Credit.h">
       <Filter>Game\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\RisingGears.h">
+      <Filter>Game\Behaviors</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ability.h">
+      <Filter>Game\Behaviors\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Jetpack.h">
+      <Filter>Game\Behaviors\Abilities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
