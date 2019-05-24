@@ -37,12 +37,6 @@ namespace Behaviors
 {
 	class MonkeyAnimation;
 
-	enum PowerUp {
-		POWER_UP_NONE,
-		POWER_UP_JUMP,
-		POWER_UP_SPEED
-	};
-
 	class PlayerMovement : public Component
 	{
 	public:
@@ -61,7 +55,7 @@ namespace Behaviors
 		// Initialize this component (happens at object creation).
 		void Initialize() override;
 
-		// Update function for this component.
+		// Handles movement.
 		// Params:
 		//   dt = The (fixed) change in time since the last step.
 		void Update(float dt) override;
@@ -87,13 +81,6 @@ namespace Behaviors
 		// Returns:
 		//   The player's ID.
 		int GetPlayerID() const;
-
-		// Returns current powerUp
-		PowerUp GetPowerUp() const;
-
-		// Sets current powerUp
-		// Default is no powerUp
-		void SetPowerUp(PowerUp newPowerUp = POWER_UP_NONE);
 
 		// Starts PowerUp Timer
 		void StartPUTimer();
@@ -148,13 +135,6 @@ namespace Behaviors
 		float rightTime;
 		float movementLerpGround;
 		float movementLerpAir;
-
-		// PowerUps
-		PowerUp powerUp;
-		float PUTimer;
-		float PUMaxTime;
-		Vector2D jumpBoost;
-		float speedBoost;
 
 		friend class MonkeyAnimation;
 	};

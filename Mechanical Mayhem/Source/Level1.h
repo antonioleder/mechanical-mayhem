@@ -111,12 +111,6 @@ namespace Levels
 		//   numChis = How many chips are in the array.
 		void AddChips(const float* chipsSpawns, int numChips);
 
-		// Adds powerups to the level.
-		// Params:
-		//   powerups = An array of floats, each pair being a coordinate.
-		//   numPowerups = How many powerups are in the array.
-		void AddPowerups(const float* powerups, int numPowerups);
-
 		//------------------------------------------------------------------------------
 		// Private Variables:
 		//------------------------------------------------------------------------------

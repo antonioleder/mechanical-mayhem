@@ -104,6 +104,8 @@ xcopy fmod\lib\fmodstudio64.dll "$(OutDir)" /Y</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Ability.cpp" />
+    <ClCompile Include="Source\AbilityHolder.cpp" />
     <ClCompile Include="Source\Archetypes.cpp" />
     <ClCompile Include="Source\Button.cpp" />
     <ClCompile Include="Source\CameraFollow.cpp" />
@@ -120,6 +122,7 @@ xcopy fmod\lib\fmodstudio64.dll "$(OutDir)" /Y</Command>
     <ClCompile Include="Source\MonkeyAnimation.cpp" />
     <ClCompile Include="Source\PlayerMovement.cpp" />
     <ClCompile Include="Source\PlayerShip.cpp" />
+    <ClCompile Include="Source\ProximityMine.cpp" />
     <ClCompile Include="Source\ScreenWrap.cpp" />
     <ClCompile Include="Source\stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
@@ -128,6 +131,8 @@ xcopy fmod\lib\fmodstudio64.dll "$(OutDir)" /Y</Command>
     <ClCompile Include="Source\TimedDeath.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Ability.h" />
+    <ClInclude Include="Source\AbilityHolder.h" />
     <ClInclude Include="Source\Archetypes.h" />
     <ClInclude Include="Source\Button.h" />
     <ClInclude Include="Source\CameraFollow.h" />
@@ -143,6 +148,7 @@ xcopy fmod\lib\fmodstudio64.dll "$(OutDir)" /Y</Command>
     <ClInclude Include="Source\MonkeyAnimation.h" />
     <ClInclude Include="Source\PlayerMovement.h" />
     <ClInclude Include="Source\PlayerShip.h" />
+    <ClInclude Include="Source\ProximityMine.h" />
     <ClInclude Include="Source\ScreenWrap.h" />
     <ClInclude Include="Source\stdafx.h" />
     <ClInclude Include="Source\TimedDeath.h" />

@@ -50,8 +50,7 @@ namespace Behaviors
 		transform(nullptr), physics(nullptr),
 		playerID(0), chips(0),
 		onGround(false), onLeftWall(false), onRightWall(false),
-		hasJumped(false), airTime(0.0f), leftTime(0.0f), rightTime(0.0f), movementLerpGround(1.0f), movementLerpAir(0.98f),
-		powerUp(POWER_UP_NONE), PUTimer(0.0f), PUMaxTime(10.0f), jumpBoost(0.0f, 11.5f), speedBoost(4.25f)
+		hasJumped(false), airTime(0.0f), leftTime(0.0f), rightTime(0.0f), movementLerpGround(1.0f), movementLerpAir(0.98f)
 	{
 	}
 
@@ -71,20 +70,11 @@ namespace Behaviors
 		physics = static_cast<Physics*>(GetOwner()->GetComponent("Physics"));
 	}
 
-	// Fixed update function for this component.
+	// Handles movement.
 	// Params:
 	//   dt = The (fixed) change in time since the last step.
 	void PlayerMovement::Update(float dt)
 	{
-		// Check if the player has an active powerUp
-		if (PUTimer -= dt <= 0.0f)
-		{
-			// Set the PUTimer to 0
-			PUTimer = 0.0f;
-			// Set the current powerUp to Nothing
-			SetPowerUp();
-		}
-
 		// Handle horizontal movement.
 		MoveHorizontal(dt);
 
@@ -125,19 +115,6 @@ namespace Behaviors
 					chips += 5;
 					collectible->SetActive(false);
 				}
-			}
-
-			// Jump & speed boost powerups
-			if (other.GetName() == "JumpBoost" || other.GetName() == "SpeedBoost")
-			{
-				if (other.GetName() == "JumpBoost")
-					SetPowerUp(POWER_UP_JUMP);
-				else if (other.GetName() == "SpeedBoost")
-					SetPowerUp(POWER_UP_SPEED);
-
-				StartPUTimer();
-
-				other.Destroy();
 			}
 		}
 
@@ -191,35 +168,6 @@ namespace Behaviors
 	int PlayerMovement::GetPlayerID() const
 	{
 		return playerID;
-	}
-
-	// Returns current powerUp
-	PowerUp PlayerMovement::GetPowerUp() const
-	{
-		return powerUp;
-	}
-
-	// Sets current powerUp
-	// Default is no powerUp
-	void PlayerMovement::SetPowerUp(PowerUp newPowerUp)
-	{
-		powerUp = newPowerUp;
-
-		if (powerUp == POWER_UP_JUMP)
-			jumpSpeed = jumpBoost;
-		else if (powerUp == POWER_UP_SPEED)
-			walkSpeed = speedBoost;
-		else
-		{
-			jumpSpeed = jumpSpeedOld;
-			walkSpeed = walkSpeedOld;
-		}
-	}
-
-	// Starts PowerUp Timer
-	void PlayerMovement::StartPUTimer()
-	{
-		PUTimer = PUMaxTime;
 	}
 
 	//------------------------------------------------------------------------------

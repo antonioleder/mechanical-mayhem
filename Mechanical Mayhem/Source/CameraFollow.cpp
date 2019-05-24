@@ -105,26 +105,28 @@ namespace Behaviors
 
 		std::vector<Vector2D> targetTranslations;
 
-		for (size_t i = 0; i < players.size(); i++)
+		for (auto it = players.begin(); it != players.end();)
 		{
-			GameObject* gameObject = players[i].GetGameObject();
+			GameObject* gameObject = it->GetGameObject();
 			if (gameObject == nullptr)
 			{
-				players.erase(players.begin() + i--);
+				it = players.erase(it);
 				continue;
 			}
 
 			// Only update velocity when the player is moving.
-			if (players[i].physics->GetVelocity().Magnitude() > 100.0f)
+			if (it->physics->GetVelocity().Magnitude() > 1.0f)
 			{
-				players[i].velocity = players[i].physics->GetVelocity().Normalized();
+				it->velocity = it->physics->GetVelocity().Normalized();
 			}
 
 			// Smoothly interpolate the velocity.
-			players[i].smoothedVelocity = Interpolate(players[i].smoothedVelocity, players[i].velocity, velocityMix);
+			it->smoothedVelocity = Interpolate(it->smoothedVelocity, it->velocity, velocityMix);
 
-			Vector2D targetTranslation = players[i].transform->GetTranslation() + Vector2D(players[i].smoothedVelocity.x * velocityLookScalar.x, players[i].smoothedVelocity.y * velocityLookScalar.y);
+			Vector2D targetTranslation = it->transform->GetTranslation() + Vector2D(it->smoothedVelocity.x * velocityLookScalar.x, it->smoothedVelocity.y * velocityLookScalar.y);
 			targetTranslations.push_back(targetTranslation);
+
+			++it;
 		}
 
 		Vector2D targetTranslationSum(0.0f, 0.0f);
@@ -167,16 +169,16 @@ namespace Behaviors
 
 		std::vector<Vector2D> targetTranslations;
 
-		for (size_t i = 0; i < players.size(); i++)
+		for (auto it = players.begin(); it != players.end(); ++it)
 		{
-			GameObject* gameObject = players[i].GetGameObject();
+			GameObject* gameObject = it->GetGameObject();
 			if (gameObject == nullptr)
 			{
-				players.erase(players.begin() + i--);
+				it = players.erase(it);
 				continue;
 			}
 
-			Vector2D targetTranslation = players[i].transform->GetTranslation() + Vector2D(players[i].smoothedVelocity.x * velocityLookScalar.x, players[i].smoothedVelocity.y * velocityLookScalar.y);
+			Vector2D targetTranslation = it->transform->GetTranslation() + Vector2D(it->smoothedVelocity.x * velocityLookScalar.x, it->smoothedVelocity.y * velocityLookScalar.y);
 			targetTranslations.push_back(targetTranslation);
 		}
 

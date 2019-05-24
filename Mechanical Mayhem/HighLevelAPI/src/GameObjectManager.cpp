@@ -43,7 +43,7 @@
 // Constructor(s)
 GameObjectManager::GameObjectManager(Space* space) : BetaObject("GameObjectmanager", space),
 	gameObjectActiveList(), gameObjectArchetypes(), events(),
-	fixedUpdateDt(1.0f / 60.0f), maxFixedUpdateTime(0.2f), timeAccumulator(0.0f),
+	fixedUpdateDt(1.0f / 120.0f), maxFixedUpdateTime(0.2f), timeAccumulator(0.0f),
 	useQuadtree(true), quadtree(nullptr)
 {
 	// Reserve space for objects

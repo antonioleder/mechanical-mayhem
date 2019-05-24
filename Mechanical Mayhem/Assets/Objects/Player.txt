@@ -1,6 +1,6 @@
 Player
 {
-  numComponents : 7
+  numComponents : 8
   Transform
   {
     translation : { 0, 0 }
@@ -32,6 +32,9 @@ Player
   {
   }
   Behaviors::MonkeyAnimation
+  {
+  }
+  Behaviors::AbilityHolder
   {
   }
 }

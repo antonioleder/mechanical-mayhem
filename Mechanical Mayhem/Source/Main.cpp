@@ -41,6 +41,7 @@
 #include "PlayerShip.h"
 #include "ScreenWrap.h"
 #include "TimedDeath.h"
+#include "AbilityHolder.h"
 
 //------------------------------------------------------------------------------
 
@@ -90,6 +91,7 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prevInstance, _In
 		objectFactory.RegisterComponent<PlayerShip>();
 		objectFactory.RegisterComponent<ScreenWrap>();
 		objectFactory.RegisterComponent<TimedDeath>();
+		objectFactory.RegisterComponent<AbilityHolder>();
 	}
 
 	// Game engine goes!

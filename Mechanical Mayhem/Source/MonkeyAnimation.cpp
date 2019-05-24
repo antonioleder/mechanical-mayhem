@@ -151,7 +151,7 @@ namespace Behaviors
 				break;
 			// If the state is changed to the walking state, begin playing the walking animation.
 			case State::StateWalk:
-				animation->Play(walkStart, walkLength, 0.1f, true);
+				animation->Play(walkStart, walkLength, 0.08f, true);
 				break;
 			// If the state is changed to the jumping state, begin playing the jumping animation.
 			case State::StateJump:

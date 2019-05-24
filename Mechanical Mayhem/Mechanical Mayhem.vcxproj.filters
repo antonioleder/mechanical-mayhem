@@ -13,6 +13,9 @@
     <Filter Include="Game\Behaviors">
       <UniqueIdentifier>{30b4313e-2f34-40ba-9613-d250bab122eb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Abilities">
+      <UniqueIdentifier>{392d8479-7ce2-4b88-bcff-56c4d35d750d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\stdafx.cpp">
@@ -70,6 +73,15 @@
     <ClCompile Include="Source\Credit.cpp">
       <Filter>Game\Levels</Filter>
     </ClCompile>
+    <ClCompile Include="Source\AbilityHolder.cpp">
+      <Filter>Game\Behaviors</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Ability.cpp">
+      <Filter>Game\Abilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\ProximityMine.cpp">
+      <Filter>Game\Abilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\stdafx.h">
@@ -125,6 +137,15 @@
     </ClInclude>
     <ClInclude Include="Source\Credit.h">
       <Filter>Game\Levels</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\AbilityHolder.h">
+      <Filter>Game\Behaviors</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Ability.h">
+      <Filter>Game\Abilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ProximityMine.h">
+      <Filter>Game\Abilities</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
