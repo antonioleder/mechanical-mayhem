@@ -25,7 +25,25 @@
 
 // Initial game state
 #include "MainMenu.h"
-#include "HUDLevel.h"
+#include "HUDEmpty.h"
+
+// Systems
+#include <GameObjectFactory.h>
+
+// Components
+#include "Button.h"
+#include "CameraFollow.h"
+#include "ChipCollectible.h"
+#include "ColorChange.h"
+#include "DimensionController.h"
+#include "Jetpack.h"
+#include "Hazard.h"
+#include "MonkeyAnimation.h"
+#include "PlayerMovement.h"
+#include "PlayerShip.h"
+#include "RisingGears.h"
+#include "ScreenWrap.h"
+#include "TimedDeath.h"
 
 //------------------------------------------------------------------------------
 
@@ -52,20 +70,41 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prevInstance, _In
 	Space* space = new Space("GameSpace");
 
 	// Set initial level to the second level - GameSpace.
-	space->SetLevel(new Levels::MainMenu());
+	space->SetLevel(new Levels::MainMenu(HUDSpace));
 	// Set initial level to the HUD level - HUDSpace.
-	HUDSpace->SetLevel(new Levels::HUDLevel(space));
+	HUDSpace->SetLevel(new Levels::HUDEmpty(space));
 
 	Engine& engine = Engine::GetInstance();
 
 	// Add additional modules to engine
+	engine.AddModule(new FullscreenManager(true));
 	engine.AddModule(space);
 	engine.AddModule(HUDSpace);
 	engine.AddModule(new SoundManager());
 	//engine.AddModule(new FullscreenManager());
 
+	// Register components
+	GameObjectFactory& objectFactory = GameObjectFactory::GetInstance();
+
+	{
+		using namespace Behaviors;
+		objectFactory.RegisterComponent<Button>();
+		objectFactory.RegisterComponent<CameraFollow>();
+		objectFactory.RegisterComponent<ChipCollectible>();
+		objectFactory.RegisterComponent<ColorChange>();
+		objectFactory.RegisterComponent<DimensionController>();
+		objectFactory.RegisterComponent<Jetpack>();
+		objectFactory.RegisterComponent<Hazard>();
+		objectFactory.RegisterComponent<MonkeyAnimation>();
+		objectFactory.RegisterComponent<PlayerMovement>();
+		objectFactory.RegisterComponent<PlayerShip>();
+		objectFactory.RegisterComponent<RisingGears>();
+		objectFactory.RegisterComponent<ScreenWrap>();
+		objectFactory.RegisterComponent<TimedDeath>();
+	}
+
 	// Game engine goes!
-	engine.Start(800, 600, 200);
+	engine.Start(1920, 1080, 200);
 
 	return 0;
 }

@@ -58,6 +58,9 @@ namespace Behaviors
 		//   dt = The (fixed) change in time since the last step.
 		void Update(float dt) override;
 
+		// Shutdown function for this component
+		void Shutdown() override;
+
 		// Calculates how long until the dimension can be switched again.
 		// Returns:
 		//   How much longer until the dimension can be switched.
@@ -115,7 +118,7 @@ namespace Behaviors
 		float currentCooldown;
 		int cdIndex;
 		int cdCount;
-		int* cdCounts;
+		float* cdCounts;
 		double gameTimer;
 		unsigned activeDimension;
 		std::vector<Dimension> dimensions;

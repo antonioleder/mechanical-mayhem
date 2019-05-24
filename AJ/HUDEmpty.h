@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //
-// File Name:	HUDLevel.h
+// File Name:	HUDEmpty.h
 // Author(s):	A.J. Bussman
 // Project:		Mechanical Mayhem
 // Course:		WANIC VGP2 2018-2019
@@ -31,24 +31,11 @@ class GameObject;
 // Public Structures:
 //------------------------------------------------------------------------------
 
-struct HUD
-{
-	// Constructor
-	HUD(GameObject* PlayerIcon, GameObject* HealthBar, GameObject* HealthText, GameObject* AbilityBar, GameObject* AbilityIcon) :
-		PlayerIcon(PlayerIcon), HealthBar(HealthBar),  HealthText(HealthText), AbilityBar(AbilityBar), AbilityIcon(AbilityIcon) {}
-
-	GameObject* PlayerIcon;
-	GameObject* HealthBar;
-	GameObject* HealthText;
-	GameObject* AbilityBar;
-	GameObject* AbilityIcon;
-};
-
 namespace Levels
 {
 	enum class Map : int;
 
-	class HUDLevel : public Level
+	class HUDEmpty : public Level
 	{
 	public:
 		//------------------------------------------------------------------------------
@@ -56,7 +43,7 @@ namespace Levels
 		//------------------------------------------------------------------------------
 
 		// Creates an instance of MainMenu.
-		HUDLevel(Space* gameSpace = nullptr);
+		HUDEmpty(Space* gameSpace = nullptr);
 
 		// Load the resources associated with MainMenu.
 		void Load() override;
@@ -82,25 +69,11 @@ namespace Levels
 		// Private Functions:
 		//------------------------------------------------------------------------------
 
-		// Adds a new map button.
-		// name = The name of the level.
-		// position = The position of the button.
-		// map = The map the button should switch to.
-		HUD* AddPlayerHUD(const char* name, Vector2D position);
-
 		//------------------------------------------------------------------------------
 		// Private Variables:
 		//------------------------------------------------------------------------------
 
-		// HUDs & Players
-		HUD* HUD1, * HUD2;
-		GameObject* Player1, * Player2;
-
 		Space* GameSpace;
-
-		Mesh* meshBackground;
-		Texture * textureBackground;
-		SpriteSource* spriteSourceBackground;
 	};
 }
 

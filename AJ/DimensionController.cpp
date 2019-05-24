@@ -45,8 +45,9 @@ namespace Behaviors
 
 	// Constructor
 	DimensionController::DimensionController() : Component("DimensionController"), dimensions(std::vector<Dimension>()),
-		cooldown(5.0f), currentCooldown(10.0f), gameTimer(0.0), cdCount(0), cdIndex(10)
+		cooldown(5.0f), currentCooldown(10.0f), gameTimer(0.0), cdCount(0), cdIndex(10), activeDimension(0)
 	{
+		cdCounts = new float[11];
 		// Set the different cooldown times
 		cdCounts[0]  = 0.5f;
 		cdCounts[1]  = 0.75f;
@@ -82,6 +83,12 @@ namespace Behaviors
 		gameTimer += dt;
 
 		currentCooldown = max(0.0f, currentCooldown - dt);
+	}
+
+	// Shutdown function for this component
+	void DimensionController::Shutdown()
+	{
+		delete[] cdCounts;
 	}
 
 	// Calculates how long until the dimension can be switched again.

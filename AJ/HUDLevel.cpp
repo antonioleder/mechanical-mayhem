@@ -39,8 +39,9 @@
 namespace Levels
 {
 	// Creates an instance of HUDLevel.
-	HUDLevel::HUDLevel(Space* gameSpace) : Level("HUDLevel"), Player1(nullptr), Player2(nullptr), Active(false),
-		meshBackground(nullptr), textureBackground(nullptr), spriteSourceBackground(nullptr)
+	HUDLevel::HUDLevel(Space* gameSpace) : Level("HUDLevel", gameSpace), Player1(nullptr), Player2(nullptr),
+		meshBackground(nullptr), textureBackground(nullptr), spriteSourceBackground(nullptr), 
+		GameSpace(nullptr), HUD1(nullptr), HUD2(nullptr)
 	{
 		SetGameSpace(gameSpace);
 	}
@@ -53,7 +54,7 @@ namespace Levels
 		// Test
 		// Create the mesh and sprite source for the main menu.
 		meshBackground = CreateQuadMesh(Vector2D(1.0f, 1.0f), Vector2D(0.5f, 0.5f));
-		textureBackground = Texture::CreateTextureFromFile("MainMenu.png");
+		textureBackground = Texture::CreateTextureFromFile("Spring.png");
 		spriteSourceBackground = new SpriteSource(1, 1, textureBackground);
 
 		// Set Player pointers
@@ -79,7 +80,7 @@ namespace Levels
 
 		GameObject* test = new GameObject("Test");
 		// Create a new transform.
-		test->AddComponent(new Transform(Vector2D(), Vector2D(100.0f, 100.0f)));
+		test->AddComponent(new Transform(Vector2D(), Vector2D(1.0f, 1.0f)));
 
 		// Create a new sprite.
 		Sprite* sprite = new Sprite();
@@ -91,7 +92,7 @@ namespace Levels
 
 		Camera & camera = Graphics::GetInstance().GetDefaultCamera();
 		camera.SetTranslation(Vector2D());
-		camera.SetSize(1000.0f);
+		camera.SetSize(10.0f);
 	}
 
 	// Update Level 1.
@@ -121,20 +122,6 @@ namespace Levels
 	void HUDLevel::SetGameSpace(Space* gameSpace)
 	{
 		GameSpace = gameSpace;
-	}
-
-	// Returns if the HUD display is active
-	bool HUDLevel::IsActive()
-	{
-		return Active;
-	}
-
-	// Sets whether the HUD display is active
-	// Params:
-	//	 active = whether the HUD is active or not
-	void HUDLevel::SetActive(bool active)
-	{
-		Active = active;
 	}
 
 	//------------------------------------------------------------------------------
