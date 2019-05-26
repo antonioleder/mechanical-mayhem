@@ -121,6 +121,7 @@ void GameObjectManager::AddObject(GameObject& gameObject)
 {
 	gameObjectActiveList.push_back(&gameObject);
 	gameObject.SetOwner(GetOwner());
+	gameObject.Load();
 	gameObject.Initialize();
 }
 
@@ -348,6 +349,8 @@ void GameObjectManager::DestroyObjects()
 		// If the object is destroyed, delete it and erase it from the vector.
 		if ((*it)->IsDestroyed())
 		{
+			(*it)->Shutdown();
+			(*it)->Unload();
 			delete* it;
 			it = gameObjectActiveList.erase(it);
 		}

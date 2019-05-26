@@ -55,6 +55,19 @@ BetaObject* Event::GetReceiver() const
 
 // Constructor
 // Params:
+//  column = The column of the cell.
+//  row = The row of the cell.
+//  value = The new value of the cell.
+//  delay = How long to wait before sending this event.
+//  sender = GUID of the sending object.
+//  receiver = GUID of the receiving object (if none, all objects).
+MapChangeEvent::MapChangeEvent(unsigned column, unsigned row, int value, float delay, GUID sender, GUID receiver)
+	: Event(ET_MapChange, "MapChange", delay, sender, receiver), column(column), row(row), value(value)
+{
+}
+
+// Constructor
+// Params:
 //  damage = How much damage to deal.
 //  delay = How long to wait before sending this event.
 //  sender = GUID of the sending object.
@@ -71,7 +84,7 @@ DamageEvent::DamageEvent(int damage, float delay, GUID sender, GUID receiver)
 //  sender = GUID of the sending object.
 //  receiver = GUID of the receiving object (if none, all objects).
 HealEvent::HealEvent(int health, float delay, GUID sender, GUID receiver)
-	: Event(ET_HEAL, "Heal", delay, sender, receiver), health(health)
+	: Event(ET_Heal, "Heal", delay, sender, receiver), health(health)
 {
 }
 

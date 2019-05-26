@@ -70,6 +70,16 @@ GameObject::~GameObject()
 	}
 }
 
+// Load this object's components.
+void GameObject::Load()
+{
+	// Load all components.
+	for (auto it = components.begin(); it != components.end(); it++)
+	{
+		(*it)->Load();
+	}
+}
+
 // Initialize this object's components and set it to active.
 void GameObject::Initialize()
 {
@@ -204,6 +214,8 @@ void GameObject::AddComponent(Component * component)
 {
 	components.push_back(component);
 	component->SetOwner(this);
+
+	ClearComponentCache();
 }
 
 // Retrieves the component with the given name if it exists.
@@ -223,10 +235,38 @@ Component* GameObject::GetComponent(const std::string & name_)
 	return nullptr;
 }
 
+// Clears the list of cached components in case a component is removed.
+void GameObject::ClearComponentCache()
+{
+	_transform = nullptr;
+	_sprite = nullptr;
+	_collider = nullptr;
+}
+
 // Mark an object for destruction.
 void GameObject::Destroy()
 {
 	isDestroyed = true;
+}
+
+// Shutdown this object's components.
+void GameObject::Shutdown()
+{
+	// Shutdown all components.
+	for (auto it = components.begin(); it != components.end(); it++)
+	{
+		(*it)->Shutdown();
+	}
+}
+
+// Unload this object's components.
+void GameObject::Unload()
+{
+	// Unload all components.
+	for (auto it = components.begin(); it != components.end(); it++)
+	{
+		(*it)->Unload();
+	}
 }
 
 // Whether the object has been marked for destruction.

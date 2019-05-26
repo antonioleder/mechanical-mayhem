@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------
 //
-// File Name:	SpriteTilemap.h
-// Author(s):	Jeremy Kings (j.kings)
-// Project:		BetaFramework
+// File Name:	MutableTilemap.h
+// Author(s):	David Cohen (david.cohen)
+// Project:		Mechanical Mayhem
 // Course:		WANIC VGP2 2018-2019
 //
 // Copyright © 2018 DigiPen (USA) Corporation.
@@ -15,7 +15,7 @@
 // Include Files:
 //------------------------------------------------------------------------------
 
-#include "Sprite.h"
+#include "Component.h"
 
 //------------------------------------------------------------------------------
 
@@ -29,42 +29,29 @@ class Tilemap;
 // Public Structures:
 //------------------------------------------------------------------------------
 
-// You are free to change the contents of this structure as long as you do not
-//   change the public interface declared in the header.
-class SpriteTilemap : public Sprite
+// Allows for the tilemap to be changed with events.
+class MutableTilemap : public Component
 {
 public:
 	//------------------------------------------------------------------------------
 	// Public Functions:
 	//------------------------------------------------------------------------------
 
-	// Create a new sprite for use with a tilemap.
-	SpriteTilemap();
+	// Create a new mutable tilemap behavior.
+	MutableTilemap();
 
-	// Clone the sprite, returning a dynamically allocated copy.
+	// Clone the behavior, returning a dynamically allocated copy.
 	Component* Clone() const override;
 
-	// Draw a sprite (Sprite can be textured or untextured).
-	void Draw() override;
+	// Receive an event and handle it (if applicable).
+	// Params:
+	//   event = The event that has been received.
+	void HandleEvent(const Event& event) override;
 
-	// Sets the tilemap data that will be used by the sprite.
+	// Sets the tilemap data.
 	// Params:
 	//   map = A pointer to the tilemap resource.
-	void SetTilemap(const Tilemap* map);
-
-	// Converts a coordinate in tile space to world space.
-	// Params:
-	//   tilePos = The coordinate in tile space.
-	// Returns:
-	//   The coordinate in world space.
-	Vector2D TileToWorld(Vector2D tilePos);
-
-	// Converts a coordinate in world space to tile space.
-	// Params:
-	//   worldPos = The coordinate in world space.
-	// Returns:
-	//   The coordinate in tile space.
-	Vector2D WorldToTile(Vector2D worldPos) const;
+	void SetTilemap(Tilemap* map);
 
 private:
 	//------------------------------------------------------------------------------
@@ -72,7 +59,7 @@ private:
 	//------------------------------------------------------------------------------
 
 	// The tilemap
-	const Tilemap* map;
+	Tilemap* map;
 };
 
 //------------------------------------------------------------------------------

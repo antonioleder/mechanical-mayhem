@@ -329,3 +329,5 @@ ASALocalRun/
 # MFractors (Xamarin productivity tool) working folder 
 .mfractor/
 /Mechanical Mayhem/HighLevelAPI/lib
+/Mechanical Mayhem/Builds
+/Mechanical Mayhem/settings.txt

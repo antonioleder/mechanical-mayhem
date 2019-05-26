@@ -79,6 +79,20 @@ int Tilemap::GetCellValue(unsigned column, unsigned row) const
 	return data[column][row];
 }
 
+// Sets the value of the cell in the map with the given indices.
+// Params:
+//   column = The column of the cell.
+//   row = The row of the cell.
+//   value = The new value of the cell.
+void Tilemap::SetCellValue(unsigned column, unsigned row, int value)
+{
+	// Verify that the column and row are valid.
+	if (column >= numColumns || row >= numRows)
+		throw std::exception("Invalid coordinates");
+
+	data[column][row] = value;
+}
+
 // Create a tilemap from the given file.
 // Params:
 //   filename = The name of the file containing the tilemap data.

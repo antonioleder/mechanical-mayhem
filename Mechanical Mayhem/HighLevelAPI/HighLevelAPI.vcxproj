@@ -69,6 +69,7 @@
     </ClCompile>
     <Lib>
       <AdditionalDependencies>BetaLow_x64_D.lib;glfw3.lib;fmodL64_vc.lib;fmodstudioL64_vc.lib</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -90,6 +91,7 @@
     </Link>
     <Lib>
       <AdditionalDependencies>BetaLow_x64.lib;glfw3.lib;fmod64_vc.lib;fmodstudio64_vc.lib</AdditionalDependencies>
+      <AdditionalOptions>/ignore:4006 %(AdditionalOptions)</AdditionalOptions>
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -109,6 +111,7 @@
     <ClInclude Include="include\Level.h" />
     <ClInclude Include="include\Matrix2DStudent.h" />
     <ClInclude Include="include\MeshHelper.h" />
+    <ClInclude Include="include\MutableTIlemap.h" />
     <ClInclude Include="include\Parser.h" />
     <ClInclude Include="include\Physics.h" />
     <ClInclude Include="include\Quadtree.h" />
@@ -126,6 +129,7 @@
     <ClInclude Include="include\Transform.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="include\MutableTilemap.cpp" />
     <ClCompile Include="src\Animation.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
     </ClCompile>

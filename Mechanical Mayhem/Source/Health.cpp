@@ -102,7 +102,7 @@ namespace Behaviors
 		}
 
 		// Handle Heal event
-		if (event.type == ET_HEAL)
+		if (event.type == ET_Heal)
 		{
 			const HealEvent& healEvent = static_cast<const HealEvent&>(event);
 

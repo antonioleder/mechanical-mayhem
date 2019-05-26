@@ -33,10 +33,10 @@ enum EventType
 	ET_Generic = 0,
 	ET_Collision,
 	ET_MapCollision,
+	ET_MapChange,
 	ET_Damage,
-	ET_HEAL,
+	ET_Heal,
 	ET_Death,
-	ET_EnemySpotted,
 
 	ET_MAX
 };
@@ -69,6 +69,23 @@ struct Event
 	float delay;
 	GUID sender;
 	GUID receiver;
+};
+
+struct MapChangeEvent : public Event
+{
+	// Constructor
+	// Params:
+	//  column = The column of the cell.
+	//  row = The row of the cell.
+	//  value = The new value of the cell.
+	//  delay = How long to wait before sending this event.
+	//  sender = GUID of the sending object.
+	//  receiver = GUID of the receiving object (if none, all objects).
+	MapChangeEvent(unsigned column, unsigned row, int value, float delay = 0.0f, GUID sender = GUID(), GUID receiver = GUID());
+
+	unsigned column;
+	unsigned row;
+	int value;
 };
 
 struct DamageEvent : public Event

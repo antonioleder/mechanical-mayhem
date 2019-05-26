@@ -269,6 +269,15 @@ void ResourceManager::Unload()
 // Private Structures:
 //------------------------------------------------------------------------------
 
+//------------------------------------------------------------------------------
+// IMPORTANT!
+// If you are getting warnings about uninitialized member variables (C26495) here, this is actually a bug in Visual Studio itself!
+// The issue stems from the fact that the struct contains a nameless union - Visual Studio doesn't realize that if you
+// initialize one variable, all of the others in the union are initialized.
+// This bug was fixed on 5/5/18 and is implemented in the latest version of Visual Studio, version 16.1.1
+// More info: https://developercommunity.visualstudio.com/content/problem/396479/more-c26495-false-positives-in-msvc-1593-with-temp.html
+//------------------------------------------------------------------------------
+
 // Conversion constructor
 // Params:
 //   mesh = The mesh resource.

@@ -63,6 +63,13 @@ public:
 	//   or a positive integer otherwise.
 	int GetCellValue(unsigned column, unsigned row) const;
 
+	// Sets the value of the cell in the map with the given indices.
+	// Params:
+	//   column = The column of the cell.
+	//   row = The row of the cell.
+	//   value = The new value of the cell.
+	void SetCellValue(unsigned column, unsigned row, int value);
+
 	// Create a tilemap from the given file.
 	// Params:
 	//   filename = The name of the file containing the tilemap data.

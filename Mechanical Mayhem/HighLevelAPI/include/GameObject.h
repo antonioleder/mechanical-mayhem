@@ -59,6 +59,9 @@ public:
 	// Free the memory associated with a game object.
 	~GameObject();
 
+	// Load this object's components.
+	void Load() override;
+
 	// Initialize this object's components and set it to active.
 	void Initialize() override;
 
@@ -108,6 +111,72 @@ public:
 	template<class ComponentType>
 	ComponentType* GetComponent()
 	{
+		return GetComponentGeneric<ComponentType>();
+	}
+
+	// Retrieves the transform component if it exists.
+	template<>
+	Transform* GetComponent<Transform>()
+	{
+		if (_transform == nullptr)
+			_transform = GetComponentGeneric<Transform>();
+
+		return _transform;
+	}
+
+	// Retrieves the sprite component if it exists.
+	template<>
+	Sprite* GetComponent<Sprite>()
+	{
+		if (_sprite == nullptr)
+			_sprite = GetComponentGeneric<Sprite>();
+
+		return _sprite;
+	}
+
+	// Retrieves the collider component if it exists.
+	template<>
+	Collider* GetComponent<Collider>()
+	{
+		if (_collider == nullptr)
+			_collider = GetComponentGeneric<Collider>();
+
+		return _collider;
+	}
+
+	// Clears the list of cached components in case a component is removed.
+	void ClearComponentCache();
+
+	// Mark an object for destruction.
+	void Destroy();
+
+	// Shutdown this object's components.
+	void Shutdown() override;
+
+	// Unload this object's components.
+	void Unload() override;
+
+	// Whether the object has been marked for destruction.
+	// Returns:
+	//		True if the object will be destroyed, false otherwise.
+	bool IsDestroyed() const;
+
+	// Get the space that contains this object.
+	Space* GetSpace() const;
+
+private:
+	//------------------------------------------------------------------------------
+	// Private Functions:
+	//------------------------------------------------------------------------------
+
+	// Retrieves the component with the given type if it exists.
+	// Template params:
+	//  ComponentType = The type of component to retrieve.
+	// Returns:
+	//  A pointer to the component if it exists, nullptr otherwise.
+	template<class ComponentType>
+	ComponentType* GetComponentGeneric()
+	{
 		// Loop through every component and check if it can be cast to the specified type.
 		for (auto it = components.begin(); it != components.end(); it++)
 		{
@@ -119,81 +188,6 @@ public:
 		return nullptr;
 	}
 
-	// Retrieves the transform component if it exists.
-	template<>
-	Transform* GetComponent<Transform>()
-	{
-		if (_transform == nullptr)
-		{
-			// Loop through every component and check if it can be cast to a transform.
-			for (auto it = components.begin(); it != components.end(); it++)
-			{
-				Transform* component = dynamic_cast<Transform*>(*it);
-				if (component != nullptr)
-				{
-					_transform = component;
-					return component;
-				}
-			}
-		}
-
-		return _transform;
-	}
-
-	// Retrieves the sprite component if it exists.
-	template<>
-	Sprite* GetComponent<Sprite>()
-	{
-		if (_sprite == nullptr)
-		{
-			// Loop through every component and check if it can be cast to a sprite.
-			for (auto it = components.begin(); it != components.end(); it++)
-			{
-				Sprite* component = dynamic_cast<Sprite*>(*it);
-				if (component != nullptr)
-				{
-					_sprite = component;
-					return component;
-				}
-			}
-		}
-
-		return _sprite;
-	}
-
-	// Retrieves the collider component if it exists.
-	template<>
-	Collider* GetComponent<Collider>()
-	{
-		if (_collider == nullptr)
-		{
-			// Loop through every component and check if it can be cast to a transform.
-			for (auto it = components.begin(); it != components.end(); it++)
-			{
-				Collider* component = dynamic_cast<Collider*>(*it);
-				if (component != nullptr)
-				{
-					_collider = component;
-					return component;
-				}
-			}
-		}
-
-		return _collider;
-	}
-
-	// Mark an object for destruction.
-	void Destroy();
-
-	// Whether the object has been marked for destruction.
-	// Returns:
-	//		True if the object will be destroyed, false otherwise.
-	bool IsDestroyed() const;
-
-	// Get the space that contains this object.
-	Space* GetSpace() const;
-
-private:
 	//------------------------------------------------------------------------------
 	// Private Variables:
 	//------------------------------------------------------------------------------

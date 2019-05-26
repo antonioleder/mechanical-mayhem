@@ -19,7 +19,7 @@
 #include "GameObject.h" // GetComponent
 #include "Parser.h"
 
-// COMPONENTS
+// Components
 #include "ColliderCircle.h"
 #include "ColliderPoint.h"
 #include "ColliderRectangle.h"
@@ -30,6 +30,7 @@
 #include "SpriteTilemap.h"
 #include "SpriteTextMono.h"
 #include "Physics.h"
+#include "MutableTilemap.h"
 
 #include "Engine.h" // GetFilePath
 
@@ -145,6 +146,7 @@ GameObjectFactory::GameObjectFactory()
 	RegisterComponent<SpriteTilemap>();
 	RegisterComponent<SpriteTextMono>();
 	RegisterComponent<Physics>();
+	RegisterComponent<MutableTilemap>();
 }
 
 // Destructor is private to prevent accidental destruction
