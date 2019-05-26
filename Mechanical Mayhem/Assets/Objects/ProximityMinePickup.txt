@@ -1,11 +1,6 @@
-Collectible
+ProximityMinePickup
 {
   numComponents : 4
-  Behaviors::ShiftPickup
-  {
-    cooldown : 30
-    charges : 5
-  }
   Transform
   {
     translation : { 0, 0 }
@@ -22,5 +17,10 @@ Collectible
     group : 0
     mask : 0
     extents : { 0.375, 0.375 }
+  }
+  Behaviors::AbilityPickup
+  {
+    cooldown : 300
+    abilityType : 3
   }
 }

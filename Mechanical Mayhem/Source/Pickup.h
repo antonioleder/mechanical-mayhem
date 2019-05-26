@@ -37,11 +37,22 @@ namespace Behaviors
 
 		// Constructor
 		// Params:
-		//   cooldown = The cooldown after collected
-		Pickup(float cooldown = 30.0f);
+		//   name = The name of this component.
+		//   cooldown = The cooldown for respawning after collected.
+		Pickup(const std::string& name, float cooldown = 0.0f);
 
 		// Initializes the component
 		void Initialize() override;
+
+		// Write object data to file
+		// Params:
+		//   parser = The parser that is writing this object to a file.
+		void Serialize(Parser& parser) const override;
+
+		// Read object data from a file
+		// Params:
+		//   parser = The parser that is reading this object's data from a file.
+		void Deserialize(Parser& parser) override;
 
 		// Updates the component
 		void Update(float dt) override;

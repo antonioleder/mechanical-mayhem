@@ -32,7 +32,7 @@
 // Components
 #include "Button.h"
 #include "CameraFollow.h"
-#include "ChipCollectible.h"
+#include "ShiftPickup.h"
 #include "ColorChange.h"
 #include "DimensionController.h"
 #include "Jetpack.h"
@@ -85,7 +85,7 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prevInstance, _In
 		using namespace Behaviors;
 		objectFactory.RegisterComponent<Button>();
 		objectFactory.RegisterComponent<CameraFollow>();
-		objectFactory.RegisterComponent<ChipCollectible>();
+		objectFactory.RegisterComponent<ShiftPickup>();
 		objectFactory.RegisterComponent<ColorChange>();
 		objectFactory.RegisterComponent<DimensionController>();
 		objectFactory.RegisterComponent<Hazard>();

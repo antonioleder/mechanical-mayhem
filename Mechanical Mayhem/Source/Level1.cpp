@@ -39,7 +39,7 @@
 #include "Transform.h"
 #include "Physics.h"
 #include <SpriteTextMono.h>
-#include "ChipCollectible.h"
+#include "ShiftPickup.h"
 #include "CameraFollow.h"
 #include "PlayerMovement.h"
 #include "DimensionController.h"
@@ -70,7 +70,8 @@ namespace Levels
 		columnsSpikes(1), rowsSpikes(3),
 		dataStaticMap(nullptr), dataRedMap(nullptr), dataBlueMap(nullptr),
 		columnsMap(2), rowsMap(2),
-		firstFrame(true)
+		firstFrame(true),
+		soundManager(nullptr)
 	{
 	}
 
@@ -150,6 +151,8 @@ namespace Levels
 		objectManager.AddArchetype(*objectFactory.CreateObject("GameController"));
 		objectManager.AddArchetype(*objectFactory.CreateObject("Collectible", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("Collectible.png")));
 		objectManager.AddArchetype(*objectFactory.CreateObject("JetpackPickup", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("Collectible.png")));
+		objectManager.AddArchetype(*objectFactory.CreateObject("ProximityMinePickup", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("Collectible.png")));
+		objectManager.AddArchetype(*objectFactory.CreateObject("Mine", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("Circle.png")));
 		objectManager.AddArchetype(*objectFactory.CreateObject("StaticSpike", resourceManager.GetMesh("Spikes"), resourceManager.GetSpriteSource("Spikes.png")));
 		objectManager.AddArchetype(*objectFactory.CreateObject("RedSpike", resourceManager.GetMesh("Spikes"), resourceManager.GetSpriteSource("Spikes.png")));
 		objectManager.AddArchetype(*objectFactory.CreateObject("BlueSpike", resourceManager.GetMesh("Spikes"), resourceManager.GetSpriteSource("Spikes.png")));
@@ -174,6 +177,8 @@ namespace Levels
 		objectManager.AddObject(*player);
 
 		GameObject* player2 = new GameObject(*objectManager.GetArchetypeByName("Player"));
+		player2->GetComponent<Collider>()->SetGroup(2);
+		player2->GetComponent<Collider>()->SetMask(1 << 2);
 		Sprite* player2Sprite = static_cast<Sprite*>(player2->GetComponent("Sprite"));
 		player2Sprite->SetMesh(resourceManager.GetMesh("Cat"));
 		player2Sprite->SetSpriteSource(resourceManager.GetSpriteSource("Cat.png"));
@@ -598,7 +603,7 @@ namespace Levels
 
 		for (int i = 0; i < numChips * 2; i += 2)
 		{
-			GameObject* chips = new GameObject(*objectManager.GetArchetypeByName("JetpackPickup"));
+			GameObject* chips = new GameObject(*objectManager.GetArchetypeByName("ProximityMinePickup"));
 			static_cast<Transform*>(chips->GetComponent("Transform"))->SetTranslation(Vector2D(chipsSpawns[i], -chipsSpawns[i + 1]));
 			objectManager.AddObject(*chips);
 		}

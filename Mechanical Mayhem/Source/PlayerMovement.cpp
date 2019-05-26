@@ -30,7 +30,7 @@
 #include "Physics.h"
 #include "Collider.h"
 #include "DimensionController.h"
-#include "ChipCollectible.h"
+#include "ShiftPickup.h"
 #include "AbilityHolder.h"
 #include "AbilityPickup.h"
 
@@ -47,12 +47,12 @@ namespace Behaviors
 	//------------------------------------------------------------------------------
 
 	// Constructor
-	PlayerMovement::PlayerMovement(unsigned keyUp, unsigned keyLeft, unsigned keyRight, unsigned keySwitch) : Component("PlayerMovement"),
-		keyUp(keyUp), keyLeft(keyLeft), keyRight(keyRight), keySwitch(keySwitch),
+	PlayerMovement::PlayerMovement(unsigned keyUp, unsigned keyLeft, unsigned keyRight, unsigned keyUse) : Component("PlayerMovement"),
+		keyUp(keyUp), keyLeft(keyLeft), keyRight(keyRight), keyUse(keyUse),
 		walkSpeed(5.0f), walkSpeedOld(walkSpeed), jumpSpeed(0.0f, 11.0f), jumpSpeedOld(jumpSpeed), slidingJumpSpeed(6.0f, 6.75f),
 		gravity(0.0f, -16.0f), slidingGravity(0.0f, -9.0f), terminalVelocity(9.0f), slidingTerminalVelocity(1.5f), gracePeriod(0.15f),
-		transform(nullptr), physics(nullptr),
-		playerID(0), chips(0),
+		transform(nullptr), physics(nullptr), soundManager(nullptr),
+		playerID(0), switchCharges(0),
 		onGround(false), onLeftWall(false), onRightWall(false),
 		hasJumped(false), airTime(0.0f), leftTime(0.0f), rightTime(0.0f), movementLerpGround(1.0f), movementLerpAir(0.98f)
 	{
@@ -91,14 +91,14 @@ namespace Behaviors
 		GameObject* gameController = GetOwner()->GetSpace()->GetObjectManager().GetObjectByName("GameController");
 		DimensionController& dimensionController = *static_cast<DimensionController*>(gameController->GetComponent("DimensionController"));
 
-		// Switch dimensions when pressing the key, there are unused chips, and dimension switching is not on cooldown.
+		// Switch dimensions when pressing the key, there are unused charges, and dimension switching is not on cooldown.
 		Input& input = Input::GetInstance();
-		if (input.CheckTriggered(keySwitch) && chips > 0 && dimensionController.GetSwitchCooldown() <= 0.0f)
+		if (input.CheckTriggered(keyUse) && switchCharges > 0 && dimensionController.GetSwitchCooldown() <= 0.0f)
 		{
 			// Calculate next dimension ID
 			unsigned newDimension = (dimensionController.GetActiveDimension() + 1) % dimensionController.GetDimensionCount();
 			dimensionController.SetActiveDimension(newDimension);
-			--chips;
+			--switchCharges;
 		}
 	}
 
@@ -111,28 +111,27 @@ namespace Behaviors
 		
 		if (event.name == "CollisionStarted")
 		{
-			// Destroy collectibles when touching.
-			if (other.GetName() == "Collectible")
-			{
-				ChipCollectible* collectible = static_cast<ChipCollectible*>(other.GetComponent("ChipCollectible"));
+			// Handle various pickups.
 
-				// if chips are active, get more switcheroos and deactive the chips
-				if (collectible->IsActive())
-				{
-					chips += 5;
-					collectible->SetActive(false);
-				}
+			// If the switch pickup is active, get more switcheroos.
+			ShiftPickup* shiftPickup = other.GetComponent<ShiftPickup>();
+			if (shiftPickup != nullptr && shiftPickup->IsActive())
+			{
+				switchCharges += shiftPickup->GetCharges();
 			}
 
-			if (other.GetName() == "JetpackPickup")
+			// If the ability pickup is active, switch to that ability.
+			AbilityPickup* abilityPickup = other.GetComponent<AbilityPickup>();
+			if (abilityPickup != nullptr && abilityPickup->IsActive())
 			{
-				GetOwner()->GetComponent<AbilityHolder>()->SetAbility(other.GetComponent<AbilityPickup>()->GetAbilityType());
+				GetOwner()->GetComponent<AbilityHolder>()->SetAbility(abilityPickup->GetAbilityType());
 			}
 		}
 
 		if (event.name == "MapCollisionStarted" || event.name == "MapCollisionPersisted")
 		{
 			const MapCollisionEvent& mapCollisionEvent = static_cast<const MapCollisionEvent&>(event);
+
 			// If the monkey's collider is colliding on the bottom, mark the monkey as on ground.
 			if (mapCollisionEvent.collision.bottom)
 			{
@@ -163,13 +162,19 @@ namespace Behaviors
 		keyUp = keyUp_;
 		keyLeft = keyLeft_;
 		keyRight = keyRight_;
-		keySwitch = keySwitch_;
+		keyUse = keySwitch_;
 	}
 
-	// Gets the keybind for up
+	// Gets the keybind for jumping up.
 	unsigned PlayerMovement::GetUpKeybind() const
 	{
 		return keyUp;
+	}
+
+	// Gets the keybind for using an ability.
+	unsigned PlayerMovement::GetUseKeybind() const
+	{
+		return keyUse;
 	}
 
 	// Sets the player's ID.

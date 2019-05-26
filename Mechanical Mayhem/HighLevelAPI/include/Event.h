@@ -30,11 +30,14 @@ class EventHandler;
 
 enum EventType
 {
+	ET_Generic = 0 ,
 	ET_Collision,
 	ET_MapCollision,
 	ET_Damage,
 	ET_Death,
-	ET_EnemySpotted
+	ET_EnemySpotted,
+
+	ET_MAX
 };
 
 struct Event

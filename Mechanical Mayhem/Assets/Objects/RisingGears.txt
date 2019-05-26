@@ -14,13 +14,13 @@ RisingGears
   }
   ColliderRectangle
   {
-    group : 1
-    mask : 2
+    group : 3
+    mask : 8
     extents : { 12, 1.5 }
   }
   Behaviors::RisingGears
   {
-    moveSpeed : 0.005
+    moveSpeed : 1
     startOffset : 3
   }
 }

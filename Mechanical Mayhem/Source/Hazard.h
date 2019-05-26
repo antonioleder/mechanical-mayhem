@@ -38,20 +38,20 @@ namespace Behaviors
 		//------------------------------------------------------------------------------
 
 		// Constructor
-		// Params:
-		//   rotation = rotation of Hazard
-		Hazard(bool alwaysCollidable = false, bool collidable = true, float rotation = 0.0f);
+		Hazard();
 
 		// Return a new copy of the component.
 		Component* Clone() const;
 
-		// Initialize data for this object.
-		void Initialize();
-
-		// Update function for this component.
+		// Write object data to file
 		// Params:
-		//   dt = The (fixed) change in time since the last step.
-		void Update(float dt) override;
+		//   parser = The parser that is writing this object to a file.
+		void Serialize(Parser& parser) const override;
+
+		// Read object data from a file
+		// Params:
+		//   parser = The parser that is reading this object's data from a file.
+		void Deserialize(Parser& parser) override;
 
 		// Receive an event and handle it (if applicable).
 		// Params:
@@ -72,8 +72,9 @@ namespace Behaviors
 		//------------------------------------------------------------------------------
 
 		// Properties
-		float rotation;
 		bool alwaysCollidable;
 		bool collidable;
+		bool destroyOnCollide;
+		float destroyOnCollideDelay;
 	};
 }

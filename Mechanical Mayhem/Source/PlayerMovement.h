@@ -46,7 +46,7 @@ namespace Behaviors
 		//------------------------------------------------------------------------------
 
 		// Constructor
-		PlayerMovement(unsigned keyUp = 0, unsigned keyLeft = 0, unsigned keyRight = 0, unsigned keySwitch = 0);
+		PlayerMovement(unsigned keyUp = 0, unsigned keyLeft = 0, unsigned keyRight = 0, unsigned keyUse = 0);
 
 		// Clone a component and return a pointer to the cloned component.
 		// Returns:
@@ -71,11 +71,14 @@ namespace Behaviors
 		//   keyUp = The up keybind.
 		//   keyLeft = The left keybind.
 		//   keyRight = The right keybind.
-		//	 keySwitch = The dimension-switch keybind.
-		void SetKeybinds(unsigned keyUp, unsigned keyLeft, unsigned keyRight, unsigned keySwitch);
+		//	 keyUse = The use keybind.
+		void SetKeybinds(unsigned keyUp, unsigned keyLeft, unsigned keyRight, unsigned keyUse);
 
-		// Gets the keybind for up
+		// Gets the keybind for jumping up.
 		unsigned GetUpKeybind() const;
+
+		// Gets the keybind for using an ability.
+		unsigned GetUseKeybind() const;
 
 		// Sets the player's ID.
 		// Params:
@@ -112,7 +115,7 @@ namespace Behaviors
 		unsigned keyUp;
 		unsigned keyLeft;
 		unsigned keyRight;
-		unsigned keySwitch;
+		unsigned keyUse;
 
 		// Movement properties
 		float walkSpeed;
@@ -129,11 +132,13 @@ namespace Behaviors
 		// Components
 		Transform* transform;
 		Physics* physics;
+
+		// Sound manager
 		SoundManager* soundManager;
 
 		// Misc
 		int playerID;
-		int chips;
+		int switchCharges;
 
 		bool onGround;
 		bool onLeftWall;

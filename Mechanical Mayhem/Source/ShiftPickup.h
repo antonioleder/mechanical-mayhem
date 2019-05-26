@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------
 //
-// File Name:	AbilityPickup.h
-// Author(s):	David Cohen (david.cohen)
-// Project:		Mechanical Mayhem
+// File Name:	ShiftPickup.h
+// Author(s):	Daniel Walther (daniel.walther)
+// Project:		Yesterday's Mayonnaise
 // Course:		WANIC VGP2 2018-2019
 //
 // Copyright © 2018 DigiPen (USA) Corporation.
@@ -17,23 +17,21 @@
 
 #include "Pickup.h"
 
-// Abilities
-#include "Ability.h"
-
 //------------------------------------------------------------------------------
 
 namespace Behaviors
 {
-	class AbilityPickup : public Pickup
+	class ShiftPickup : public Pickup
 	{
+		
+	//------------------------------------------------------------------------------
+	// Public Functions:
+	//------------------------------------------------------------------------------
+	
 	public:
-		//------------------------------------------------------------------------------
-		// Public Functions:
-		//------------------------------------------------------------------------------
-
 		// Constructor
-		AbilityPickup();
-
+		ShiftPickup();
+		
 		// Clones the component
 		Component* Clone() const override;
 
@@ -47,15 +45,15 @@ namespace Behaviors
 		//   parser = The parser that is reading this object's data from a file.
 		void Deserialize(Parser& parser) override;
 
-		// Returns the type of this ability pickup.
-		Abilities::Abilities GetAbilityType() const;
+		// Returns the number of charges this collectible has.
+		int GetCharges() const;
 
 	private:
 		//------------------------------------------------------------------------------
 		// Private Variables:
 		//------------------------------------------------------------------------------
 
-		Abilities::Abilities abilityType;
+		int charges;
 	};
 }
 

@@ -23,6 +23,10 @@
 #include <GameObjectManager.h>
 #include <Parser.h>
 
+// Components
+#include <Transform.h>
+#include <Collider.h>
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -36,14 +40,15 @@ namespace Abilities
 	//------------------------------------------------------------------------------
 
 	// Constructor
-	ProximityMine::ProximityMine() : Ability("Proximity Mine"), maxProximityMines(4)
+	ProximityMine::ProximityMine() : Ability("ProximityMine"), transform(nullptr), collider(nullptr), cooldown(0.0f), cooldownTimer(0.0f), maxProximityMines(4)
 	{
 	}
 
 	// Initialize this ability.
 	void ProximityMine::Initialize()
 	{
-
+		transform = GetOwner()->GetComponent<Transform>();
+		collider = GetOwner()->GetComponent<Collider>();
 	}
 
 	// Clone the current ability.
@@ -58,22 +63,59 @@ namespace Abilities
 	void ProximityMine::Update(float dt)
 	{
 		UNREFERENCED_PARAMETER(dt);
+
+		cooldownTimer -= dt;
+
+		// Remove destroyed mines from the list.
+		for (auto it = proximityMines.begin(); it != proximityMines.end();)
+		{
+			GameObject* mine = static_cast<GameObject*>(BetaObject::GetObjectByID(proximityMines.front()));
+			if (mine == nullptr || mine->IsDestroyed())
+				it = proximityMines.erase(it);
+			else
+				++it;
+		}
+	}
+
+	// Shutdown this ability.
+	void ProximityMine::Shutdown()
+	{
+		// Destroy all mines.
+		while (proximityMines.size() > 0)
+		{
+			GameObject* mine = static_cast<GameObject*>(BetaObject::GetObjectByID(proximityMines.front()));
+			if (mine != nullptr && !mine->IsDestroyed())
+				mine->Destroy();
+			proximityMines.pop_front();
+		}
 	}
 
 	// Callback for when the player attempts to use this ability.
 	void ProximityMine::OnUse()
 	{
+		// If the ability is on cooldown, don't do anything.
+		if (cooldownTimer > 0.0f)
+			return;
+
+		cooldownTimer = cooldown;
+
+		// If there are too many mines, remove the oldest one.
 		if (proximityMines.size() >= maxProximityMines)
 		{
-			proximityMines.front()->Destroy();
-			proximityMines.pop();
+			static_cast<GameObject*>(BetaObject::GetObjectByID(proximityMines.front()))->Destroy();
+			proximityMines.pop_front();
 		}
 
 		GameObjectManager& objectManager = GetOwner()->GetSpace()->GetObjectManager();
 
+		// Create and place the new mine.
 		GameObject* mine = new GameObject(*objectManager.GetArchetypeByName("Mine"));
+		mine->GetComponent<Transform>()->SetTranslation(transform->GetTranslation());
+		Collider* mineCollider = mine->GetComponent<Collider>();
+		mineCollider->SetGroup(collider->GetGroup());
+		mineCollider->SetMask(CM_GENERIC | CM_CREATE(collider->GetGroup()) | CM_HAZARD);
 		objectManager.AddObject(*mine);
-		proximityMines.push(mine);
+		proximityMines.push_back(mine->GetID());
 	}
 
 	// Write object data to file
@@ -81,6 +123,7 @@ namespace Abilities
 	//   parser = The parser that is writing this object to a file.
 	void ProximityMine::Serialize(Parser& parser) const
 	{
+		parser.WriteVariable("cooldown", cooldown);
 		parser.WriteVariable("maxProximityMines", maxProximityMines);
 	}
 
@@ -89,6 +132,7 @@ namespace Abilities
 	//   parser = The parser that is reading this object's data from a file.
 	void ProximityMine::Deserialize(Parser& parser)
 	{
+		parser.ReadVariable("cooldown", cooldown);
 		parser.ReadVariable("maxProximityMines", maxProximityMines);
 	}
 }

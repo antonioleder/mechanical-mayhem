@@ -44,7 +44,7 @@
 #include "CameraFollow.h"
 #include "Hazard.h"
 #include "DimensionController.h"
-#include "ChipCollectible.h"
+#include "ShiftPickup.h"
 #include "Button.h"
 
 //------------------------------------------------------------------------------
@@ -179,7 +179,7 @@ namespace Archetypes
 		ColliderRectangle* colliderrect = new ColliderRectangle(transform->GetScale() / 2.0f);
 
 		// Create chip collectible
-		Behaviors::ChipCollectible* chipcollectible = new Behaviors::ChipCollectible();
+		Behaviors::ShiftPickup* chipcollectible = new Behaviors::ShiftPickup();
 
 		// Add components
 		Collectible->AddComponent(chipcollectible);
@@ -240,7 +240,7 @@ namespace Archetypes
 		collider->SetMask(1 << 1);
 
 		// Create hazard component
-		Behaviors::Hazard* hazard = new Behaviors::Hazard(false, true);
+		Behaviors::Hazard* hazard = new Behaviors::Hazard();
 
 		// Add components
 		Hazard->AddComponent(transform);

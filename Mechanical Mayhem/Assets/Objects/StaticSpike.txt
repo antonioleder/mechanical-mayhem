@@ -14,11 +14,15 @@ StaticSpike
   }
   ColliderRectangle
   {
-    group : 1
-    mask : 2
+    group : 3
+    mask : 9
     extents : { 0.495, 0.495 }
   }
   Behaviors::Hazard
   {
+    alwaysCollidable : 1
+    collidable : 1
+    destroyOnCollide : 0
+    destroyOnCollideDelay : 0
   }
 }

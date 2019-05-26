@@ -21,12 +21,17 @@
 
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-// Public Structures:
-//------------------------------------------------------------------------------
-
 namespace Behaviors
 {
+	//------------------------------------------------------------------------------
+	// Forward Declarations:
+	//------------------------------------------------------------------------------
+
+	class PlayerMovement;
+
+	//------------------------------------------------------------------------------
+	// Public Structures:
+	//------------------------------------------------------------------------------
 
 	class AbilityHolder : public Component
 	{
@@ -76,8 +81,16 @@ namespace Behaviors
 		// Private Variables:
 		//------------------------------------------------------------------------------
 
+		// Components
+		PlayerMovement* playerMovement;
+
+		// The type of the ability.
 		Abilities::Abilities abilityType;
+
+		// The ability instance.
 		Abilities::Ability* ability;
+
+		// Ability duration.
 		float timer;
 		float duration;
 	};

@@ -17,6 +17,13 @@
 
 #include "AbilityHolder.h"
 
+// Systems
+#include <Input.h>
+#include <GameObject.h>
+
+// Components
+#include "PlayerMovement.h"
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -30,13 +37,13 @@ namespace Behaviors
 	//------------------------------------------------------------------------------
 
 	// Constructor
-	AbilityHolder::AbilityHolder() : Component("AbilityHolder"), abilityType(Abilities::ABILITY_NONE), ability(nullptr), timer(0.0f), duration(30.0f)
+	AbilityHolder::AbilityHolder() : Component("AbilityHolder"), playerMovement(nullptr), abilityType(Abilities::ABILITY_NONE), ability(nullptr), timer(0.0f), duration(30.0f)
 	{
 		
 	}
 	
 	// Copy constructor
-	AbilityHolder::AbilityHolder(const AbilityHolder& other) : Component("AbilityHolder"), abilityType(other.abilityType), ability(nullptr), timer(0.0f), duration(other.duration)
+	AbilityHolder::AbilityHolder(const AbilityHolder& other) : Component("AbilityHolder"), playerMovement(nullptr), abilityType(other.abilityType), ability(nullptr), timer(0.0f), duration(other.duration)
 	{
 		SetAbility(abilityType);
 		timer = other.timer;
@@ -72,6 +79,7 @@ namespace Behaviors
 	// Initialize this component (happens at object creation).
 	void AbilityHolder::Initialize()
 	{
+		playerMovement = GetOwner()->GetComponent<Behaviors::PlayerMovement>();
 	}
 
 	// Update function for this component.
@@ -82,6 +90,11 @@ namespace Behaviors
 		if (ability != nullptr)
 		{
 			ability->Update(dt);
+
+			if (Input::GetInstance().CheckTriggered(playerMovement->GetUseKeybind()))
+			{
+				ability->OnUse();
+			}
 
 			timer += dt;
 

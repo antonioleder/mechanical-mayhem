@@ -3,6 +3,6 @@ Jetpack
   jetpackForce : 10
   currentFuel : 3
   maxFuel : 3
-  fuelRefillRate : 1
+  fuelRefillRate : 2
   fuelConsumptionRate : 1
 }

@@ -18,11 +18,14 @@
 #include "Hazard.h"
 
 // Systems
-#include "Engine.h"
-#include "GameObject.h"
+#include <Engine.h>
+#include <GameObject.h>
+#include <Parser.h>
+#include <Space.h>
+#include <GameObjectManager.h>
 
 // Components
-#include "Collider.h"
+#include <Collider.h>
 
 //------------------------------------------------------------------------------
 
@@ -37,10 +40,8 @@ namespace Behaviors
 	//------------------------------------------------------------------------------
 
 	// Constructor
-	// Params:
-	//   rotation = rotation of Hazard
-	Hazard::Hazard(bool alwaysCollidable, bool collidable, float rotation) : Component("Hazard"), 
-		alwaysCollidable(alwaysCollidable), collidable(collidable), rotation(rotation)
+	Hazard::Hazard() : Component("Hazard"), 
+		alwaysCollidable(false), collidable(true), destroyOnCollide(false), destroyOnCollideDelay(0.0f)
 	{
 	}
 
@@ -50,17 +51,26 @@ namespace Behaviors
 		return new Hazard(*this);
 	}
 
-	// Initialize data for this object.
-	void Hazard::Initialize()
+	// Write object data to file
+	// Params:
+	//   parser = The parser that is writing this object to a file.
+	void Hazard::Serialize(Parser& parser) const
 	{
+		parser.WriteVariable("alwaysCollidable", alwaysCollidable);
+		parser.WriteVariable("collidable", collidable);
+		parser.WriteVariable("destroyOnCollide", destroyOnCollide);
+		parser.WriteVariable("destroyOnCollideDelay", destroyOnCollideDelay);
 	}
 
-	// Update function for this component.
+	// Read object data from a file
 	// Params:
-	//   dt = The (fixed) change in time since the last step.
-	void Hazard::Update(float dt)
+	//   parser = The parser that is reading this object's data from a file.
+	void Hazard::Deserialize(Parser& parser)
 	{
-		UNREFERENCED_PARAMETER(dt);
+		parser.ReadVariable("alwaysCollidable", alwaysCollidable);
+		parser.ReadVariable("collidable", collidable);
+		parser.ReadVariable("destroyOnCollide", destroyOnCollide);
+		parser.ReadVariable("destroyOnCollideDelay", destroyOnCollideDelay);
 	}
 
 	// Receive an event and handle it (if applicable).
@@ -69,17 +79,33 @@ namespace Behaviors
 	void Hazard::HandleEvent(const Event& event)
 	{
 		GameObject& other = *static_cast<GameObject*>(event.GetSender());
-		if (other.GetName() == "Player")
+
+		if (&other == nullptr)
+			return;
+
+		if (event.name == "CollisionStarted")
 		{
-			if (collidable)
+			if (IsCollidable())
+			{
 				other.Destroy();
+
+				if (destroyOnCollide)
+				{
+					GetOwner()->GetSpace()->GetObjectManager().DispatchEvent(new Event(ET_Generic, "Destroy", destroyOnCollideDelay, GetOwner()->GetID(), GetOwner()->GetID()));
+				}
+			}
+		}
+		
+		if (event.name == "Destroy" && event.sender == GetOwner()->GetID())
+		{
+			GetOwner()->Destroy();
 		}
 	}
 
 	// Returns if the hazard is collidable
 	bool Hazard::IsCollidable()
 	{
-		return collidable;
+		return alwaysCollidable || collidable;
 	}
 
 	// Changes whether the hazard is collidable or not.

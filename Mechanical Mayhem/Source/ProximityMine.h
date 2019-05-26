@@ -17,7 +17,7 @@
 
 #include "Ability.h" // Base class
 
-#include <queue>
+#include <deque>
 
 //------------------------------------------------------------------------------
 
@@ -25,7 +25,8 @@
 // Forward Declarations:
 //------------------------------------------------------------------------------
 
-class GameObject;
+class Transform;
+class Collider;
 
 //------------------------------------------------------------------------------
 // Public Structures:
@@ -54,6 +55,9 @@ namespace Abilities
 		//   dt = The change in time since the last update.
 		void Update(float dt) override;
 
+		// Shutdown this ability.
+		void Shutdown() override;
+
 		// Callback for when the player attempts to use this ability.
 		void OnUse() override;
 
@@ -72,8 +76,19 @@ namespace Abilities
 		// Protected Variables:
 		//------------------------------------------------------------------------------
 
+		// Components
+		Transform* transform;
+		Collider* collider;
+		
+		// Cooldown between placing mines.
+		float cooldown;
+		float cooldownTimer;
+
+		// The maximum amount of mines that can be placed at once.
 		int maxProximityMines;
-		std::queue<GameObject*> proximityMines;
+
+		// The list of mines in the world.
+		std::deque<GUID> proximityMines;
 	};
 }
 

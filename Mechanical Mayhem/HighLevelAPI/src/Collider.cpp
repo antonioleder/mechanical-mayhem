@@ -136,7 +136,7 @@ void Collider::Draw()
 bool Collider::CanCollideWith(const Collider& other)
 {
 	// Check collision groups
-	return !((1ull << group) & other.mask) || !((1ull << other.group) & mask);
+	return !((1ull << group) & other.mask) && !((1ull << other.group) & mask);
 }
 
 // Check if two objects are colliding and send collision events.

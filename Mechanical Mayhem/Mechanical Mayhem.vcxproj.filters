@@ -49,9 +49,6 @@
     <ClCompile Include="Source\CameraFollow.cpp">
       <Filter>Game\Behaviors</Filter>
     </ClCompile>
-    <ClCompile Include="Source\ChipCollectible.cpp">
-      <Filter>Game\Behaviors</Filter>
-    </ClCompile>
     <ClCompile Include="Source\DimensionController.cpp">
       <Filter>Game\Behaviors</Filter>
     </ClCompile>
@@ -94,6 +91,9 @@
     <ClCompile Include="Source\AbilityPickup.cpp">
       <Filter>Game\Behaviors</Filter>
     </ClCompile>
+    <ClCompile Include="Source\ShiftPickup.cpp">
+      <Filter>Game\Behaviors</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\stdafx.h">
@@ -124,9 +124,6 @@
       <Filter>Game\Levels</Filter>
     </ClInclude>
     <ClInclude Include="Source\CameraFollow.h">
-      <Filter>Game\Behaviors</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ChipCollectible.h">
       <Filter>Game\Behaviors</Filter>
     </ClInclude>
     <ClInclude Include="Source\DimensionController.h">
@@ -169,6 +166,9 @@
       <Filter>Game\Behaviors</Filter>
     </ClInclude>
     <ClInclude Include="Source\AbilityPickup.h">
+      <Filter>Game\Behaviors</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ShiftPickup.h">
       <Filter>Game\Behaviors</Filter>
     </ClInclude>
   </ItemGroup>

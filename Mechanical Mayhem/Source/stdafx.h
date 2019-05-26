@@ -42,3 +42,20 @@
 
 // Re-enable warnings
 #pragma warning(pop)
+
+// Collision group definitions
+
+#define CG_GENERIC 0ull
+#define CG_PLAYER1 1ull
+#define CG_PLAYER2 2ull
+#define CG_HAZARD 3ull
+
+// Collision mask definitions
+
+// Create a collision mask
+#define CM_CREATE(CG) (1ull << CG)
+
+#define CM_GENERIC (CM_CREATE(CG_GENERIC))
+#define CM_PLAYER1 (CM_CREATE(CG_PLAYER1))
+#define CM_PLAYER2 (CM_CREATE(CG_PLAYER2))
+#define CM_HAZARD (CM_CREATE(CG_HAZARD))

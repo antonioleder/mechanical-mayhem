@@ -1,8 +1,8 @@
 //------------------------------------------------------------------------------
 //
-// File Name:	AbilityPickup.cpp
-// Author(s):	David Cohen (david.cohen)
-// Project:		Mechanical Mayhem
+// File Name:	ShiftPickup.cpp
+// Author(s):	Daniel Walther (daniel.walther)
+// Project:		BetaFramework
 // Course:		WANIC VGP2 2018-2019
 //
 // Copyright © 2018 DigiPen (USA) Corporation.
@@ -15,10 +15,10 @@
 
 #include "stdafx.h"
 
-#include "AbilityPickup.h"
+#include "ShiftPickup.h"
 
 // Systems
-#include <Parser.h>
+#include <Parser.h>							// Parser
 
 //------------------------------------------------------------------------------
 
@@ -29,43 +29,40 @@ namespace Behaviors
 	//------------------------------------------------------------------------------
 
 	// Constructor
-	AbilityPickup::AbilityPickup() : Pickup("AbilityPickup"), abilityType(Abilities::ABILITY_NONE)
+	ShiftPickup::ShiftPickup() : Pickup("ShiftPickup"), charges(0)
 	{
 	}
 
 	// Clones the component
-	Component* AbilityPickup::Clone() const
+	Component* ShiftPickup::Clone() const
 	{
-		return new AbilityPickup(*this);
+		return new ShiftPickup(*this);
 	}
 
 	// Write object data to file
 	// Params:
 	//   parser = The parser that is writing this object to a file.
-	void AbilityPickup::Serialize(Parser& parser) const
+	void ShiftPickup::Serialize(Parser& parser) const
 	{
 		Pickup::Serialize(parser);
-			
-		unsigned abilityType_ = static_cast<unsigned>(abilityType);
-		parser.WriteVariable("abilityType", abilityType_);
+
+		parser.WriteVariable("charges", charges);
 	}
 
 	// Read object data from a file
 	// Params:
 	//   parser = The parser that is reading this object's data from a file.
-	void AbilityPickup::Deserialize(Parser& parser)
+	void ShiftPickup::Deserialize(Parser& parser)
 	{
 		Pickup::Deserialize(parser);
 
-		unsigned abilityType_;
-		parser.ReadVariable("abilityType", abilityType_);
-		abilityType = static_cast<Abilities::Abilities>(abilityType_);
+		parser.ReadVariable("charges", charges);
 	}
 
-	// Returns the type of this ability pickup.
-	Abilities::Abilities AbilityPickup::GetAbilityType() const
+	// Returns the number of charges this collectible has.
+	int ShiftPickup::GetCharges() const
 	{
-		return abilityType;
+		return charges;
 	}
 }
 

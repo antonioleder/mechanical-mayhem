@@ -14,12 +14,19 @@
 //------------------------------------------------------------------------------
 
 #include "stdafx.h"
+
 #include "Pickup.h"
 
+// Systems
+#include <GameObject.h>						// Game Object
+#include <Parser.h>							// Parser
+#include <Space.h>							// Space
+#include <GameObjectManager.h>				// Game Object Manager
+
+// Components
 #include <Transform.h>						// Transform
 #include <Sprite.h>							// Sprite
 #include <Collider.h>						// Collider
-#include <GameObject.h>						// Game Object
 
 //------------------------------------------------------------------------------
 
@@ -30,8 +37,11 @@ namespace Behaviors
 	//------------------------------------------------------------------------------
 
 	// Constructor
-	Pickup::Pickup(float cooldown)
-		: Component("Pickup"), sprite(nullptr), cooldown(cooldown), timer(0.0f), active(true)
+	// Params:
+	//   name = The name of this component.
+	//   cooldown = The cooldown for respawning after collected.
+	Pickup::Pickup(const std::string& name, float cooldown)
+		: Component(name), sprite(nullptr), cooldown(cooldown), timer(0.0f), active(true)
 	{
 	}
 
@@ -39,6 +49,22 @@ namespace Behaviors
 	void Pickup::Initialize()
 	{
 		sprite = static_cast<Sprite*>(GetOwner()->GetComponent("Sprite"));
+	}
+
+	// Write object data to file
+	// Params:
+	//   parser = The parser that is writing this object to a file.
+	void Pickup::Serialize(Parser& parser) const
+	{
+		parser.WriteVariable("cooldown", cooldown);
+	}
+
+	// Read object data from a file
+	// Params:
+	//   parser = The parser that is reading this object's data from a file.
+	void Pickup::Deserialize(Parser& parser)
+	{
+		parser.ReadVariable("cooldown", cooldown);
 	}
 
 	// Update
@@ -69,8 +95,12 @@ namespace Behaviors
 		{
 			if (event.GetSender()->GetName() == "Player")
 			{
-				SetActive(false);
+				GetOwner()->GetSpace()->GetObjectManager().DispatchEvent(new Event(ET_Generic, "Deactivate", 0.01f, GetOwner()->GetID(), GetOwner()->GetID()));
 			}
+		}
+		else if (event.name == "Deactivate" && event.sender == GetOwner()->GetID())
+		{
+			SetActive(false);
 		}
 	}
 

@@ -41,7 +41,8 @@ namespace Abilities
 	Jetpack::Jetpack()
 		: Ability("Jetpack"),
 		playerMovement(nullptr), physics(nullptr),
-		jetpackForce(1), currentFuel(0), maxFuel(100), fuelRefillRate(0.5f), fuelConsumptionRate(1.0f)
+		active(false), jetpackForce(1), currentFuel(0), maxFuel(100),
+		fuelRefillRate(0.5f), fuelConsumptionRate(1.0f)
 	{
 	}
 
