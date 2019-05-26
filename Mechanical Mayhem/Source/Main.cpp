@@ -45,6 +45,7 @@
 #include "TimedDeath.h"
 #include "AbilityHolder.h"
 #include "AbilityPickup.h"
+#include "Health.h"
 
 //------------------------------------------------------------------------------
 
@@ -97,6 +98,7 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prevInstance, _In
 		objectFactory.RegisterComponent<TimedDeath>();
 		objectFactory.RegisterComponent<AbilityHolder>();
 		objectFactory.RegisterComponent<AbilityPickup>();
+		objectFactory.RegisterComponent<Health>();
 	}
 
 	// Game engine goes!

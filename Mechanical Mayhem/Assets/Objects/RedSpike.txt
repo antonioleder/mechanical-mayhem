@@ -22,6 +22,7 @@ RedSpike
   {
     alwaysCollidable : 0
     collidable : 1
+    damage : 100
     destroyOnCollide : 0
     destroyOnCollideDelay : 0
   }

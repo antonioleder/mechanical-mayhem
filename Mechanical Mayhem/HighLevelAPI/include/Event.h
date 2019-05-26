@@ -30,10 +30,11 @@ class EventHandler;
 
 enum EventType
 {
-	ET_Generic = 0 ,
+	ET_Generic = 0,
 	ET_Collision,
 	ET_MapCollision,
 	ET_Damage,
+	ET_HEAL,
 	ET_Death,
 	ET_EnemySpotted,
 
@@ -68,6 +69,48 @@ struct Event
 	float delay;
 	GUID sender;
 	GUID receiver;
+};
+
+struct DamageEvent : public Event
+{
+	// Constructor
+	// Params:
+	//  damage = How much damage to deal.
+	//  delay = How long to wait before sending this event.
+	//  sender = GUID of the sending object.
+	//  receiver = GUID of the receiving object (if none, all objects).
+	DamageEvent(int damage, float delay = 0.0f, GUID sender = GUID(), GUID receiver = GUID());
+
+	int damage;
+};
+
+struct HealEvent : public Event
+{
+	// Constructor
+	// Params:
+	//  health = How much health to heal.
+	//  delay = How long to wait before sending this event.
+	//  sender = GUID of the sending object.
+	//  receiver = GUID of the receiving object (if none, all objects).
+	HealEvent(int health, float delay = 0.0f, GUID sender = GUID(), GUID receiver = GUID());
+
+	int health;
+};
+
+struct DeathEvent : public Event
+{
+	// Constructor
+	// Params:
+	//  killer = The GUID of the object who killed the sender.
+	//  delay = How long to wait before sending this event.
+	//  sender = GUID of the sending object.
+	//  receiver = GUID of the receiving object (if none, all objects).
+	DeathEvent(GUID killer, float delay = 0.0f, GUID sender = GUID(), GUID receiver = GUID());
+
+	// Returns a pointer to the killer beta object.
+	BetaObject* GetKiller() const;
+
+	GUID killer;
 };
 
 //------------------------------------------------------------------------------

@@ -45,10 +45,10 @@ namespace Behaviors
 		// Initialize data for this object.
 		void Initialize();
 
-		// Update function for this component.
+		// Updates components using a fixed timestep (usually just for physics).
 		// Params:
-		//   dt = The (fixed) change in time since the last step.
-		void Update(float dt) override;
+		//	 dt = A fixed change in time, usually 1/60th of a second.
+		void FixedUpdate(float dt) override;
 
 		// Write object data to file
 		// Params:

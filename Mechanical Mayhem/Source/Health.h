@@ -1,6 +1,6 @@
 //------------------------------------------------------------------------------
 //
-// File Name:	Hazard.h
+// File Name:	Health.h
 // Author(s):	A.J. Bussman
 // Project:		BetaFramework
 // Course:		WANIC VGP2 2018-2019
@@ -20,9 +20,7 @@
 
 //------------------------------------------------------------------------------
 
-//------------------------------------------------------------------------------
-// Forward Declarations:
-//------------------------------------------------------------------------------
+class Sprite;
 
 //------------------------------------------------------------------------------
 // Public Structures:
@@ -30,7 +28,7 @@
 
 namespace Behaviors
 {
-	class Hazard : public Component
+	class Health : public Component
 	{
 	public:
 		//------------------------------------------------------------------------------
@@ -38,10 +36,21 @@ namespace Behaviors
 		//------------------------------------------------------------------------------
 
 		// Constructor
-		Hazard();
+		// Params:
+		//   maxHealth = The max health for the object.
+		//   destroyOnDeath = hether the object should be destroyed when it dies.
+		Health(int maxHealth = 100, bool destroyOnDeath = true);
 
 		// Return a new copy of the component.
 		Component* Clone() const;
+
+		// Initialize data for this object.
+		void Initialize();
+
+		// Update function for this component.
+		// Params:
+		//   dt = The change in time since the last step.
+		void Update(float dt) override;
 
 		// Write object data to file
 		// Params:
@@ -56,26 +65,20 @@ namespace Behaviors
 		// Receive an event and handle it (if applicable).
 		// Params:
 		//   event = The event that has been received.
-		void HandleEvent(const Event& event) override;
-
-		// Returns if the hazard is collidable.
-		bool IsCollidable();
-
-		// Changes whether the hazard is collidable or not.
-		// Params:
-		//   collidable = Whether the hazard is collidable.
-		void SetCollidable(bool collidable);
+		void HandleEvent(const Event& event);
 
 	private:
 		//------------------------------------------------------------------------------
 		// Private Variables:
 		//------------------------------------------------------------------------------
 
-		// Properties
-		bool alwaysCollidable;
-		bool collidable;
-		int damage;
-		bool destroyOnCollide;
-		float destroyOnCollideDelay;
+		// Health left
+		int health;
+
+		// Max health
+		int maxHealth;
+
+		// Whether the object should be destroyed when it dies
+		bool destroyOnDeath;
 	};
 }

@@ -23,6 +23,9 @@
 #include "Parser.h"
 #include "GameObjectFactory.h"
 
+// Events
+#include "Event.h"
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -190,6 +193,10 @@ void GameObject::HandleEvent(const Event& event)
 	size_t numComponents = components.size();
 	for (size_t i = 0; i < numComponents; ++i)
 		components[i]->HandleEvent(event);
+
+	// If this object told itself to destroy itself, do it.
+	if (event.name == "Destroy" && event.sender == GetID())
+		Destroy();
 }
 
 // Adds a component to the object.

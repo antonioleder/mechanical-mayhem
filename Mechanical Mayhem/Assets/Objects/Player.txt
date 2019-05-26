@@ -1,6 +1,6 @@
 Player
 {
-  numComponents : 8
+  numComponents : 9
   Transform
   {
     translation : { 0, 0 }
@@ -36,5 +36,10 @@ Player
   }
   Behaviors::AbilityHolder
   {
+  }
+  Behaviors::Health
+  {
+    maxHealth : 100
+    destroyOnDeath : 1
   }
 }

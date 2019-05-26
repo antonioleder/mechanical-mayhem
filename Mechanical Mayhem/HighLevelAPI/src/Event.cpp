@@ -52,3 +52,42 @@ BetaObject* Event::GetReceiver() const
 {
 	return BetaObject::GetObjectByID(receiver);
 }
+
+// Constructor
+// Params:
+//  damage = How much damage to deal.
+//  delay = How long to wait before sending this event.
+//  sender = GUID of the sending object.
+//  receiver = GUID of the receiving object (if none, all objects).
+DamageEvent::DamageEvent(int damage, float delay, GUID sender, GUID receiver)
+	: Event(ET_Damage, "Damage", delay, sender, receiver), damage(damage)
+{
+}
+
+// Constructor
+// Params:
+//  health = How much health to heal.
+//  delay = How long to wait before sending this event.
+//  sender = GUID of the sending object.
+//  receiver = GUID of the receiving object (if none, all objects).
+HealEvent::HealEvent(int health, float delay, GUID sender, GUID receiver)
+	: Event(ET_HEAL, "Heal", delay, sender, receiver), health(health)
+{
+}
+
+// Constructor
+// Params:
+//  killer = The GUID of the object who killed the sender.
+//  delay = How long to wait before sending this event.
+//  sender = GUID of the sending object.
+//  receiver = GUID of the receiving object (if none, all objects).
+DeathEvent::DeathEvent(GUID killer, float delay, GUID sender, GUID receiver)
+	: Event(ET_Death, "Death", delay, sender, receiver), killer(killer)
+{
+}
+
+// Returns a pointer to the killer beta object.
+BetaObject* DeathEvent::GetKiller() const
+{
+	return BetaObject::GetObjectByID(killer);
+}

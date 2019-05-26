@@ -41,7 +41,7 @@ namespace Behaviors
 
 	// Constructor
 	Hazard::Hazard() : Component("Hazard"), 
-		alwaysCollidable(false), collidable(true), destroyOnCollide(false), destroyOnCollideDelay(0.0f)
+		alwaysCollidable(false), collidable(true), damage(100), destroyOnCollide(false), destroyOnCollideDelay(0.0f)
 	{
 	}
 
@@ -58,6 +58,7 @@ namespace Behaviors
 	{
 		parser.WriteVariable("alwaysCollidable", alwaysCollidable);
 		parser.WriteVariable("collidable", collidable);
+		parser.WriteVariable("damage", damage);
 		parser.WriteVariable("destroyOnCollide", destroyOnCollide);
 		parser.WriteVariable("destroyOnCollideDelay", destroyOnCollideDelay);
 	}
@@ -69,6 +70,7 @@ namespace Behaviors
 	{
 		parser.ReadVariable("alwaysCollidable", alwaysCollidable);
 		parser.ReadVariable("collidable", collidable);
+		parser.ReadVariable("damage", damage);
 		parser.ReadVariable("destroyOnCollide", destroyOnCollide);
 		parser.ReadVariable("destroyOnCollideDelay", destroyOnCollideDelay);
 	}
@@ -87,18 +89,13 @@ namespace Behaviors
 		{
 			if (IsCollidable())
 			{
-				other.Destroy();
+				GetOwner()->GetSpace()->GetObjectManager().DispatchEvent(new DamageEvent(damage, 0.0f, GetOwner()->GetID(), event.sender));
 
 				if (destroyOnCollide)
 				{
 					GetOwner()->GetSpace()->GetObjectManager().DispatchEvent(new Event(ET_Generic, "Destroy", destroyOnCollideDelay, GetOwner()->GetID(), GetOwner()->GetID()));
 				}
 			}
-		}
-		
-		if (event.name == "Destroy" && event.sender == GetOwner()->GetID())
-		{
-			GetOwner()->Destroy();
 		}
 	}
 
@@ -115,6 +112,7 @@ namespace Behaviors
 	{
 		if (alwaysCollidable)
 			return;
+
 		collidable = collidable_;
 	}
 }

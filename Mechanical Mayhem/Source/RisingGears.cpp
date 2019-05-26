@@ -56,10 +56,10 @@ namespace Behaviors
 		//physics = GetOwner()->GetComponent<Physics>();
 	}
 
-	// Update function for this component.
+	// Updates components using a fixed timestep (usually just for physics).
 	// Params:
-	//   dt = The (fixed) change in time since the last step.
-	void RisingGears::Update(float dt)
+	//	 dt = A fixed change in time, usually 1/60th of a second.
+	void RisingGears::FixedUpdate(float dt)
 	{
 		// Check if we should move
 		if (timer >= startOffset)
@@ -67,7 +67,7 @@ namespace Behaviors
 			// std::cout << "RisingGears start" << std::endl;
 			//physics->SetVelocity(Vector2D(0.0f, moveSpeed));
 			//timer = -1;
-			GetOwner()->GetComponent<Transform>()->SetTranslation(GetOwner()->GetComponent<Transform>()->GetTranslation() + Vector2D(0.0f, moveSpeed));
+			GetOwner()->GetComponent<Transform>()->SetTranslation(GetOwner()->GetComponent<Transform>()->GetTranslation() + Vector2D(0.0f, moveSpeed * dt));
 		}
 		else
 		{
