@@ -15,8 +15,11 @@
 
 #include "stdafx.h"
 
+#include <filesystem>
+
 // BetaFramework Engine
 #include <Engine.h>
+#include <StartupSettings.h>
 
 // Engine modules
 #include <Space.h>
@@ -25,9 +28,11 @@
 
 // Initial game state
 #include "MainMenu.h"
+#include "HUDEmpty.h"
 
 // Systems
 #include <GameObjectFactory.h>
+#include <Parser.h>
 
 // Components
 #include "Button.h"
@@ -69,14 +74,20 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prevInstance, _In
 	// Create a new space called "GameSpace"
 	Space* space = new Space("GameSpace");
 
-	// Set initial level to the second level.
-	space->SetLevel(new Levels::MainMenu());
+	// Create a new space called "HUDSpace"
+	Space* hudSpace = new Space("HUDSpace");
+
+	// Set initial level to the main menu.
+	space->SetLevel<Levels::MainMenu>()->SetAltSpace(hudSpace);
+
+	hudSpace->SetLevel<Levels::HUDEmpty>()->SetAltSpace(space);
 
 	Engine& engine = Engine::GetInstance();
 
 	// Add additional modules to engine
 	engine.AddModule(new FullscreenManager());
 	engine.AddModule(space);
+	engine.AddModule(hudSpace);
 	engine.AddModule(new SoundManager());
 
 	// Register components
@@ -101,8 +112,36 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prevInstance, _In
 		objectFactory.RegisterComponent<Health>();
 	}
 
+	StartupSettings startupSettings;
+	startupSettings.windowWidth = 0;
+	startupSettings.windowHeight = 0;
+	startupSettings.fullscreen = true;
+	startupSettings.allowMaximize = true;
+	startupSettings.vSync = true;
+
+	if (std::filesystem::exists("settings.txt"))
+	{
+		Parser settingsParser("settings.txt", std::fstream::in);
+		settingsParser.ReadSkip("Settings");
+		settingsParser.ReadSkip('{');
+		settingsParser.ReadVariable("framerateCap", startupSettings.framerateCap);
+		settingsParser.ReadVariable("fullscreen", startupSettings.fullscreen);
+		settingsParser.ReadVariable("vSync", startupSettings.vSync);
+		settingsParser.ReadSkip('}');
+	}
+	else
+	{
+		Parser settingsParser("settings.txt", std::fstream::out);
+		settingsParser.WriteValue("Settings");
+		settingsParser.BeginScope();
+		settingsParser.WriteVariable("framerateCap", startupSettings.framerateCap);
+		settingsParser.WriteVariable("fullscreen", startupSettings.fullscreen);
+		settingsParser.WriteVariable("vSync", startupSettings.vSync);
+		settingsParser.EndScope();
+	}
+
 	// Game engine goes!
-	engine.Start(1920, 1080, 200);
+	engine.Start(startupSettings);
 
 	return 0;
 }

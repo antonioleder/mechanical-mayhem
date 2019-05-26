@@ -15,6 +15,8 @@
 // Include Files:
 //------------------------------------------------------------------------------
 
+#include "Array.h"
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -60,7 +62,7 @@ public:
 	void PopEffect();
 
 	// Removes a specific effect.
-	void RemoveEffect(const PostEffect& effect);
+	void RemoveEffect(PostEffect& effect);
 
 	// Removes all effects that are currently active.
 	void ClearEffects();
@@ -92,7 +94,7 @@ private:
 	unsigned diffuseTexture1;
 
 	// Post-processing effects
-	std::vector<PostEffect*> effects;
+	Array<PostEffect*> effects;
 };
 
 //------------------------------------------------------------------------------

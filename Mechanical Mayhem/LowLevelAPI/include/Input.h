@@ -16,6 +16,7 @@
 //------------------------------------------------------------------------------
 
 #include "Vector2D.h"
+#include "Array.h"
 
 //------------------------------------------------------------------------------
 
@@ -101,7 +102,7 @@ private:
 	// Keys data from current and previous frames.
 	static const unsigned inputKeyNum;
 	// Current frame is first vector, previous frames are subsequent vectors
-	std::vector<std::vector<unsigned char>> inputKeyBuffer;
+	Array<Array<unsigned char>> inputKeyBuffer;
 };
 
 //------------------------------------------------------------------------------

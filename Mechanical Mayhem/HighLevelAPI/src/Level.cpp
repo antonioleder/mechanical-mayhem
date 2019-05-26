@@ -28,7 +28,7 @@
 // Creates a game state.
 // Params:
 //   name = Name to use for this state.
-Level::Level(const std::string& name) : BetaObject(name)
+Level::Level(const std::string& name) : BetaObject(name), altSpace(nullptr)
 {
 }
 
@@ -37,6 +37,19 @@ Space* Level::GetSpace() const
 {
 	// The object's parent should be a space.
 	return static_cast<Space*>(BetaObject::GetOwner());
+}
+
+// Sets the alternate space.
+void Level::SetAltSpace(Space* altSpace_)
+{
+	altSpace = altSpace_;
+}
+
+// Retrieve the alternate space.
+Space* Level::GetAltSpace() const
+{
+	// The object's parent should be a space.
+	return altSpace;
 }
 
 //------------------------------------------------------------------------------

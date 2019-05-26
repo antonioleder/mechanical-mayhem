@@ -84,8 +84,8 @@ private:
 	// Private Data:
 	//------------------------------------------------------------------------------
 
-	const unsigned numVertices;
-	const unsigned numBuffers;
+	unsigned numVertices;
+	unsigned numBuffers;
 	unsigned* bufferIDs;
 	unsigned arrayObjectID;
 	unsigned drawMode;

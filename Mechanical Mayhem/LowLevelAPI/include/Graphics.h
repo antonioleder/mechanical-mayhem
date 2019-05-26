@@ -123,7 +123,7 @@ public:
 	// Removes the most recently added effect.
 	void PopEffect();
 	// Removes a specific effect.
-	void RemoveEffect(const PostEffect& effect);
+	void RemoveEffect(PostEffect& effect);
 	// Removes all effects that are currently active.
 	void ClearEffects();
 

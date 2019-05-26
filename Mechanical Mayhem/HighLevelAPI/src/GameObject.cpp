@@ -39,14 +39,14 @@
 // Create a new game object.
 // Params:
 //	 name = The name of the game object being created.
-GameObject::GameObject(const std::string& name) : BetaObject(name), isDestroyed(false)
+GameObject::GameObject(const std::string& name) : BetaObject(name), _transform(nullptr), _sprite(nullptr), _collider(nullptr), isDestroyed(false)
 {
 }
 
 // Clone a game object from another game object.
 // Params:
 //	 other = A reference to the object being cloned.
-GameObject::GameObject(const GameObject& other) : BetaObject(other.GetName(), other.GetOwner()), isDestroyed(false)
+GameObject::GameObject(const GameObject& other) : BetaObject(other.GetName(), other.GetOwner()), _transform(nullptr), _sprite(nullptr), _collider(nullptr), isDestroyed(false)
 {
 	// Reserve how many components we need so there's only 1 allocation.
 	components.reserve(other.components.size());

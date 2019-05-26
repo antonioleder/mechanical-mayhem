@@ -12,6 +12,15 @@
 #pragma once
 
 //------------------------------------------------------------------------------
+// Includes:
+//------------------------------------------------------------------------------
+
+#include "StartupSettings.h"
+#include "Vector2D.h"
+
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
 // Forward Declarations:
 //------------------------------------------------------------------------------
 
@@ -30,13 +39,8 @@ public:
 
 	// Initialize the System (Windows, Event Handlers).
 	// Params: 
-	//   screenWidth = Width of the window in pixels.
-	//   screenHeight = Height of the window in pixels.
-	//   framerateCap = Maximum framerate.
-	//   showWindow = Whether to show the window upon creation.
-	//   debugConsole = Whether to create the debug console.
-	void Initialize(unsigned screenWidth = 800, unsigned screenHeight = 600, unsigned framerateCap = 200, 
-		bool showWindow = true, bool debugConsole = true);
+	//   settings = The settings to use for the window.
+	void Initialize(const StartupSettings& settings);
 
 	// End the frame and draw
 	void Draw();
@@ -63,6 +67,9 @@ public:
 	//   height = The new height of the window.
 	void SetResolution(unsigned width, unsigned height);
 
+	// Get the current resolution of the window.
+	Vector2D GetResolution() const;
+
 	// Retrieve the instance of the System singleton.
 	static System& GetInstance();
 
@@ -70,30 +77,6 @@ public:
 	friend void WinCloseCallback(GLFWwindow* window);
 
 private:
-	//------------------------------------------------------------------------------
-	// Private Structures:
-	//------------------------------------------------------------------------------
-
-	// This struct is used by Beta Framework to initialize the internal systems.
-	// Create an instance of this struct and fill out the details to
-	// initialize Beta Framework.
-	struct SystemInfo
-	{
-		// Whether Beta Framework should create the window.
-		// This is evaluated as a bool, 0 will not create the window, any other value will.
-		bool createWindow;
-
-		// This is supplied as a parameter to WinMain().
-		// Use the fourth parameter from WinMain().
-		bool show;
-		
-		// Specify if a debug console should be created.
-		bool createConsole;
-		
-		// Sets the Beta framework framerate controller's max framerate. Defaults to 120.
-		unsigned maxFrameRate;
-	};
-
 	//------------------------------------------------------------------------------
 	// Private Functions:
 	//------------------------------------------------------------------------------
@@ -108,25 +91,18 @@ private:
 
 	// Initializes the Beta systems. Uses the specified options to initialize Beta and
 	// the functionality handled by Beta.
-	// Params: 
-	//   width = Width of the window in pixels.
-	//   height = Height of the window in pixels.
-	//   framerateCap = Maximum framerate.
-	//   showWindow = Whether to show the window upon creation.
-	//   debugConsole = Whether to create the debug console.
-	void InitHelper(unsigned width, unsigned height, 
-		unsigned framerateCap, bool showWindow, bool debugConsole);
+	void InitHelper();
 
 	// Window creation
-	void CreateWindowGLFW(unsigned width, unsigned height, bool fullscreen);
+	void CreateWindowGLFW();
 
 	//------------------------------------------------------------------------------
 	// Private Variables:
 	//------------------------------------------------------------------------------
 
 	// Window information
-	bool		winExists;
-	SystemInfo	systemInfo;
+	bool winExists;
+	StartupSettings	systemInfo;
 	GLFWwindow* glfwWindow;
 	bool fullscreen;
 	int windowPositionX;

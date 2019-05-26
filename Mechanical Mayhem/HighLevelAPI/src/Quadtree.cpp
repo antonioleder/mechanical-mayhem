@@ -59,7 +59,7 @@ CastResult::CastResult(GameObject* object, float t) : object(object), t(t)
 //------------------------------------------------------------------------------
 
 // Default constructor. Initializes all variables to 0.
-Quadtree::Quadtree() : bounds(Vector2D(), Vector2D()), level(0)
+Quadtree::Quadtree() : bounds(Vector2D(), Vector2D()), level(0), nodes{nullptr, nullptr, nullptr, nullptr}
 {
 	for (int i = 0; i < NUM_CHILDREN; i++)
 		nodes[i] = nullptr;
@@ -70,7 +70,7 @@ Quadtree::Quadtree() : bounds(Vector2D(), Vector2D()), level(0)
 //   bounds   = The area encompassed by this node.
 //   level    = The level of this node in the tree. Child nodes will have a level of one less.
 //   maxObjectsPerNode = The maximum number of game objects in this node before it will be split.
-Quadtree::Quadtree(const BoundingRectangle& bounds, int level, int maxObjects) : bounds(bounds), level(level)
+Quadtree::Quadtree(const BoundingRectangle& bounds, int level, int maxObjects) : bounds(bounds), level(level), nodes{nullptr, nullptr, nullptr, nullptr}
 {
 	objects.reserve(maxObjects);
 
@@ -101,14 +101,15 @@ void Quadtree::Draw() const
 // Adds an object to the tree
 // Params:
 //   object = The game object being added to the tree.
-void Quadtree::AddObject(GameObject* object)
+	//   transform = The transform component on the object. Will be calculated if nullptr. Fill it out if you have it to call GetComponent as few times as possible.
+//   placeInAll = Whether the object should be placed in all leaves. Useful for large objects such as tilemaps.
+void Quadtree::AddObject(GameObject* object, Transform* transform)
 {
-	// 1. First, use the GetIndex function to find the index of the object
-	Quadrants index = GetIndex(object->GetComponent<Transform>()->GetBounds());
+	if (transform == nullptr)
+		transform = object->GetComponent<Transform>();
 
-	// Place tilemaps in all nodes.
-	if (object->GetComponent<ColliderTilemap>() != nullptr)
-		index = PARTIAL_FIT;
+	// 1. First, use the GetIndex function to find the index of the object
+	Quadrants index = GetIndex(transform->GetBounds());
 
 	// 2. If the object is not within node bounds (i.e., index is OUT_OF_BOUNDS) Return!
 	if (index == OUT_OF_BOUNDS)
@@ -124,7 +125,7 @@ void Quadtree::AddObject(GameObject* object)
 			Split();
 
 			// Then try adding the object again (After splitting, there will be a different outcome.)
-			AddObject(object);
+			AddObject(object, transform);
 		}
 		// Else, number of objects is okay or we are at max depth, so push object onto list.
 		else
@@ -139,14 +140,14 @@ void Quadtree::AddObject(GameObject* object)
 		if (index != PARTIAL_FIT)
 		{
 			// Call AddObject on the specific node that matches its index
-			nodes[index]->AddObject(object);
+			nodes[index]->AddObject(object, transform);
 		}
 		// Else, object has partial fit, so for each subnode,
 		else
 		{
 			// Call AddObject on the subnode
 			for (int i = 0; i < NUM_CHILDREN; i++)
-				nodes[i]->AddObject(object);
+				nodes[i]->AddObject(object, transform);
 		}
 	}
 }
@@ -246,12 +247,10 @@ void Quadtree::Split()
 	// 3. For each object in the current node
 	for (auto it = objects.begin(); it != objects.end(); ++it)
 	{
-		// Get the index of the object
-		Quadrants index = GetIndex((*it)->GetComponent<Transform>()->GetBounds());
+		Transform* transform = (*it)->GetComponent<Transform>();
 
-		// Place tilemaps in all nodes.
-		if ((*it)->GetComponent<ColliderTilemap>() != nullptr)
-			index = PARTIAL_FIT;
+		// Get the index of the object
+		Quadrants index = GetIndex(transform->GetBounds());
 
 		// If it fits in a specific quadrant,
 		if (index != PARTIAL_FIT)
@@ -264,7 +263,7 @@ void Quadtree::Split()
 		{
 			// Add it to the sub-node
 			for (int i = 0; i < NUM_CHILDREN; i++)
-				nodes[i]->AddObject(*it);
+				nodes[i]->AddObject(*it, transform);
 		}
 	}
 

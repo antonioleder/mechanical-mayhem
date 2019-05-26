@@ -66,11 +66,11 @@ namespace Levels
 		resourceManager.GetSpriteSource("MainMenu.png");
 		resourceManager.GetSpriteSource("Button.png");
 		resourceManager.GetMesh("FontAtlas", 12, 8);
-		resourceManager.GetSpriteSource("Code New Roman@4x.png", 12, 8);
+		resourceManager.GetSpriteSource("Code New Roman@2x.png", 12, 8);
 
 		objectManager.AddArchetype(*objectFactory.CreateObject("FullScreenImage", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("MainMenu.png")));
 		objectManager.AddArchetype(*objectFactory.CreateObject("Button", resourceManager.GetMesh("Quad"), resourceManager.GetSpriteSource("Button.png")));
-		objectManager.AddArchetype(*objectFactory.CreateObject("Text", resourceManager.GetMesh("FontAtlas"), resourceManager.GetSpriteSource("Code New Roman@4x.png")));
+		objectManager.AddArchetype(*objectFactory.CreateObject("Text", resourceManager.GetMesh("FontAtlas"), resourceManager.GetSpriteSource("Code New Roman@2x.png")));
 	}
 
 	// Initialize the memory associated with MainMenu.
@@ -101,9 +101,6 @@ namespace Levels
 		Camera& camera = Graphics::GetInstance().GetDefaultCamera();
 		camera.SetTranslation(Vector2D());
 		camera.SetSize(10.0f);
-		//camera.SetSize(Engine::GetInstance().GetModule<FullscreenManager>()->GetScreenDimensions().x);
-		//std::cout << Engine::GetInstance().GetModule<FullscreenManager>()->GetScreenDimensions() << std::endl;
-		//Graphics::GetInstance().SetTransform(Vector2D());
 	}
 
 	// Update Level 1.

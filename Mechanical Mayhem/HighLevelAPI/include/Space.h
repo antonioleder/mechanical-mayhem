@@ -67,13 +67,17 @@ public:
 	// Sets the level that the space is using after unloading the current level.
 	// Params:
 	//   level = The next level that the space will be using.
-	void SetLevel(Level* level);
+	// Returns:
+	//   The next level that the space will be using.
+	Level* SetLevel(Level* level);
 
 	// Sets the level that the space is using after unloading the current level.
 	// Template parameters:
 	//   LevelType = The level to be instantiated.
+	// Returns:
+	//   The next level that the space will be using.
 	template <class LevelType>
-	void SetLevel()
+	Level* SetLevel()
 	{
 		// If Setlevel was called multiple times in the same frame, delete the previous level.
 		if (nextLevel != nullptr)
@@ -84,7 +88,16 @@ public:
 
 		// Set the next level's parent to this space (necessary for Level::GetParent to work properly).
 		nextLevel->SetOwner(this);
+
+		// Copy the alternate space from the previous level.
+		if (currentLevel != nullptr)
+			nextLevel->SetAltSpace(currentLevel->GetAltSpace());
+
+		return nextLevel;
 	}
+
+	// Gets the current level.
+	Level* GetLevel() const;
 
 	// Restarts the current level (next level = current)
 	void RestartLevel();

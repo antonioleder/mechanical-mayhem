@@ -17,7 +17,20 @@
 
 #include "BetaObject.h"
 
+#include "Array.h"
+#include "StartupSettings.h"
+
 //------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// Forward Declarations:
+//------------------------------------------------------------------------------
+
+class System;
+class Graphics;
+class DebugDraw;
+class Input;
+class FrameRateController;
 
 //------------------------------------------------------------------------------
 // Public Structures:
@@ -36,7 +49,13 @@ public:
 	//   screenHeight = The height of the window that will be created in pixels.
 	//   framerateCap = The maximum framerate of the engine.
 	//   debugConsole = If true, creates a debug console.
+	[[deprecated]]
 	void Start(unsigned screenWidth, unsigned screenHeight, unsigned framerateCap = 200, bool debugConsole = true);
+
+	// Starts the game loop and runs until quit state is reached.
+	// Params:
+	//   settings = The settings to use when starting the application.
+	void Start(const StartupSettings& settings = StartupSettings());
 
 	// Stops the engine and shuts everything down
 	void Stop();
@@ -56,7 +75,7 @@ public:
 	template<typename ModuleType>
 	ModuleType* GetModule()
 	{
-		size_t numModules = modules.size();
+		size_t numModules = modules.Size();
 		for (size_t i = 0; i < numModules; ++i)
 		{
 			// If this is the type we're looking for, return it
@@ -115,13 +134,20 @@ private:
 	bool isRunning;
 
 	// Pointers to additional engine modules
-	std::vector<BetaObject*> modules;
+	Array<BetaObject*> modules;
 
 	// Assets directory
 	std::string assetsPath;
 
 	// Should the program stop when escape is pressed?
 	bool closeOnEscape;
+
+	// Standard modules
+	System& system;
+	Graphics& graphics;
+	DebugDraw& debugDraw;
+	Input& input;
+	FrameRateController& frameRateController;
 };
 
 /*----------------------------------------------------------------------------*/

@@ -49,6 +49,8 @@
 
 // Levels
 #include "LevelSelect.h"
+#include "HUDEmpty.h"
+#include "HUDLevel.h"
 
 //------------------------------------------------------------------------------
 
@@ -70,7 +72,6 @@ namespace Levels
 		columnsSpikes(1), rowsSpikes(3),
 		dataStaticMap(nullptr), dataRedMap(nullptr), dataBlueMap(nullptr),
 		columnsMap(2), rowsMap(2),
-		firstFrame(true),
 		soundManager(nullptr)
 	{
 	}
@@ -106,9 +107,9 @@ namespace Levels
 
 
 		resourceManager.GetMesh("FontAtlas", 12, 8);
-		resourceManager.GetSpriteSource("Code New Roman@4x.png", 12, 8);
+		resourceManager.GetSpriteSource("Code New Roman@2x.png", 12, 8);
 
-		objectManager.AddArchetype(*objectFactory.CreateObject("Text", resourceManager.GetMesh("FontAtlas"), resourceManager.GetSpriteSource("Code New Roman@4x.png")));
+		objectManager.AddArchetype(*objectFactory.CreateObject("Text", resourceManager.GetMesh("FontAtlas"), resourceManager.GetSpriteSource("Code New Roman@2x.png")));
 
 		// Load the tilemaps.
 		std::string mapName;
@@ -168,8 +169,17 @@ namespace Levels
 	{
 		ResourceManager& resourceManager = GetSpace()->GetResourceManager();
 		GameObjectManager& objectManager = GetSpace()->GetObjectManager();
+
+		// Load HUD Level
+		Space* hudSpace = GetAltSpace();
+
+		// Set initial level to the HUD level - HUDSpace.
+		if (hudSpace != nullptr)
+			hudSpace->SetLevel<HUDLevel>();
+
 		// Create the players and add them to the object manager.
 		GameObject* player = new GameObject(*objectManager.GetArchetypeByName("Player"));
+		//*reinterpret_cast<std::string*>(reinterpret_cast<uintptr_t>(player) + sizeof(void**)) = "Player1";
 		static_cast<Behaviors::MonkeyAnimation*>(player->GetComponent("MonkeyAnimation"))->SetFrames(0, 8, 9, 1, 15, 1);
 		Behaviors::PlayerMovement* playerMovement = static_cast<Behaviors::PlayerMovement*>(player->GetComponent("PlayerMovement"));
 		playerMovement->SetKeybinds(VK_UP, VK_LEFT, VK_RIGHT, VK_RCONTROL);
@@ -177,6 +187,7 @@ namespace Levels
 		objectManager.AddObject(*player);
 
 		GameObject* player2 = new GameObject(*objectManager.GetArchetypeByName("Player"));
+		//*reinterpret_cast<std::string*>(reinterpret_cast<uintptr_t>(player2) + sizeof(void**)) = "Player2";
 		player2->GetComponent<Collider>()->SetGroup(2);
 		player2->GetComponent<Collider>()->SetMask(1 << 2);
 		Sprite* player2Sprite = static_cast<Sprite*>(player2->GetComponent("Sprite"));
@@ -194,6 +205,8 @@ namespace Levels
 		static_cast<Behaviors::CameraFollow*>(gameController->GetComponent("CameraFollow"))->AddPlayer(player2);
 		Behaviors::DimensionController& dimensionController = *static_cast<Behaviors::DimensionController*>(gameController->GetComponent("DimensionController"));
 		objectManager.AddObject(*gameController);
+		objectManager.DispatchEvent(new Event(ET_Generic, "SnapToTarget", 0.01f, GUID(), gameController->GetID()));
+		Graphics::GetInstance().GetDefaultCamera().SetSize(0.0f);
 
 		if (dataStaticMap != nullptr && dataRedMap != nullptr && dataBlueMap != nullptr)
 		{
@@ -466,16 +479,7 @@ namespace Levels
 
 		Input& input = Input::GetInstance();
 
-		GameObject* gameController = GetSpace()->GetObjectManager().GetObjectByName("GameController");
-		//Behaviors::DimensionController& dimensionController = *static_cast<Behaviors::DimensionController*>(gameController->GetComponent("DimensionController"));
-
 		GameObjectManager& objectManager = GetSpace()->GetObjectManager();
-
-		if (firstFrame)
-		{
-			static_cast<Behaviors::CameraFollow*>(gameController->GetComponent("CameraFollow"))->SnapToTarget();
-			firstFrame = false;
-		}
 
 		// End game if a player dies
 		unsigned playerCount = objectManager.GetObjectCount("Player");
@@ -520,6 +524,16 @@ namespace Levels
 				GetSpace()->RestartLevel();
 			}
 		}
+	}
+
+	// Shutdown function for Level 1
+	void Level1::Shutdown()
+	{
+		Space* hudSpace = GetAltSpace();
+
+		// Set initial level to the HUD level - HUDSpace.
+		if (hudSpace != nullptr)
+			hudSpace->SetLevel<HUDEmpty>();
 	}
 
 	// Unload the resources associated with Level 1.

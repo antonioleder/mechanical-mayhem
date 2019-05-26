@@ -19,6 +19,11 @@
 #include "Serializable.h"
 #include "EventHandler.h"
 
+// Components
+#include "Transform.h"
+#include "Sprite.h"
+#include "Collider.h"
+
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -114,6 +119,69 @@ public:
 		return nullptr;
 	}
 
+	// Retrieves the transform component if it exists.
+	template<>
+	Transform* GetComponent<Transform>()
+	{
+		if (_transform == nullptr)
+		{
+			// Loop through every component and check if it can be cast to a transform.
+			for (auto it = components.begin(); it != components.end(); it++)
+			{
+				Transform* component = dynamic_cast<Transform*>(*it);
+				if (component != nullptr)
+				{
+					_transform = component;
+					return component;
+				}
+			}
+		}
+
+		return _transform;
+	}
+
+	// Retrieves the sprite component if it exists.
+	template<>
+	Sprite* GetComponent<Sprite>()
+	{
+		if (_sprite == nullptr)
+		{
+			// Loop through every component and check if it can be cast to a sprite.
+			for (auto it = components.begin(); it != components.end(); it++)
+			{
+				Sprite* component = dynamic_cast<Sprite*>(*it);
+				if (component != nullptr)
+				{
+					_sprite = component;
+					return component;
+				}
+			}
+		}
+
+		return _sprite;
+	}
+
+	// Retrieves the collider component if it exists.
+	template<>
+	Collider* GetComponent<Collider>()
+	{
+		if (_collider == nullptr)
+		{
+			// Loop through every component and check if it can be cast to a transform.
+			for (auto it = components.begin(); it != components.end(); it++)
+			{
+				Collider* component = dynamic_cast<Collider*>(*it);
+				if (component != nullptr)
+				{
+					_collider = component;
+					return component;
+				}
+			}
+		}
+
+		return _collider;
+	}
+
 	// Mark an object for destruction.
 	void Destroy();
 
@@ -132,6 +200,10 @@ private:
 
 	// Components
 	std::vector<Component*> components;
+
+	Transform* _transform;
+	Sprite* _sprite;
+	Collider* _collider;
 
 	// Whether the object has been marked for destruction.
 	bool isDestroyed;

@@ -34,6 +34,10 @@ typedef class Space Space;
 class Level : public BetaObject
 {
 public:
+	//------------------------------------------------------------------------------
+	// Public Functions:
+	//------------------------------------------------------------------------------
+
 	// Creates a game state.
 	// Params:
 	//   name = Name to use for this state.
@@ -41,6 +45,20 @@ public:
 
 	// Retrieve the space in which the level is running.
 	Space* GetSpace() const;
+
+	// Sets the alternate space.
+	void SetAltSpace(Space* altSpace);
+
+	// Retrieve the alternate space.
+	Space* GetAltSpace() const;
+
+private:
+	//------------------------------------------------------------------------------
+	// Private Variables:
+	//------------------------------------------------------------------------------
+
+	// The alternate space.
+	Space* altSpace;
 };
 
 //------------------------------------------------------------------------------

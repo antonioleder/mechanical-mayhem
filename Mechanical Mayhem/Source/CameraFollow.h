@@ -71,6 +71,11 @@ namespace Behaviors
 		//   dt = The (fixed) change in time since the last step.
 		void Update(float dt) override;
 
+		// Receive an event and handle it (if applicable).
+		// Params:
+		//   event = The event that has been received.
+		void HandleEvent(const Event& event) override;
+
 		// Snaps the camera to the target.
 		void SnapToTarget();
 

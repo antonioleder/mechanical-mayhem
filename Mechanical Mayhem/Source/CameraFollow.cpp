@@ -147,18 +147,21 @@ namespace Behaviors
 		}
 
 		Camera& camera = Graphics::GetInstance().GetDefaultCamera();
-
-		//float mix = max(0.25f, min(1.75f, (highestDistance - 150.0f) / 2000.0f));
-		//float distance = Interpolate(60.75f, 57.75f, mix);
 		
 		// Smoothly interpolate the camera to its new position and distance.
-		camera.SetTranslation(Interpolate(camera.GetTranslation(), targetTranslationSum / static_cast<float>(targetTranslations.size()), targetMix));
-		//camera.SetFOV(Interpolate(camera.GetFOV(), distance, distanceMix));
+		camera.SetTranslation(Interpolate(camera.GetTranslation(), targetTranslationSum / static_cast<float>(max(1, targetTranslations.size())), targetMix));
 		camera.SetSize(Interpolate(camera.GetSize(), max(11.0f, highestDistance + 8.0f), distanceMix));
-		//std::cout << "@ghidra" << std::endl;
-		//std::cout << highestDistance << std::endl;
-		//std::cout << camera.GetSize() << std::endl;
-		//camera.SetSize(10.0f);
+	}
+
+	// Receive an event and handle it (if applicable).
+	// Params:
+	//   event = The event that has been received.
+	void CameraFollow::HandleEvent(const Event& event)
+	{
+		if (event.name == "SnapToTarget")
+		{
+			SnapToTarget();
+		}
 	}
 
 	// Snaps the camera to the target.
@@ -201,11 +204,7 @@ namespace Behaviors
 
 		Camera& camera = Graphics::GetInstance().GetDefaultCamera();
 
-		//float mix = max(0.25f, min(1.75f, (highestDistance - 150.0f) / 2000.0f));
-		//float distance = Interpolate(60.75f, 57.75f, mix);
-
-		camera.SetTranslation(targetTranslationSum / static_cast<float>(players.size()));
-		//camera.SetFOV(distance);
+		camera.SetTranslation(targetTranslationSum / static_cast<float>(max(1, players.size())));
 		camera.SetSize(max(11.0f, highestDistance + 8.0f));
 	}
 

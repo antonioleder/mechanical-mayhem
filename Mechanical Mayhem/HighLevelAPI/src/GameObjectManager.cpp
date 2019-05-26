@@ -29,6 +29,7 @@
 // Components
 #include "Transform.h"
 #include "Collider.h"
+#include "ColliderTilemap.h"
 
 //------------------------------------------------------------------------------
 
@@ -43,7 +44,7 @@
 // Constructor(s)
 GameObjectManager::GameObjectManager(Space* space) : BetaObject("GameObjectmanager", space),
 	gameObjectActiveList(), gameObjectArchetypes(), events(),
-	fixedUpdateDt(1.0f / 120.0f), maxFixedUpdateTime(0.2f), timeAccumulator(0.0f),
+	fixedUpdateDt(1.0f / 200.0f), maxFixedUpdateTime(0.2f), timeAccumulator(0.0f),
 	useQuadtree(true), quadtree(nullptr)
 {
 	// Reserve space for objects
@@ -415,21 +416,22 @@ void GameObjectManager::PopulateQuadtree()
 	delete quadtree;
 
 	// Create the new quadtree.
-	BoundingRectangle quadtreeBase = Graphics::GetInstance().GetDefaultCamera().GetScreenWorldDimensions();
-	quadtreeBase.extents *= 2.0f;
-	quadtreeBase.left = quadtreeBase.center.x - quadtreeBase.extents.x;
-	quadtreeBase.top = quadtreeBase.center.y + quadtreeBase.extents.y;
-	quadtreeBase.right = quadtreeBase.center.x + quadtreeBase.extents.x;
-	quadtreeBase.bottom = quadtreeBase.center.y - quadtreeBase.extents.y;
+	BoundingRectangle worldScreenDimensions = Graphics::GetInstance().GetDefaultCamera().GetScreenWorldDimensions();
+	BoundingRectangle quadtreeBase = BoundingRectangle(worldScreenDimensions.center, worldScreenDimensions.extents * 2.0f);
 	quadtree = new Quadtree(quadtreeBase, 4, 4);
 
 	// Add all active objects to the quadtree.
 	for (auto it = gameObjectActiveList.begin(); it != gameObjectActiveList.end(); ++it)
 	{
-		if ((*it)->IsDestroyed() || (*it)->GetComponent<Transform>() == nullptr)
+		if ((*it)->IsDestroyed())
 			continue;
 
-		quadtree->AddObject(*it);
+		Transform* transform = (*it)->GetComponent<Transform>();
+
+		if (transform == nullptr)
+			continue;
+
+		quadtree->AddObject(*it, transform);
 	}
 }
 
@@ -437,6 +439,8 @@ void GameObjectManager::PopulateQuadtree()
 void GameObjectManager::CheckCollisionsQuadtree()
 {
 	std::vector<GameObject*> nearbyObjects;
+	std::vector<GameObject*> tilemaps;
+	GetAllObjectsByName("Tilemap", tilemaps);
 
 	for (auto it1 = gameObjectActiveList.begin(); it1 != gameObjectActiveList.end(); ++it1)
 	{
@@ -451,6 +455,7 @@ void GameObjectManager::CheckCollisionsQuadtree()
 		// Get all nearby objects to perform collision checks on.
 		nearbyObjects.clear();
 		quadtree->RetrieveNearbyObjects(*it1, nearbyObjects);
+		nearbyObjects.insert(nearbyObjects.end(), tilemaps.begin(), tilemaps.end());
 
 		for (auto it2 = nearbyObjects.begin(); it2 != nearbyObjects.end(); ++it2)
 		{

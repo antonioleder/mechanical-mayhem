@@ -33,8 +33,9 @@ public:
 	// Public Functions
 	//------------------------------------------------------------------------------
 
-	// Constructors (2)
+	// Constructors (3)
 	Vector2D();
+	Vector2D(float value);
 	Vector2D(float x, float y);
 
 	// Other functions (7)

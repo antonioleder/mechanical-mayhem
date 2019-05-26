@@ -64,6 +64,9 @@ void Space::Update(float dt)
 // Shuts down the object manager
 void Space::Shutdown()
 {
+	if (nextLevel != nullptr)
+		delete nextLevel;
+
 	// Shutdown the current level if there is one.
 	if (currentLevel != nullptr)
 		currentLevel->Shutdown();
@@ -126,7 +129,9 @@ void Space::SetTimescale(float value)
 // Sets the level that the space is using after unloading the current level.
 // Params:
 //   level = The next level that the space will be using.
-void Space::SetLevel(Level* level)
+// Returns:
+//   The next level that the space will be using.
+Level* Space::SetLevel(Level* level)
 {
 	// If Setlevel was called multiple times in the same frame, delete the previous level.
 	if (nextLevel != nullptr)
@@ -138,7 +143,19 @@ void Space::SetLevel(Level* level)
 	if (nextLevel != nullptr)
 	{
 		nextLevel->SetOwner(this);
+
+		// Copy the alternate space from the previous level.
+		if (currentLevel != nullptr)
+			nextLevel->SetAltSpace(currentLevel->GetAltSpace());
 	}
+
+	return nextLevel;
+}
+
+// Gets the current level.
+Level* Space::GetLevel() const
+{
+	return currentLevel;
 }
 
 // Restarts the current level (next level = current)

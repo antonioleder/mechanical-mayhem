@@ -25,6 +25,7 @@
 //------------------------------------------------------------------------------
 
 class GameObject;
+class Transform;
 typedef enum Quadrants : short Quadrants;
 
 //------------------------------------------------------------------------------
@@ -70,7 +71,8 @@ public:
 	// Adds an object to the tree
 	// Params:
 	//   object = The game object being added to the tree.
-	void AddObject(GameObject* object);
+	//   transform = The transform component on the object. Will be calculated if nullptr. Fill it out if you have it to call GetComponent as few times as possible.
+	void AddObject(GameObject* object, Transform* transform = nullptr);
 
 	// Retrieve all objects from the tree that could collide with a given object.
 	// Params:

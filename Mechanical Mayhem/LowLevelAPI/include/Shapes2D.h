@@ -42,6 +42,7 @@ std::istream& operator>>(std::istream& is, LineSegment& line);
 struct BoundingRectangle
 {
 	// Constructor
+	BoundingRectangle();
 	BoundingRectangle(const Vector2D& center, const Vector2D& extents);
 
 	Vector2D center;  // Center of the rectangle.
@@ -55,8 +56,8 @@ struct BoundingRectangle
 struct Circle
 {
 	// Constructor
-	Circle(const Vector2D& center, float radius)
-		: center(center), radius(radius) {};
+	Circle();
+	Circle(const Vector2D& center, float radius);
 
 	Vector2D center; // Center point of circle.
 	float radius;    // Radius of circle.

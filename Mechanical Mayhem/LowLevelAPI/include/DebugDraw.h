@@ -15,7 +15,7 @@
 // Include Files:
 //------------------------------------------------------------------------------
 
-#include <vector>
+#include "Array.h"
 
 #include "Shapes2D.h"
 #include "Color.h"
@@ -111,34 +111,37 @@ private:
 
 	struct DebugCircle
 	{
+		DebugCircle() = default;
 		DebugCircle(const Vector2D& center, float radius, const Color& color, 
-			Camera& camera, float zDepth);
+			Camera* camera, float zDepth);
 
 		Circle shape;	// Shape info
 
 		Color color;	// Color for drawing
 
-		Camera& camera;	// Camera to use for drawing
+		Camera* camera;	// Camera to use for drawing
 
 		float zDepth;	// Depth of object (when using perspective camera)
 	};
 
 	struct DebugRectangle
 	{
+		DebugRectangle() = default;
 		DebugRectangle(const Vector2D& center, const Vector2D& extents, const Color& color, 
-			Camera& camera, float zDepth);
+			Camera* camera, float zDepth);
 
 		BoundingRectangle shape; // Shape info
 
 		Color color;	// Color for drawing
 
-		Camera& camera; // Camera to use for drawing
+		Camera* camera; // Camera to use for drawing
 
 		float zDepth;	// Depth of object (when using perspective camera)
 	};
 
 	struct DebugLineSegment
 	{
+		DebugLineSegment() = default;
 		DebugLineSegment(const Vector2D& start, const Vector2D& end, const Color& color);
 
 		Vector2D start; // First point of line segment
@@ -149,10 +152,11 @@ private:
 
 	struct DebugLineList
 	{
-		DebugLineList(const std::vector<DebugLineSegment>& segments, Camera& camera, float zDepth);
+		DebugLineList() = default;
+		DebugLineList(const Array<DebugLineSegment>& segments, Camera* camera, float zDepth);
 
 		Mesh* mesh;     // The mesh used when drawing this line strip
-		Camera& camera; // Camera to use for drawing
+		Camera* camera; // Camera to use for drawing
 
 		float zDepth;	// Depth of object (when using perspective camera)
 	};
@@ -162,12 +166,12 @@ private:
 	//------------------------------------------------------------------------------
 
 	// Arrays of debug draw objects
-	std::vector<DebugRectangle> rectangles;
-	std::vector<DebugCircle> circles;
-	std::vector<DebugLineList> lineLists;
+	Array<DebugRectangle> rectangles;
+	Array<DebugCircle> circles;
+	Array<DebugLineList> lineLists;
 
 	// Used when constructing line strips.
-	std::vector<DebugLineSegment> tempLines; 
+	Array<DebugLineSegment> tempLines; 
 
 	// Meshes to use for rectangles and circles
 	Mesh* circleMesh;
