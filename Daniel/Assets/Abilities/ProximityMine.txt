@@ -1,0 +1,5 @@
+ProximityMine
+{
+  cooldown : 3
+  maxProximityMines : 3
+}

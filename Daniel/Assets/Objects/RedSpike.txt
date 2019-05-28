@@ -1,0 +1,29 @@
+RedSpike
+{
+  numComponents : 4
+  Transform
+  {
+    translation : { 0, 0 }
+    rotation : 0.785398
+    scale : { 1, 1 }
+  }
+  Sprite
+  {
+    frameIndex : 1
+    color : { 1 , 1 , 1 , 1 }
+  }
+  ColliderRectangle
+  {
+    group : 3
+    mask : 9
+    extents : { 0.495, 0.495 }
+  }
+  Behaviors::Hazard
+  {
+    alwaysCollidable : 0
+    collidable : 1
+    damage : 100
+    destroyOnCollide : 0
+    destroyOnCollideDelay : 0
+  }
+}

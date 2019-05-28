@@ -1,0 +1,6 @@
+Settings
+{
+  framerateCap : 200
+  fullscreen : 1
+  vSync : 1
+}

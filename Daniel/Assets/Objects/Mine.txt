@@ -1,0 +1,29 @@
+Mine
+{
+  numComponents : 4
+  Transform
+  {
+    translation : { 0, 0 }
+    rotation : 0
+    scale : { 5, 5 }
+  }
+  Sprite
+  {
+    frameIndex : 0
+    color : { 1, 1, 1, 0.3 }
+  }
+  ColliderCircle
+  {
+    group : 0
+    mask : 0
+    radius : 2.5
+  }
+  Behaviors::Hazard
+  {
+    alwaysCollidable : 1
+    collidable : 1
+    damage : 50
+    destroyOnCollide : 1
+    destroyOnCollideDelay : 0.01
+  }
+}

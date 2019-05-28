@@ -1,0 +1,24 @@
+Button
+{
+  numComponents : 4
+  Transform
+  {
+    translation : { 0, 0 }
+    rotation : 0
+    scale : { 3, 0.75 }
+  }
+  Sprite
+  {
+    frameIndex : 0
+    color : { 1 , 1 , 1 , 1 }
+  }
+  ColliderRectangle
+  {
+    group : 0
+    mask : 0
+    extents : { 1.5, 0.375 }
+  }
+  Behaviors::Button
+  {
+  }
+}
